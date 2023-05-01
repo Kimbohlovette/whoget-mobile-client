@@ -40,6 +40,9 @@ const UserPreferences = () => {
           <View>
             <CatBtn name={'Health Care'} selected />
           </View>
+          <View>
+            <CatBtn name={'Health Care'} selected />
+          </View>
         </View>
         <View className="items-center mt-5">
           <View className="items-center justify-center bg-indigo-900 w-1/2 rounded-md">
