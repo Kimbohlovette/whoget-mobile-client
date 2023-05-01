@@ -1,6 +1,8 @@
 import {
+  Button,
   FlatList,
   Image,
+  Pressable,
   SafeAreaView,
   StatusBar,
   Text,
@@ -8,22 +10,54 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { textEllipsis } from '../shared/ellipseText';
 
 const Asks = () => {
+  const [showFilter, setShowFilter] = useState(false);
+  const handleShowFilter = () => {
+    if (showFilter) {
+      setShowFilter(false);
+    } else {
+      setShowFilter(true);
+    }
+  };
   return (
     <SafeAreaView className="w-full px-4">
       <StatusBar />
-      <View className="header flex-row items-center gap-3">
+      <View className="relative header flex-row items-center gap-3">
         <View className="flex-1 flex-row items-center border border-slate-300 rounded-md px-2">
           <Icon name="search" size={20} />
           <TextInput className="py-1 px-2" placeholder="Search" />
         </View>
-        <View className="border border-slate-300 p-2 rounded-md">
+        <Pressable
+          onPress={handleShowFilter}
+          android_ripple={{ color: 'slate' }}
+          className="border border-slate-300 p-2 rounded-md">
           <Icon name="md-funnel-outline" size={18} />
-        </View>
+        </Pressable>
+        {showFilter && (
+          <View className="absolute z-50 left-0 top-0 right-0 flex-1 justify-center">
+            <View className="w-full px-4 py-8 rounded-md bg-white  ">
+              <View className="gap-y-2">
+                <View className="shrink">
+                  <TextInput className="border min-w-0 border-slate-300 rounded-md py-2" />
+                </View>
+                <View className="shrink">
+                  <TextInput className="border min-w-0 border-slate-300 rounded-md py-2" />
+                </View>
+                <View className="shrink">
+                  <TextInput className="border min-w-0 border-slate-300 rounded-md py-2" />
+                </View>
+              </View>
+              <View className="shrink flex-row justify-between mt-5">
+                <Button title="Cancel" />
+                <Button title="Apply filter" />
+              </View>
+            </View>
+          </View>
+        )}
       </View>
 
       {/* Asks list section */}
