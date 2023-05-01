@@ -60,18 +60,18 @@ const CatBtn = (props: { name: string; selected?: boolean }) => {
     setSelected(select => !select);
   };
   return (
-    <View className="relative items-center border border-slate-300 rounded-md overflow-hidden">
+    <View className="relative items-center border border-slate-300 rounded-md">
       <Pressable
         android_ripple={{ color: 'slate' }}
         onPress={toggleSelect}
         className="py-2 px-2 ">
         <Text className="">{props.name}</Text>
-        {selected && (
-          <View className="absolute rounded-full bg-orange-400 w-5 aspect-square justify-center items-center -top-1 -right-1">
-            <Text className="text-[10px] text-white">25</Text>
-          </View>
-        )}
       </Pressable>
+      {selected && (
+        <View className="absolute rounded-full bg-orange-400 w-5 aspect-square justify-center items-center -top-1 -right-1 z-50">
+          <Text className="text-[10px] text-white">25</Text>
+        </View>
+      )}
     </View>
   );
 };
