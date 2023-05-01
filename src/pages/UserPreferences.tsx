@@ -41,6 +41,15 @@ const UserPreferences = () => {
             <CatBtn name={'Health Care'} selected />
           </View>
         </View>
+        <View className="items-center mt-5">
+          <View className="items-center justify-center bg-indigo-900 w-1/2 rounded-md">
+            <Pressable android_ripple={{}} className="py-2 w-full">
+              <Text className="text-center text-sm text-white font-medium">
+                Continue
+              </Text>
+            </Pressable>
+          </View>
+        </View>
       </View>
     </View>
   );
