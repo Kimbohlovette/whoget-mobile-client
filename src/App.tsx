@@ -5,7 +5,7 @@ import Asks from './pages/Asks';
 const App = () => {
   return (
     <>
-      <View className="flex items-center py-5 h-full bg-slate-50">
+      <View className="flex items-center py-5 h-full bg-primary-50">
         <Asks />
       </View>
     </>
