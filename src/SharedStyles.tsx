@@ -6,6 +6,9 @@ const Styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'lightgray',
   },
+  appBackgroundColor: {
+    backgroundColor: '#F8F8F8',
+  },
 });
 
 export default Styles;

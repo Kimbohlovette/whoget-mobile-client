@@ -5,7 +5,12 @@ const SignIn = () => {
   return (
     <SafeAreaView>
       <View className="w-full">
-        <Text className="text-center text-2xl font-bold my-5">WhoGet</Text>
+        <View className="justify-center items-center">
+          <Image
+            source={require('../assets/whoget-primary.png')}
+            className="h-28 aspect-video"
+          />
+        </View>
         <View className="w-5/6 mx-auto bg-white p-5">
           <Text className="my-8 text-lg text-center text-slate-700 font-semibold">
             Sign in to your account

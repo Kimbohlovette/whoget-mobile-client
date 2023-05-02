@@ -12,7 +12,7 @@ import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { textEllipsis } from '../shared/ellipseText';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
-import Styles from './SharedStyles';
+import Styles from '../SharedStyles';
 
 const Asks = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -24,7 +24,7 @@ const Asks = () => {
     }
   };
   return (
-    <SafeAreaView className="w-full px-4">
+    <SafeAreaView className="relative min-h-screen w-full px-4">
       <StatusBar />
       <View className="relative header flex-row items-center gap-3">
         <View className="flex-1 flex-row items-center border border-slate-300 rounded-md px-2">
@@ -121,7 +121,7 @@ const Asks = () => {
       <View className="w-full pt-10">
         <FlatList
           ListEmptyComponent={ListEmptyComponent}
-          data={[1, 2, 3, 5]}
+          data={[1, 2, 3, 5, 5, 5, 5]}
           renderItem={() => {
             return (
               <View className="overflow-hidden rounded-sm">
@@ -131,6 +131,14 @@ const Asks = () => {
           }}
           ItemSeparatorComponent={ListSeparator}
         />
+      </View>
+      <View className="absolute bottom-24 right-5 w-fit">
+        <Pressable
+          className="py-4 px-5 rounded-full flex-row justify-center items-center gap-x-2 bg-primary-600 shadow-md"
+          android_ripple={{ color: '#070716' }}>
+          <Icon name="md-add" size={20} color={'white'} />
+          <Text className="text-center text-primary-50">New ask</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );

@@ -4,7 +4,12 @@ import React from 'react';
 const Signup = () => {
   return (
     <SafeAreaView className="w-full">
-      <Text className="text-center text-2xl font-bold my-5">WhoGet</Text>
+      <View className="justify-center items-center">
+        <Image
+          source={require('../assets/whoget-primary.png')}
+          className="h-28 aspect-video"
+        />
+      </View>
       <View className="w-5/6 mx-auto bg-white p-5">
         <Text className="my-8 text-lg text-center text-slate-700 font-semibold">
           Signup to join WhoGet
