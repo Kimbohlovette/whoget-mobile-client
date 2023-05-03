@@ -6,11 +6,42 @@ import { ScrollView } from 'react-native';
 
 const Profile = () => {
   const [editable, setEditable] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
   return (
     <View className="items-center">
-      <View className="flex-row gap-1 my-4">
-        <Text className="font-semibold text-slate-800">Ebai Vani</Text>
-        <Icon name="md-chevron-down-sharp" color={'slate'} size={18} />
+      <View className="relative justify-center items-center">
+        <Pressable
+          onPress={() => {
+            setShowEmail(state => !state);
+          }}
+          className="flex-row gap-1 my-4">
+          <Text className="font-semibold text-slate-800">Ebai Vani</Text>
+          {showEmail ? (
+            <Icon name="md-chevron-up-sharp" color={'slate'} size={18} />
+          ) : (
+            <Icon name="md-chevron-down-sharp" color={'slate'} size={18} />
+          )}
+        </Pressable>
+        {showEmail && (
+          <View className="absolute top-12 z-50 w-4/5 items-center justify-center py-4 px-8 bg-white rounded-lg">
+            <Text className="text-slate-600 font-semibold mb-4">
+              My account
+            </Text>
+            <View className="divide-y divide-slate-200 w-full">
+              <View className="flex-row items-center justify-center gap-x-4">
+                <View className="justify-center items-center h-12 aspect-square bg-primary-400 rounded-full">
+                  <Text className="text-white font-bold">E</Text>
+                </View>
+                <View className="flex-1">
+                  <Text className="text-slate-500">ebaivani3@gmail.com</Text>
+                </View>
+              </View>
+              <View className="py-4 mt-5">
+                <Text className="text-center">Logout</Text>
+              </View>
+            </View>
+          </View>
+        )}
       </View>
       <View className="relative bg-primary-600 h-20 aspect-square rounded-full justify-center items-center">
         <Text className="font-bold text-white text-xl">E</Text>
