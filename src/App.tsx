@@ -5,14 +5,15 @@ import Signup from './pages/Signup';
 import Styles from './SharedStyles';
 import SignIn from './pages/SignIn';
 import Asks from './pages/Asks';
+import Profile from './pages/Profile';
 
 const App = () => {
   return (
     <>
-      <View
-        className="flex items-center py-5 h-full"
-        style={Styles.appBackgroundColor}>
-        <Asks />
+      <View className="py-5 h-full" style={Styles.appBackgroundColor}>
+        <View className="px-2">
+          <Profile />
+        </View>
       </View>
     </>
   );
