@@ -134,6 +134,7 @@ const Asks = () => {
       </View>
       <View className="absolute bottom-24 right-5 w-fit">
         <Pressable
+          style={{ elevation: 5 }}
           className="py-4 px-5 rounded-full flex-row justify-center items-center gap-x-2 bg-primary-600 shadow-md"
           android_ripple={{ color: '#070716' }}>
           <Icon name="md-add" size={20} color={'white'} />

@@ -119,7 +119,7 @@ const UserAsk = () => {
           <Text> </Text>
         </View>
         <View className="flex-1">
-          <Text className="text-slate-500">
+          <Text className="text-slate-600">
             {textEllipsis(
               'Description sfkdf sdidre fleow foere n iereisk ierjid isodr ofie oher',
               10,
