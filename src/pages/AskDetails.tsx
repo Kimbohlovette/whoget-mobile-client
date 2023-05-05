@@ -5,13 +5,14 @@ import {
   FlatList,
   Image,
   StyleSheet,
-  ScrollView,
   Modal,
+  SafeAreaView,
 } from 'react-native';
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import Styles from '../SharedStyles';
 
 const AskDetails = () => {
   const [showModal, setShowModal] = useState(false);
@@ -22,7 +23,7 @@ const AskDetails = () => {
   };
 
   return (
-    <ScrollView className="relative bg-white min-h-screen px-2 py-4">
+    <SafeAreaView className="relative bg-white min-h-screen px-2 py-4">
       <View className="flex-row justify-between items-center">
         <View className="flex-row gap-x-2 items-center">
           <View className="h-8 w-8 rounded-full border border-slate-200"></View>
@@ -44,7 +45,7 @@ const AskDetails = () => {
         {showMenu && (
           <View
             className="absolute right-2 top-8 z-50 w-3/4 bg-white rounded-lg divide-y divide-slate-200"
-            style={{ elevation: 2 }}>
+            style={Styles.btnShadow}>
             <Pressable
               android_ripple={{ color: 'lightgray' }}
               className="flex-row items-center justify-between py-4 px-5">
@@ -90,14 +91,14 @@ const AskDetails = () => {
       </View>
       <View>
         <View className="flex-row items-center gap-2 py-2">
-          <Text className="text-primary-600">
-            <SIcon name="location-pin" size={18} />
+          <Text className="text-slate-600 text-xl">
+            <SIcon name="location-pin" size={15} />
           </Text>
-          <Text className="text-base text-primary-600">Bamenda</Text>
+          <Text className="text-base text-slate-600">Bamenda</Text>
         </View>
         <View className="flex-row gap-2">
           <Text className="text-slate-400">
-            <Icon name="clock-time-eight-outline" size={18} />
+            <Icon name="clock-time-eight-outline" size={17} />
           </Text>
           <Text className="text-slate-400">May 2, 2023</Text>
         </View>
@@ -117,8 +118,10 @@ const AskDetails = () => {
         onRequestClose={() => {
           setShowModal(!showModal);
         }}>
-        <View className="bg-slate-700/95 backdrop-blur  items-center justify-center h-full">
-          <View className="relative bg-white w-4/5 rounded-lg rounde-lg overflow-hidden">
+        <View className="bg-slate-600/60 backdrop-blur-lg  items-center justify-center h-full">
+          <View
+            style={Styles.btnShadow}
+            className="relative bg-white w-4/5 rounded-lg rounde-lg overflow-hidden">
             {/* the close button */}
             <Pressable
               onPress={() => {
@@ -162,7 +165,7 @@ const AskDetails = () => {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 

@@ -10,6 +10,9 @@ const Styles = StyleSheet.create({
   appBackgroundColor: {
     backgroundColor: '#F8F8F8',
   },
+  btnShadow: {
+    elevation: 1,
+  },
 });
 
 export default Styles;
