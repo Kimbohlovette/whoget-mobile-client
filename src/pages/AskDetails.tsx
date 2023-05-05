@@ -15,13 +15,14 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 
 const AskDetails = () => {
   const [showModal, setShowModal] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   const handleRespond = () => {
     setShowModal(true);
   };
 
   return (
-    <ScrollView className="bg-white min-h-screen px-2 py-4">
+    <ScrollView className="relative bg-white min-h-screen px-2 py-4">
       <View className="flex-row justify-between items-center">
         <View className="flex-row gap-x-2 items-center">
           <View className="h-8 w-8 rounded-full border border-slate-200"></View>
@@ -33,10 +34,33 @@ const AskDetails = () => {
           </View>
         </View>
         <Pressable
+          onPress={() => {
+            setShowMenu(state => !state);
+          }}
           android_ripple={{ color: 'lightgray', borderless: true }}
           className="px-1 py-2 rounded-full">
           <Icon name="dots-vertical" size={20} />
         </Pressable>
+        {showMenu && (
+          <View className="absolute right-2 top-8 z-50 w-3/4 border border-slate-100 bg-white rounded-lg divide-y divide-slate-200">
+            <Pressable
+              android_ripple={{ color: 'lightgray' }}
+              className="flex-row items-center justify-between py-4 px-5">
+              <Text>Share</Text>
+              <Text>
+                <Icon name="share-outline" />
+              </Text>
+            </Pressable>
+            <Pressable
+              android_ripple={{ color: 'lightgray' }}
+              className="flex-row items-center justify-between py-4 px-5">
+              <Text>Report</Text>
+              <Text>
+                <Ionicon name="warning-outline" />
+              </Text>
+            </Pressable>
+          </View>
+        )}
       </View>
       <View className="mt-5">
         <FlatList
@@ -57,7 +81,7 @@ const AskDetails = () => {
         />
       </View>
       <View className="mx-1">
-        <Text className="my-2 text-slate-600 py-2 text-sm">
+        <Text className="my-2 text-slate-600 py-2 text-base">
           Where can I get a glass transparent vessels for flowers, or with
           flowers in it already?
         </Text>
