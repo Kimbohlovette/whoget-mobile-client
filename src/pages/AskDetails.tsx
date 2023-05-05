@@ -42,7 +42,9 @@ const AskDetails = () => {
           <Icon name="dots-vertical" size={20} />
         </Pressable>
         {showMenu && (
-          <View className="absolute right-2 top-8 z-50 w-3/4 border border-slate-100 bg-white rounded-lg divide-y divide-slate-200">
+          <View
+            className="absolute right-2 top-8 z-50 w-3/4 bg-white rounded-lg divide-y divide-slate-200"
+            style={{ elevation: 2 }}>
             <Pressable
               android_ripple={{ color: 'lightgray' }}
               className="flex-row items-center justify-between py-4 px-5">
