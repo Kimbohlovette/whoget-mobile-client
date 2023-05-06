@@ -13,9 +13,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { textEllipsis } from '../shared/ellipseText';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Styles from '../SharedStyles';
+import { useNavigation } from '@react-navigation/native';
+import { useAppSelector } from '../store/hooks';
 
 const Asks = () => {
   const [showFilter, setShowFilter] = useState(false);
+  const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
   const handleShowFilter = () => {
     if (showFilter) {
       setShowFilter(false);
@@ -23,18 +26,17 @@ const Asks = () => {
       setShowFilter(true);
     }
   };
+
+  const navigation = useNavigation();
   return (
-    <SafeAreaView className="relative min-h-screen w-full px-4">
+    <SafeAreaView className="relative min-h-screen w-full px-4 my-2">
       <StatusBar />
       <View className="relative header flex-row items-center gap-3">
         <View className="flex-1 flex-row items-center border border-slate-300 rounded-md px-2">
           <Icon name="search" size={20} />
-          <TextInput className="py-1 px-2" placeholder="Search" />
+          <TextInput className="py-1 px-2 flex-1" placeholder="Search" />
         </View>
-        <Pressable
-          onPress={handleShowFilter}
-          android_ripple={{ color: 'slate' }}
-          className="border border-slate-300 p-2 rounded-md">
+        <Pressable onPress={handleShowFilter}>
           <Icon name="md-funnel-outline" size={18} />
         </Pressable>
         {showFilter && (
@@ -120,8 +122,9 @@ const Asks = () => {
 
       <View className="w-full pt-10">
         <FlatList
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={ListEmptyComponent}
-          data={[1, 2, 3, 5, 5, 5, 5]}
+          data={[1, 2, 3, 5, 5, 5, 5, 1, 2, 3, 5, 5, 5, 5]}
           renderItem={() => {
             return (
               <View className="overflow-hidden rounded-sm">
@@ -134,7 +137,14 @@ const Asks = () => {
       </View>
       <View className="absolute bottom-24 right-5 w-fit">
         <Pressable
-          style={{ elevation: 5 }}
+          onPress={() => {
+            if (isAuthenticated) {
+              navigation.navigate('Create ask');
+            } else {
+              navigation.navigate('Authentication', { type: 'signup' });
+            }
+          }}
+          style={Styles.btnShadow}
           className="py-4 px-5 rounded-full flex-row justify-center items-center gap-x-2 bg-primary-600 shadow-md"
           android_ripple={{ color: '#070716' }}>
           <Icon name="md-add" size={20} color={'white'} />
@@ -158,8 +168,12 @@ const ListEmptyComponent = () => {
   );
 };
 const Ask = () => {
+  const naviation = useNavigation();
   return (
     <Pressable
+      onPress={() => {
+        naviation.navigate('Ask detail');
+      }}
       android_ripple={{ color: 'slate' }}
       className="py-4 px-2 flex-row gap-4">
       <View className="shrink">

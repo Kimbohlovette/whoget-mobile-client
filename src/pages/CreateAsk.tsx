@@ -106,10 +106,10 @@ const CreateAsk = () => {
             }}
             renderItem={({ item }) => {
               return item.path ? (
-                <View className="flex-1 h-24 aspect-square border m-1 max-w-[96px] rounded-lg border-slate-300 items-center justify-center">
+                <View className="flex-1 h-24 aspect-square border m-1 max-w-[96px] rounded-lg border-slate-300">
                   <Image
                     source={{ uri: item.path }}
-                    className="rounded-lg w-fit"
+                    className="rounded-lg w-fit h-full"
                   />
                 </View>
               ) : (
