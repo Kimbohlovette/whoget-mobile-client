@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -12,13 +12,22 @@ import Profile from './pages/Profile';
 import { useAppSelector } from './store/hooks';
 import Styles from './SharedStyles';
 import { Image, View } from 'react-native';
+import UserPreferences from './pages/UserPreferences';
+import Splash from './pages/Splash';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
-  return (
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+  }, []);
+  return !isLoading ? (
     <NavigationContainer>
       {isAuthenticated ? (
         <Tab.Navigator screenOptions={{ tabBarHideOnKeyboard: true }}>
@@ -34,6 +43,8 @@ const App = () => {
         <HomeScreen />
       )}
     </NavigationContainer>
+  ) : (
+    <Splash />
   );
 };
 
@@ -42,6 +53,7 @@ const AuthScreen = () => {
     <Stack.Navigator>
       <Stack.Screen name="Signin" component={SignIn} />
       <Stack.Screen name="Signup" component={Signup} />
+      <Stack.Screen name="Categories" component={UserPreferences} />
     </Stack.Navigator>
   );
 };
