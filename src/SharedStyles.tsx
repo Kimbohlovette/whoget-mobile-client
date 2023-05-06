@@ -13,6 +13,24 @@ const Styles = StyleSheet.create({
   btnShadow: {
     elevation: 1,
   },
+  bgPrimary: {
+    backgroundColor: '#23226e',
+  },
+  bgPrimaryDark: {
+    backgroundColor: '#151442',
+  },
+  bgPrimaryLight: {
+    backgroundColor: '#bdbdd4',
+  },
+  bgSecondary: {
+    backgroundColor: '#ef7215',
+  },
+  bgSecondaryDark: {
+    backgroundColor: '#602e08',
+  },
+  bgSecondaryLight: {
+    backgroundColor: '#fce3d0',
+  },
 });
 
 export default Styles;
