@@ -14,6 +14,8 @@ import FoIcon from 'react-native-vector-icons/Fontisto';
 import DatePicker from 'react-native-date-picker';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import ImagePicker from 'react-native-image-crop-picker';
+import { useNavigation } from '@react-navigation/native';
+import PageHeader from '../components/PageHeader';
 
 const CreateAsk = () => {
   const [date, setDate] = useState(new Date());
@@ -54,11 +56,19 @@ const CreateAsk = () => {
   const [selectedImageList, pushImageToList] = useState<any[]>([
     <AddImageBtn />,
   ]);
+  const navigation = useNavigation();
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <Text className="text-lg font-bold text-slate-600 text-center my-5">
-        Place Your Ask
-      </Text>
+      <PageHeader
+        navigation={navigation}
+        component={
+          <View className="flex-row items-center gap-x-2">
+            <Text className="text-lg font-bold text-slate-600 my-5">
+              Place ask
+            </Text>
+          </View>
+        }
+      />
       <View className="gap-y-4">
         <View>
           <TextInput

@@ -14,69 +14,69 @@ import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import Styles from '../SharedStyles';
 import { useNavigation } from '@react-navigation/native';
+import PageHeader from '../components/PageHeader';
 
 const AskDetails = () => {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const navigation = useNavigation();
-  const handleBackBtn = () => {
-    navigation.goBack();
-  };
   const handleRespond = () => {
     setShowModal(true);
   };
 
   return (
     <SafeAreaView className="relative bg-white min-h-screen px-2 py-4">
-      <View className="flex-row justify-between items-center">
-        <View className="flex-row gap-x-2 items-center">
-          <Pressable
-            onPress={handleBackBtn}
-            android_ripple={{ color: 'lightgray' }}
-            className="flex-row items-center gap-x-2">
-            <Text>
-              <Ionicon name="md-arrow-back" size={18} />
-            </Text>
-            <View className="h-8 w-8 rounded-full border border-slate-200"></View>
-          </Pressable>
-          <View>
-            <Pressable android_ripple={{ color: 'lightgray' }}>
-              <Text className="text-slate-600 text-sm">Eyong Ebai</Text>
-            </Pressable>
-            <Text className="text-xs text-slate-400">Today</Text>
-          </View>
-        </View>
-        <Pressable
-          onPress={() => {
-            setShowMenu(state => !state);
-          }}
-          android_ripple={{ color: 'lightgray', borderless: true }}
-          className="px-1 py-2 rounded-full">
-          <Icon name="dots-vertical" size={20} />
-        </Pressable>
-        {showMenu && (
-          <View
-            className="absolute right-2 top-8 z-50 w-3/4 bg-white rounded-lg divide-y divide-slate-200"
-            style={Styles.btnShadow}>
+      <PageHeader
+        navigation={navigation}
+        component={
+          <View className="flex-1 flex-row justify-between items-center">
+            <View className="flex-row gap-x-2 items-center">
+              <View className="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
+                <Image
+                  source={require('../assets/eypic.png')}
+                  className="h-full w-full"
+                />
+              </View>
+              <View>
+                <Pressable android_ripple={{ color: 'lightgray' }}>
+                  <Text className="text-slate-600 text-sm">Eyong Ebai</Text>
+                </Pressable>
+                <Text className="text-xs text-slate-400">Today</Text>
+              </View>
+            </View>
             <Pressable
-              android_ripple={{ color: 'lightgray' }}
-              className="flex-row items-center justify-between py-4 px-5">
-              <Text>Share</Text>
-              <Text>
-                <Icon name="share-outline" />
-              </Text>
+              onPress={() => {
+                setShowMenu(state => !state);
+              }}
+              android_ripple={{ color: 'lightgray', borderless: true }}
+              className="px-1 py-2 rounded-full">
+              <Icon name="dots-vertical" size={20} />
             </Pressable>
-            <Pressable
-              android_ripple={{ color: 'lightgray' }}
-              className="flex-row items-center justify-between py-4 px-5">
-              <Text>Report</Text>
-              <Text>
-                <Ionicon name="warning-outline" />
-              </Text>
-            </Pressable>
+            {showMenu && (
+              <View
+                className="absolute right-2 top-8 z-50 w-3/4 bg-white rounded-lg divide-y divide-slate-200"
+                style={Styles.btnShadow}>
+                <Pressable
+                  android_ripple={{ color: 'lightgray' }}
+                  className="flex-row items-center justify-between py-4 px-5">
+                  <Text>Share</Text>
+                  <Text>
+                    <Icon name="share-outline" />
+                  </Text>
+                </Pressable>
+                <Pressable
+                  android_ripple={{ color: 'lightgray' }}
+                  className="flex-row items-center justify-between py-4 px-5">
+                  <Text>Report</Text>
+                  <Text>
+                    <Ionicon name="warning-outline" />
+                  </Text>
+                </Pressable>
+              </View>
+            )}
           </View>
-        )}
-      </View>
+        }
+      />
       <View className="mt-5">
         <FlatList
           data={[1, 2, 4, 2]}
@@ -125,7 +125,7 @@ const AskDetails = () => {
       </View>
       <Modal
         animationType="slide"
-        transparent={true}
+        transparent={false}
         visible={showModal}
         onRequestClose={() => {
           setShowModal(!showModal);
