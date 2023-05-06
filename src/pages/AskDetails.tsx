@@ -13,11 +13,15 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import Styles from '../SharedStyles';
+import { useNavigation } from '@react-navigation/native';
 
 const AskDetails = () => {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-
+  const navigation = useNavigation();
+  const handleBackBtn = () => {
+    navigation.goBack();
+  };
   const handleRespond = () => {
     setShowModal(true);
   };
@@ -26,7 +30,15 @@ const AskDetails = () => {
     <SafeAreaView className="relative bg-white min-h-screen px-2 py-4">
       <View className="flex-row justify-between items-center">
         <View className="flex-row gap-x-2 items-center">
-          <View className="h-8 w-8 rounded-full border border-slate-200"></View>
+          <Pressable
+            onPress={handleBackBtn}
+            android_ripple={{ color: 'lightgray' }}
+            className="flex-row items-center gap-x-2">
+            <Text>
+              <Ionicon name="md-arrow-back" size={18} />
+            </Text>
+            <View className="h-8 w-8 rounded-full border border-slate-200"></View>
+          </Pressable>
           <View>
             <Pressable android_ripple={{ color: 'lightgray' }}>
               <Text className="text-slate-600 text-sm">Eyong Ebai</Text>
