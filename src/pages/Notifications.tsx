@@ -1,11 +1,12 @@
-import { View, Text } from 'react-native';
+import { Text, ScrollView } from 'react-native';
 import React from 'react';
+import Styles from '../SharedStyles';
 
 const Notifications = () => {
   return (
-    <View>
+    <ScrollView style={Styles.pageContainer}>
       <Text>Notifications</Text>
-    </View>
+    </ScrollView>
   );
 };
 

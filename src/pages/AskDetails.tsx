@@ -6,7 +6,7 @@ import {
   Image,
   StyleSheet,
   Modal,
-  SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -25,7 +25,7 @@ const AskDetails = () => {
   };
 
   return (
-    <SafeAreaView className="relative bg-white min-h-screen px-2 py-4">
+    <ScrollView className="px-4 relative bg-white min-h-screen py-4">
       <PageHeader
         navigation={navigation}
         component={
@@ -177,7 +177,7 @@ const AskDetails = () => {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 

@@ -58,7 +58,9 @@ const CreateAsk = () => {
   ]);
   const navigation = useNavigation();
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={Styles.pageContainer}>
       <PageHeader
         navigation={navigation}
         component={

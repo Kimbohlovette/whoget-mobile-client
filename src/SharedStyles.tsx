@@ -31,6 +31,9 @@ const Styles = StyleSheet.create({
   bgSecondaryLight: {
     backgroundColor: '#fce3d0',
   },
+  pageContainer: {
+    paddingHorizontal: 16,
+  },
 });
 
 export default Styles;

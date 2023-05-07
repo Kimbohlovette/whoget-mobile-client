@@ -1,9 +1,10 @@
-import { View, Text, Pressable, Image, SafeAreaView } from 'react-native';
+import { View, Text, Pressable, Image, ScrollView } from 'react-native';
 import React from 'react';
+import Styles from '../SharedStyles';
 
 const Signup = () => {
   return (
-    <SafeAreaView className="w-full">
+    <ScrollView style={Styles.pageContainer} className="w-full">
       <View className="justify-center items-center">
         <Image
           source={require('../assets/whoget-primary.png')}
@@ -54,7 +55,7 @@ const Signup = () => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 

@@ -1,10 +1,11 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, ScrollView, Text, Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Styles from '../SharedStyles';
 
 const UserPreferences = () => {
   return (
-    <View className="relative w-full">
+    <ScrollView style={Styles.pageContainer} className="relative w-full">
       <Pressable
         android_ripple={{ color: 'slate', borderless: true }}
         className="absolute right-4 top-2 rounded-md overflow-hidden">
@@ -54,7 +55,7 @@ const UserPreferences = () => {
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

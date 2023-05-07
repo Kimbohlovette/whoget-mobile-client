@@ -29,7 +29,7 @@ const Asks = () => {
 
   return (
     <>
-      <View className="min-h-screen w-full my-2">
+      <View style={Styles.pageContainer} className="min-h-screen w-full my-2">
         <StatusBar />
         <View className="relative header flex-row items-center gap-3">
           <View className="flex-1 flex-row items-center border border-slate-300 rounded-md px-2">
@@ -133,6 +133,9 @@ const Asks = () => {
               );
             }}
             ItemSeparatorComponent={ListSeparator}
+            onEndReached={() => {
+              // Implement the pagination fetching here
+            }}
           />
         </View>
       </View>
