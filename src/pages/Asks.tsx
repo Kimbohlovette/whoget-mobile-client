@@ -29,9 +29,9 @@ const Asks = () => {
 
   return (
     <>
-      <View style={Styles.pageContainer} className="min-h-screen w-full my-2">
+      <View style={Styles.pageContainer} className="min-h-screen w-full">
         <StatusBar />
-        <View className="relative header flex-row items-center gap-3">
+        <View className="relative header flex-row items-center gap-2 border-b border-slate-200 py-4">
           <View className="flex-1 flex-row items-center border border-slate-300 rounded-md px-2">
             <Icon name="search" size={20} />
             <TextInput className="py-1 px-2 flex-1" placeholder="Search" />
