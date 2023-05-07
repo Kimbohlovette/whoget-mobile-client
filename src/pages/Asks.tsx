@@ -174,19 +174,25 @@ const ListEmptyComponent = () => {
   );
 };
 const Ask = () => {
-  const naviation = useNavigation();
+  const navigation = useNavigation();
   return (
     <Pressable
       onPress={() => {
-        naviation.navigate('Ask detail');
+        navigation.navigate('Ask detail');
       }}
       android_ripple={{ color: 'slate' }}
       className="py-4 px-2 flex-row gap-4">
       <View className="shrink">
-        <View>
-          <Text className="text-slate-400 font-extralight py-1">
-            Kimboh Lovette, Today
-          </Text>
+        <View className="flex-row items-center">
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Profile');
+            }}>
+            <Text className="text-slate-500 font-extralight">
+              Kimboh Lovette
+            </Text>
+          </Pressable>
+          <Text className="text-slate-400 font-extralight py-1">, Today</Text>
         </View>
         <View>
           <Text className="text-slate-600 text-sm">

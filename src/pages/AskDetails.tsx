@@ -44,7 +44,11 @@ const AskDetails = () => {
                 />
               </View>
               <View>
-                <Pressable android_ripple={{ color: 'lightgray' }}>
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate('Profile');
+                  }}
+                  android_ripple={{ color: 'lightgray' }}>
                   <Text className="text-slate-600 text-sm">Eyong Ebai</Text>
                 </Pressable>
                 <Text className="text-xs text-slate-400">Today</Text>
@@ -60,7 +64,7 @@ const AskDetails = () => {
             </Pressable>
             {showMenu && (
               <View
-                className="absolute right-2 top-8 z-50 w-3/4 bg-white rounded-lg divide-y divide-slate-200"
+                className="absolute right-0 top-0 z-50 w-3/4 bg-white rounded-sm divide-y divide-slate-200 px-4"
                 style={Styles.btnShadow}>
                 <Pressable
                   android_ripple={{ color: 'lightgray' }}
