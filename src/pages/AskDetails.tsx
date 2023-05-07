@@ -15,13 +15,19 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import Styles from '../SharedStyles';
 import { useNavigation } from '@react-navigation/native';
 import PageHeader from '../components/PageHeader';
+import { useAppSelector } from '../store/hooks';
 
 const AskDetails = () => {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const navigation = useNavigation();
+  const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
   const handleRespond = () => {
-    setShowModal(true);
+    if (isAuthenticated) {
+      setShowModal(true);
+    } else {
+      navigation.navigate('Authentication');
+    }
   };
 
   return (
