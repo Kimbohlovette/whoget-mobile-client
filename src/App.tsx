@@ -14,6 +14,7 @@ import Styles from './SharedStyles';
 import { Image, View } from 'react-native';
 import UserPreferences from './pages/UserPreferences';
 import Splash from './pages/Splash';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -30,14 +31,63 @@ const App = () => {
   return !isLoading ? (
     <NavigationContainer>
       {isAuthenticated ? (
-        <Tab.Navigator screenOptions={{ tabBarHideOnKeyboard: true }}>
+        <Tab.Navigator
+          screenOptions={{
+            tabBarHideOnKeyboard: true,
+            tabBarActiveTintColor: Styles.bgSecondary.backgroundColor,
+          }}>
           <Tab.Screen
             name="Home"
             component={HomeScreen}
-            options={{ headerShown: false }}
+            options={{
+              headerShown: false,
+              tabBarIcon: props => {
+                return (
+                  <View {...props}>
+                    <Ionicon
+                      name="md-home-outline"
+                      size={props.size}
+                      color={props.color}
+                    />
+                  </View>
+                );
+              },
+            }}
           />
-          <Tab.Screen name="Notifications" component={Notifications} />
-          <Tab.Screen name="Profile" component={Profile} />
+          <Tab.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              tabBarIcon: props => {
+                return (
+                  <View {...props}>
+                    <Ionicon
+                      name="person-outline"
+                      size={props.size}
+                      color={props.color}
+                    />
+                  </View>
+                );
+              },
+            }}
+          />
+          <Tab.Screen
+            name="Notifications"
+            component={Notifications}
+            options={{
+              tabBarIcon: props => {
+                return (
+                  <View {...props}>
+                    <Ionicon
+                      name="notifications-outline"
+                      size={props.size}
+                      color={props.color}
+                    />
+                  </View>
+                );
+              },
+            }}
+          />
         </Tab.Navigator>
       ) : (
         <HomeScreen />
