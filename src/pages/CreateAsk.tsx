@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   FlatList,
+  Modal,
 } from 'react-native';
 import React, { useState } from 'react';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
@@ -13,6 +14,7 @@ import Styles from '../SharedStyles';
 import FoIcon from 'react-native-vector-icons/Fontisto';
 import DatePicker from 'react-native-date-picker';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useNavigation } from '@react-navigation/native';
 import PageHeader from '../components/PageHeader';
@@ -20,31 +22,53 @@ import PageHeader from '../components/PageHeader';
 const CreateAsk = () => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-
-  const handleImagePicker = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: false,
-    }).then(image => {
-      console.log(image);
-      pushImageToList((state: any) => [
-        {
-          fileName: image.filename,
-          path: image.path,
-          height: image.height,
-          width: image.width,
-          size: image.size,
-        },
-        ...state,
-      ]);
-    });
+  const [showImagePickerModal, setShowImagePickerModal] = useState(true);
+  const handleImagePicker = (mode: 'camera' | 'gallery') => {
+    if (mode === 'camera') {
+      ImagePicker.openCamera({
+        width: 300,
+        height: 400,
+        cropping: false,
+      }).then(image => {
+        console.log(image);
+        pushImageToList((state: any) => [
+          {
+            fileName: image.filename,
+            path: image.path,
+            height: image.height,
+            width: image.width,
+            size: image.size,
+          },
+          ...state,
+        ]);
+      });
+    } else {
+      ImagePicker.openPicker({
+        width: 300,
+        height: 400,
+        cropping: false,
+      }).then(image => {
+        console.log(image);
+        pushImageToList((state: any) => [
+          {
+            fileName: image.filename,
+            path: image.path,
+            height: image.height,
+            width: image.width,
+            size: image.size,
+          },
+          ...state,
+        ]);
+      });
+    }
   };
 
   const AddImageBtn = () => {
     return (
       <Pressable
-        onPress={handleImagePicker}
+        onPress={() => {
+          setShowImagePickerModal(true);
+        }}
         android_ripple={{ color: 'lightgray' }}
         className="flex-1 border h-24 max-w-[96px] justify-center items-center gap-y-2 rounded-lg border-slate-300 aspect-square my-1 p-2">
         <Text className="text-center text-xs text-slate-600">Add image</Text>
@@ -145,6 +169,52 @@ const CreateAsk = () => {
           <Text className="text-white text-center">Place Ask</Text>
         </Pressable>
       </View>
+
+      {/* Image selection mode modal */}
+      <Modal visible={showImagePickerModal} transparent>
+        <Pressable
+          onPress={() => {
+            setShowImagePickerModal(false);
+          }}
+          className="h-full flex-1 justify-end bg-primary-800/60">
+          <View className="rounded-t-3xl overflow-hidden bg-primary-50 divide-y divide-slate-300">
+            <Pressable
+              onPress={() => {
+                handleImagePicker('camera');
+                setShowImagePickerModal(false);
+              }}
+              android_ripple={{
+                color: Styles.bgPrimaryLight.backgroundColor,
+              }}
+              className="px-8 pb-4 pt-12 flex-row justify-between">
+              <Text className="text-lg text-primary-500 font-medium">
+                Camera
+              </Text>
+              <Text className="text-primary-500">
+                <Ionicon name="camera-outline" size={25} />
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                handleImagePicker('gallery');
+                setShowImagePickerModal(false);
+              }}
+              android_ripple={{
+                color: Styles.bgPrimaryLight.backgroundColor,
+              }}
+              className="px-8 pt-4 pb-12 flex-row justify-between">
+              <Text className="text-lg text-primary-500 font-medium">
+                Gallery
+              </Text>
+              <Text className="text-primary-500">
+                <Ionicon name="images-outline" size={25} />
+              </Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
+
+      {/* Date picker component triggering code */}
       <DatePicker
         modal
         open={open}
