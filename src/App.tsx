@@ -126,6 +126,7 @@ const HomeScreen = () => {
         />
         <Stack.Screen name="Ask detail" component={AskDetails} />
         <Stack.Screen name="Authentication" component={AuthScreen} />
+        <Stack.Screen name="Profile" component={Profile} />
       </Stack.Group>
     </Stack.Navigator>
   );

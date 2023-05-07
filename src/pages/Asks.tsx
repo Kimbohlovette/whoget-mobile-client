@@ -40,7 +40,9 @@ const Asks = () => {
             <Icon name="md-funnel-outline" size={18} />
           </Pressable>
           {showFilter && (
-            <View className="absolute z-50 left-0 top-0 right-0 shadow-lg flex-1 justify-center">
+            <View
+              style={Styles.btnShadow}
+              className="absolute z-50 left-0 top-0 right-0 shadow-lg flex-1 justify-center">
               <View className="w-full px-4 py-8 rounded-md bg-white">
                 <View className="gap-y-4">
                   <View>
@@ -120,7 +122,7 @@ const Asks = () => {
 
         {/* Asks list section */}
 
-        <View className="w-full pt-10">
+        <View className="w-full">
           <FlatList
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={ListEmptyComponent}

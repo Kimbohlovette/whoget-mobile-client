@@ -1,6 +1,7 @@
-import { View, Text, Pressable, TextInput } from 'react-native';
+import { View, Text, Pressable, TextInput, Image } from 'react-native';
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { textEllipsis } from '../shared/ellipseText';
 import { ScrollView } from 'react-native';
 import Styles from '../SharedStyles';
@@ -25,32 +26,45 @@ const Profile = () => {
             )}
           </Pressable>
           {showEmail && (
-            <View className="absolute top-12 z-50 w-4/5 items-center justify-center py-4 px-8 bg-white rounded-lg">
+            <View
+              style={Styles.btnShadow}
+              className="absolute top-12 z-50 w-4/5 items-start justify-center py-4 px-8 bg-white rounded-sm">
               <Text className="text-slate-600 font-semibold mb-4">
                 My account
               </Text>
               <View className="divide-y divide-slate-200 w-full">
-                <View className="flex-row items-center justify-center gap-x-4">
-                  <View className="justify-center items-center h-12 aspect-square bg-primary-400 rounded-full">
-                    <Text className="text-white font-bold">E</Text>
+                <View className="flex-row items-center justify-start gap-x-4">
+                  <View className="justify-center items-center h-7 aspect-square bg-primary-400 rounded-full">
+                    <Image
+                      source={require('../assets/eypic.png')}
+                      className="w-full h-full rounded-full"
+                    />
                   </View>
                   <View className="flex-1">
                     <Text className="text-slate-500">ebaivani3@gmail.com</Text>
                   </View>
                 </View>
-                <View className="py-4 mt-5">
-                  <Text className="text-center">Logout</Text>
+                <View className="flex-row  gap-x-4 py-4 mt-5">
+                  <Text>
+                    <AntDesign name="logout" size={25} />
+                  </Text>
+                  <Text className="">Logout</Text>
                 </View>
               </View>
             </View>
           )}
         </View>
+
         <View className="relative bg-primary-600 h-20 aspect-square rounded-full justify-center items-center">
-          <Text className="font-bold text-white text-xl">E</Text>
+          <Image
+            source={require('../assets/eypic.png')}
+            className="w-full h-full rounded-full"
+          />
           <Pressable className="absolute bottom-0 left-2/3 bg-secondary-500 rounded-full border-2 border-secondary-500 shadow">
             <Icon name="md-add" size={16} color="white" />
           </Pressable>
         </View>
+
         <View className="my-4 w-3/4">
           <View>
             <Text className="text-center text-slate-400">Phone number</Text>
@@ -60,6 +74,7 @@ const Profile = () => {
               className="text-slate-600 text-center font-medium border border-slate-300 py-1 rounded-lg w-full px-8 my-2"
             />
           </View>
+
           <View>
             <Text className="text-center text-slate-400">Location</Text>
             <TextInput
@@ -68,6 +83,7 @@ const Profile = () => {
               className="text-slate-600 text-center font-medium border border-slate-300 py-1 rounded-lg w-full px-8 my-2"
             />
           </View>
+
           <View className="flex-row justify-center items-center gap-2 my-2">
             <Pressable
               onPress={() => {
@@ -100,14 +116,14 @@ const Profile = () => {
               <Text className="text-[10px] text-white">2</Text>
             </View>
           </View>
-          <ScrollView className="w-full gap-y-2 divide-y divide-slate-200">
+          <View className="w-full gap-y-2 divide-y divide-slate-200">
             <View className="">
               <UserAsk />
             </View>
             <View>
               <UserAsk />
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
     </ScrollView>
