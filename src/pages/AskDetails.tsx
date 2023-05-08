@@ -166,7 +166,7 @@ const AskDetails = ({ navigation }: Props) => {
                 className="border-t border-slate-200 py-4 px-5 flex-row items-center justify-between">
                 <Text className="text-slate-600">Whatsapp</Text>
                 <Text className="text-slate-600">
-                  <Icon name="whatsapp" size={18} />
+                  <Icon name="whatsapp" size={24} />
                 </Text>
               </Pressable>
               <Pressable

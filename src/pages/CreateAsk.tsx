@@ -24,6 +24,8 @@ const CreateAsk = () => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [showImagePickerModal, setShowImagePickerModal] = useState(false);
+  const navigation = useNavigation();
+
   const handleImagePicker = (mode: 'camera' | 'gallery') => {
     if (mode === 'camera') {
       ImagePicker.openCamera({
@@ -39,6 +41,7 @@ const CreateAsk = () => {
             height: image.height,
             width: image.width,
             size: image.size,
+            id: Date.now().toString(),
           },
           ...state,
         ]);
@@ -57,6 +60,7 @@ const CreateAsk = () => {
             height: image.height,
             width: image.width,
             size: image.size,
+            id: Date.now().toString(),
           },
           ...state,
         ]);
@@ -81,7 +85,7 @@ const CreateAsk = () => {
   const [selectedImageList, pushImageToList] = useState<any[]>([
     <AddImageBtn />,
   ]);
-  const navigation = useNavigation();
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -143,7 +147,23 @@ const CreateAsk = () => {
             }}
             renderItem={({ item }) => {
               return item.path ? (
-                <View className="flex-1 h-24 aspect-square border m-1 max-w-[96px] rounded-lg border-slate-300">
+                <View className="relative flex-1 h-24 aspect-square border m-1 max-w-[96px] rounded-lg border-slate-300">
+                  <View className="absolute z-50 top-1 left-1 rounded-lg overflow-hidden">
+                    <Pressable
+                      onPress={() => {
+                        pushImageToList(images => {
+                          return images.filter(image => image.id !== item.id);
+                        });
+                      }}
+                      android_ripple={{
+                        color: Styles.bgSecondaryLight.backgroundColor,
+                      }}>
+                      <Text className="text-secondary-500 p-1">
+                        <Ionicon name="ios-close-outline" size={14} />
+                      </Text>
+                    </Pressable>
+                  </View>
+
                   <Image
                     source={{ uri: item.path }}
                     className="rounded-lg w-fit h-full"
