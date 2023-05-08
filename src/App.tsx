@@ -15,9 +15,14 @@ import { Image, View } from 'react-native';
 import UserPreferences from './pages/UserPreferences';
 import Splash from './pages/Splash';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import {
+  AuthStackParamList,
+  HomeStackParamList,
+  RootTabParamList,
+} from '../types';
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator<HomeStackParamList>();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -97,14 +102,14 @@ const App = () => {
     <Splash />
   );
 };
-
+const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const AuthScreen = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Signin" component={SignIn} />
-      <Stack.Screen name="Signup" component={Signup} />
-      <Stack.Screen name="Categories" component={UserPreferences} />
-    </Stack.Navigator>
+    <AuthStack.Navigator>
+      <AuthStack.Screen name="Signin" component={SignIn} />
+      <AuthStack.Screen name="Signup" component={Signup} />
+      <AuthStack.Screen name="Categories" component={UserPreferences} />
+    </AuthStack.Navigator>
   );
 };
 
@@ -124,7 +129,11 @@ const HomeScreen = () => {
           component={CreateAsk}
           options={{ headerTitle: 'Create ask' }}
         />
-        <Stack.Screen name="Ask detail" component={AskDetails} />
+        <Stack.Screen
+          name="AskDetail"
+          component={AskDetails}
+          options={{ title: 'Ask detail' }}
+        />
         <Stack.Screen name="Authentication" component={AuthScreen} />
         <Stack.Screen name="Profile" component={Profile} />
       </Stack.Group>

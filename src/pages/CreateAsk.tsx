@@ -18,11 +18,12 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useNavigation } from '@react-navigation/native';
 import PageHeader from '../components/PageHeader';
+import { toastAndroid } from '../shared/toastAndroid';
 
 const CreateAsk = () => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const [showImagePickerModal, setShowImagePickerModal] = useState(true);
+  const [showImagePickerModal, setShowImagePickerModal] = useState(false);
   const handleImagePicker = (mode: 'camera' | 'gallery') => {
     if (mode === 'camera') {
       ImagePicker.openCamera({
@@ -159,11 +160,28 @@ const CreateAsk = () => {
       </View>
       <View className="flex-row justify-between mt-8">
         <Pressable
+          onPress={() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            }
+          }}
           android_ripple={{ color: 'lightgray' }}
           className="w-1/3 py-2 px-5 rounded-lg border border-primary-500">
           <Text className="text-center text-slate-600">Cancel</Text>
         </Pressable>
         <Pressable
+          onPress={() => {
+            toastAndroid(
+              'Ask successfully created. It will now show on the asks list',
+              'short',
+              'center',
+            );
+            setTimeout(() => {
+              if (navigation.canGoBack()) {
+                navigation.goBack();
+              }
+            }, 1000);
+          }}
           android_ripple={{ color: 'lightgray' }}
           className="w-1/3 py-2 px-5 rounded-lg border border-primary-500 bg-primary-500">
           <Text className="text-white text-center">Place Ask</Text>
@@ -171,6 +189,7 @@ const CreateAsk = () => {
       </View>
 
       {/* Image selection mode modal */}
+
       <Modal visible={showImagePickerModal} transparent>
         <Pressable
           onPress={() => {
@@ -215,6 +234,7 @@ const CreateAsk = () => {
       </Modal>
 
       {/* Date picker component triggering code */}
+
       <DatePicker
         modal
         open={open}

@@ -13,14 +13,16 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import Styles from '../SharedStyles';
-import { useNavigation } from '@react-navigation/native';
 import PageHeader from '../components/PageHeader';
 import { useAppSelector } from '../store/hooks';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { HomeStackParamList } from '../../types';
 
-const AskDetails = () => {
+type Props = NativeStackScreenProps<HomeStackParamList, 'AskDetail'>;
+const AskDetails = ({ navigation }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const navigation = useNavigation();
+  //const navigation = useNavigation<ProfileScreenNavigationProp>();
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
   const handleRespond = () => {
     if (isAuthenticated) {

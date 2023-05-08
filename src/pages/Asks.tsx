@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  Modal,
   Pressable,
   StatusBar,
   Text,
@@ -12,13 +13,18 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { textEllipsis } from '../shared/ellipseText';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Styles from '../SharedStyles';
-import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '../store/hooks';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { HomeStackParamList } from '../../types';
 
-const Asks = () => {
+type Props = NativeStackScreenProps<
+  HomeStackParamList,
+  'Profile' | 'AskDetail' | 'CreateAsk' | 'Asks' | 'Authentication'
+>;
+const Asks = ({ navigation, route }: Props) => {
   const [showFilter, setShowFilter] = useState(false);
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
-  const navigation = useNavigation();
+  //const navigation = useNavigation();
   const handleShowFilter = () => {
     if (showFilter) {
       setShowFilter(false);
@@ -39,86 +45,93 @@ const Asks = () => {
           <Pressable onPress={handleShowFilter}>
             <Icon name="md-funnel-outline" size={18} />
           </Pressable>
-          {showFilter && (
-            <View
-              style={Styles.btnShadow}
-              className="absolute z-50 left-0 top-0 right-0 shadow-lg flex-1 justify-center">
-              <View className="w-full px-4 py-8 rounded-md bg-white">
-                <View className="gap-y-4">
-                  <View>
-                    <AutocompleteDropdown
-                      clearOnFocus
-                      inputContainerStyle={Styles.InputContainer}
-                      showClear={false}
-                      initialValue={{ id: '0', title: 'Category' }}
-                      dataSet={[
-                        { id: '0', title: 'Category' },
-                        { id: '1', title: 'Mobile Phone' },
-                        { id: '2', title: 'Electronics' },
-                        { id: '3', title: 'Health Care' },
-                        { id: '4', title: 'Agriculture' },
-                      ]}
-                      textInputProps={{ placeholder: 'search categories' }}
-                    />
-                  </View>
-                  <View>
-                    <AutocompleteDropdown
-                      clearOnFocus
-                      inputContainerStyle={Styles.InputContainer}
-                      showClear={false}
-                      initialValue={{ id: '0', title: 'Location' }}
-                      dataSet={[
-                        { id: '0', title: 'Location' },
-                        { id: '1', title: 'Buea' },
-                        { id: '2', title: 'Limbe' },
-                        { id: '3', title: 'Yaounde' },
-                        { id: '4', title: 'Douala' },
-                      ]}
-                    />
-                  </View>
-                  <View>
-                    <AutocompleteDropdown
-                      clearOnFocus
-                      inputContainerStyle={Styles.InputContainer}
-                      showClear={false}
-                      initialValue={{ id: '0', title: 'Expiration date' }}
-                      dataSet={[
-                        { id: '0', title: 'Expiration date' },
-                        { id: '1', title: 'Mobile Phone' },
-                        { id: '2', title: 'Electronics' },
-                        { id: '3', title: 'Health Care' },
-                        { id: '4', title: 'Agriculture' },
-                      ]}
-                      textInputProps={{ placeholder: 'search categories' }}
-                    />
-                  </View>
+        </View>
+
+        {/* Filter modal */}
+        <Modal visible={showFilter} transparent>
+          <Pressable
+            onPress={() => {
+              setShowFilter(false);
+            }}
+            className="w-full h-full items-center bg-primary-800/60 relative z-20">
+            <View className="w-full px-4 py-8 rounded-md bg-white relative z-50">
+              <Text className="text-center py-2 text-lg text-slate-600">
+                Filter Asks
+              </Text>
+              <View className="gap-y-4">
+                <View>
+                  <AutocompleteDropdown
+                    clearOnFocus
+                    inputContainerStyle={Styles.InputContainer}
+                    showClear={false}
+                    initialValue={{ id: '0', title: 'Category' }}
+                    dataSet={[
+                      { id: '0', title: 'Category' },
+                      { id: '1', title: 'Mobile Phone' },
+                      { id: '2', title: 'Electronics' },
+                      { id: '3', title: 'Health Care' },
+                      { id: '4', title: 'Agriculture' },
+                    ]}
+                    textInputProps={{ placeholder: 'search categories' }}
+                  />
                 </View>
-                <View className="shrink flex-row justify-between mt-8">
-                  <Pressable
-                    onPress={() => {
-                      setShowFilter(false);
-                    }}
-                    className="rounded-md border border-primary-500 focus:shadow-sm"
-                    android_ripple={{ color: 'lightgray' }}>
-                    <Text className="text-center text-primary-600 font-medium py-2 px-5">
-                      Cancel
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    onPress={() => {
-                      setShowFilter(false);
-                    }}
-                    className="rounded-md border bg-primary-600 border-primary-500 focus:shadow-sm"
-                    android_ripple={{ color: 'lightgray' }}>
-                    <Text className="text-center text-white font-medium py-2 px-5">
-                      Apply filter
-                    </Text>
-                  </Pressable>
+                <View>
+                  <AutocompleteDropdown
+                    clearOnFocus
+                    inputContainerStyle={Styles.InputContainer}
+                    showClear={false}
+                    initialValue={{ id: '0', title: 'Location' }}
+                    dataSet={[
+                      { id: '0', title: 'Location' },
+                      { id: '1', title: 'Buea' },
+                      { id: '2', title: 'Limbe' },
+                      { id: '3', title: 'Yaounde' },
+                      { id: '4', title: 'Douala' },
+                    ]}
+                  />
+                </View>
+                <View>
+                  <AutocompleteDropdown
+                    clearOnFocus
+                    inputContainerStyle={Styles.InputContainer}
+                    showClear={false}
+                    initialValue={{ id: '0', title: 'Expiration date' }}
+                    dataSet={[
+                      { id: '0', title: 'Expiration date' },
+                      { id: '1', title: 'Mobile Phone' },
+                      { id: '2', title: 'Electronics' },
+                      { id: '3', title: 'Health Care' },
+                      { id: '4', title: 'Agriculture' },
+                    ]}
+                    textInputProps={{ placeholder: 'search categories' }}
+                  />
                 </View>
               </View>
+              <View className="shrink flex-row justify-between mt-8">
+                <Pressable
+                  onPress={() => {
+                    setShowFilter(false);
+                  }}
+                  className="rounded-md border border-primary-500 focus:shadow-sm"
+                  android_ripple={{ color: 'lightgray' }}>
+                  <Text className="text-center text-primary-600 font-medium py-2 px-5">
+                    Cancel
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    setShowFilter(false);
+                  }}
+                  className="rounded-md border bg-primary-600 border-primary-500 focus:shadow-sm"
+                  android_ripple={{ color: 'lightgray' }}>
+                  <Text className="text-center text-white font-medium py-2 px-5">
+                    Apply filter
+                  </Text>
+                </Pressable>
+              </View>
             </View>
-          )}
-        </View>
+          </Pressable>
+        </Modal>
 
         {/* Asks list section */}
 
@@ -130,7 +143,7 @@ const Asks = () => {
             renderItem={() => {
               return (
                 <View className="overflow-hidden rounded-sm">
-                  <Ask />
+                  <Ask navigation={navigation} route={route} />
                 </View>
               );
             }}
@@ -173,15 +186,15 @@ const ListEmptyComponent = () => {
     </View>
   );
 };
-const Ask = () => {
-  const navigation = useNavigation();
+const Ask = ({ navigation }: Props) => {
+  // const navigation = useNavigation();
   return (
     <Pressable
       onPress={() => {
-        navigation.navigate('Ask detail');
+        navigation.navigate('AskDetail');
       }}
       android_ripple={{ color: 'slate' }}
-      className="py-4 px-2 flex-row gap-4">
+      className="z-0 py-4 px-2 flex-row gap-4">
       <View className="shrink">
         <View className="flex-row items-center">
           <Pressable
