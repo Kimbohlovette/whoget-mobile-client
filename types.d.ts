@@ -7,7 +7,7 @@ export type HomeStackParamList = {
   CreateAsk: undefined;
   Authentication?: CompositeNavigationProp<AuthStackParamList>;
   UserDetails: { userId: string };
-  AskDetail: { askId: string };
+  AskDetails: { askId: string };
 };
 
 export type RootTabParamList = {

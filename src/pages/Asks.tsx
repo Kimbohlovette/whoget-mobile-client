@@ -23,7 +23,7 @@ const Asks = ({ navigation, route }: Props) => {
   const [asks, setAsks] = useState([]);
 
   useEffect(() => {
-    fetchPaginatedAks().then(data => {
+    fetchPaginatedAks(1, 20).then(data => {
       setAsks(data);
     });
   }, []);
@@ -195,7 +195,7 @@ const Ask = (props: { ask: any; navigation: any; route: any }) => {
   return (
     <Pressable
       onPress={() => {
-        props.navigation.navigate('AskDetail');
+        props.navigation.navigate('AskDetails', { askId: props.ask.id });
       }}
       android_ripple={{ color: 'slate' }}
       className="z-0 py-4 px-2 flex-row gap-4">

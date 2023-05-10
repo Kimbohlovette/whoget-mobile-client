@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  Pressable,
-  TextInput,
-  Image,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, Pressable, Image, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -61,6 +54,7 @@ const UserDetails = ({ navigation, route }: Props) => {
       .finally(() => {
         setLoadingUserAsksStatus('idle');
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return !userInfo ? (
     <View className="justify-center items-center h-full">

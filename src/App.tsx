@@ -34,7 +34,7 @@ const App = () => {
         <Tab.Navigator
           screenOptions={{
             tabBarHideOnKeyboard: true,
-            tabBarActiveTintColor: Styles.bgSecondary.backgroundColor,
+            tabBarActiveTintColor: Styles.bgPrimary.backgroundColor,
           }}>
           <Tab.Screen
             name="Home"
@@ -127,7 +127,7 @@ const HomeScreen = () => {
           options={{ headerTitle: 'Create ask' }}
         />
         <Stack.Screen
-          name="AskDetail"
+          name="AskDetails"
           component={AskDetails}
           options={{ title: 'Ask detail' }}
         />
