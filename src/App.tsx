@@ -21,7 +21,11 @@ import {
   RootTabParamList,
 } from '../types';
 import { fetchUserById } from './store/slices/userSlice';
-import { fetchPaginatedAks } from './apiService/fetchingFunctions';
+import {
+  fetchAsksByCategoryId,
+  fetchAsksByUserId,
+  fetchPaginatedAks,
+} from './apiService/fetchingFunctions';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -35,10 +39,12 @@ const App = () => {
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
   const loadStatus = useAppSelector(state => state.user.status);
   useEffect(() => {
-    const response = fetchPaginatedAks();
-    response.then(asks => {
-      console.log(asks);
-    });
+    const response = fetchAsksByCategoryId('64383abb4413b4561f3b9d33');
+    response
+      .then(asks => {
+        console.log(asks);
+      })
+      .catch(error => console.log(error));
   }, []);
   return loadStatus !== 'loading' ? (
     <NavigationContainer>
@@ -70,6 +76,7 @@ const App = () => {
             name="Profile"
             component={Profile}
             options={{
+              header: NavHeader,
               tabBarIcon: props => {
                 return (
                   <View {...props}>
@@ -87,6 +94,7 @@ const App = () => {
             name="Notifications"
             component={Notifications}
             options={{
+              header: NavHeader,
               tabBarIcon: props => {
                 return (
                   <View {...props}>

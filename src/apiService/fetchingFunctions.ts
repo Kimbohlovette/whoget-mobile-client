@@ -49,4 +49,30 @@ export const fetchPaginatedAks = async (page?: number, limit?: number) => {
   }
 };
 
-export const fetchAsksByUserId = async (userId: string) => {};
+export const fetchAsksByUserId = async (userId: string) => {
+  const response = await fetch(`${BASE_URL}users/${userId}/asks`);
+  const resData = await response.json();
+  if (resData.numOfAsks) {
+    const { asks, numOfAsks } = resData;
+    return {
+      asks,
+      numOfAsks,
+    };
+  } else {
+    console.log(resData.message);
+  }
+};
+
+export const fetchAsksByCategoryId = async (catId: string) => {
+  const response = await fetch(`${BASE_URL}categories/${catId}/asks`);
+  const resData = await response.json();
+  if (resData.numOfAsks) {
+    const { asks, numOfAsks } = resData;
+    console.log('asks: ', asks);
+    console.log('length: ', numOfAsks);
+    return {
+      asks,
+      numOfAsks,
+    };
+  }
+};
