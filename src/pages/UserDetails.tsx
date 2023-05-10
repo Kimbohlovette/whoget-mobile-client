@@ -1,4 +1,11 @@
-import { View, Text, Pressable, TextInput, Image } from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  TextInput,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -6,21 +13,27 @@ import { textEllipsis } from '../shared/ellipseText';
 import { ScrollView } from 'react-native';
 import Styles from '../SharedStyles';
 import { Props } from '../../types';
-import { fetchOneUserById } from '../apiService/fetchingFunctions';
+import {
+  fetchAsksByUserId,
+  fetchOneUserById,
+} from '../apiService/fetchingFunctions';
 
 const UserDetails = ({ navigation, route }: Props) => {
   const userId = route.params ? route.params.userId : '';
   const [userInfo, setUserInfo] = useState<any>(null);
+  const [userAsks, setUserAsks] = useState<any>([]);
+  const [numOfAsks, setnumOfAsks] = useState<number>(0);
   const [loadingDataStatus, setLoadingDataStatus] = useState<
     'idle' | 'loading' | 'failed' | 'successful'
   >('idle');
+  const [loadingUserAsksStatus, setLoadingUserAsksStatus] = useState<
+    'idle' | 'loading' | 'failed' | 'successful'
+  >('idle');
   useEffect(() => {
-    console.log('User ID from route: ', userId);
     setLoadingDataStatus('loading');
     fetchOneUserById(userId)
       .then(data => {
         setUserInfo(data);
-        console.log('fetched data', data);
         setLoadingDataStatus('successful');
       })
       .catch(() => {
@@ -32,10 +45,32 @@ const UserDetails = ({ navigation, route }: Props) => {
           setLoadingDataStatus('idle');
         }, 3000);
       });
-    console.log('User information: ', userInfo);
+
+    setLoadingUserAsksStatus('loading');
+    fetchAsksByUserId(userId)
+      .then(data => {
+        setUserAsks(data?.asks);
+        setnumOfAsks(data?.numOfAsks);
+        setLoadingUserAsksStatus('successful');
+      })
+      .catch(() => {
+        setTimeout(() => {
+          setLoadingUserAsksStatus('failed');
+        }, 3000);
+      })
+      .finally(() => {
+        setLoadingUserAsksStatus('idle');
+      });
   }, []);
   return !userInfo ? (
-    <Text>{loadingDataStatus}</Text>
+    <View className="justify-center items-center h-full">
+      {loadingDataStatus === 'loading' && (
+        <ActivityIndicator
+          size={'large'}
+          color={Styles.bgSecondary.backgroundColor}
+        />
+      )}
+    </View>
   ) : (
     <ScrollView contentContainerStyle={Styles.pageContainer}>
       <View className="items-center">
@@ -92,8 +127,8 @@ const UserDetails = ({ navigation, route }: Props) => {
             <Text className="text-center text-slate-400 py-2">
               Phone number
             </Text>
-            <Text className="text-center text-slate-400 py-3 border border-slate-300 rounded-lg">
-              {'+237 654 115 922'}
+            <Text className="text-center text-slate-600 py-3 border border-slate-300 rounded-lg">
+              {`+237 ${userInfo.phoneNumber}`}
             </Text>
           </View>
 
@@ -125,12 +160,25 @@ const UserDetails = ({ navigation, route }: Props) => {
           <View className="relative py-1 w-1/5">
             <Text className="text-slate-700">My Asks</Text>
             <View className="absolute top-0 right-1 h-4 aspect-square justify-center items-center bg-secondary-500 rounded-full">
-              <Text className="text-[10px] text-white">2</Text>
+              <Text className="text-[10px] text-white">{numOfAsks}</Text>
             </View>
           </View>
           <View className="w-full gap-y-2 divide-y divide-slate-200">
             <View>
-              <Text>Your recent asks show here</Text>
+              {userAsks.length === 0 ? (
+                <View className="justify-center items-center my-5">
+                  {loadingUserAsksStatus === 'loading' && (
+                    <ActivityIndicator
+                      size={'large'}
+                      color={Styles.bgSecondary.backgroundColor}
+                    />
+                  )}
+                </View>
+              ) : (
+                userAsks.map((ask: any, key: any) => (
+                  <UserAsk key={key} ask={ask} />
+                ))
+              )}
             </View>
           </View>
         </View>
@@ -143,8 +191,11 @@ const UserAsk = (props: { ask: any }) => {
   return (
     <View className="flex-row items-center gap-x-2 justify-between py-2">
       <View className="flex-1 flex-row items-center">
-        <View className="h-12 mr-2 aspect-square bg-slate-300 rounded-full">
-          <Text> </Text>
+        <View className="h-12 mr-2 aspect-square bg-slate-300 rounded-full overflow-hidden">
+          <Image
+            source={{ uri: props.ask.imageUrl }}
+            className="w-full h-full"
+          />
         </View>
         <View className="flex-1">
           <Text className="text-slate-600">

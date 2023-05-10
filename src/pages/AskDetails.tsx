@@ -49,7 +49,7 @@ const AskDetails = ({ navigation }: Props) => {
                 <Pressable
                   onPress={() => {
                     navigation.navigate('UserDetails', {
-                      userId: '6447d65c609ca79f62958e25',
+                      userId: '6447d65c609ca79f62958e31',
                     });
                   }}
                   android_ripple={{ color: 'lightgray' }}>
