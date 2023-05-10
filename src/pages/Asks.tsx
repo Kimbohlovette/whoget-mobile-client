@@ -14,15 +14,10 @@ import { textEllipsis } from '../shared/ellipseText';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Styles from '../SharedStyles';
 import { useAppSelector } from '../store/hooks';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { HomeStackParamList } from '../../types';
+import { Props } from '../../types';
 //import { useNavigation } from '@react-navigation/native';
 import { fetchPaginatedAks } from '../apiService/fetchingFunctions';
 
-type Props = NativeStackScreenProps<
-  HomeStackParamList,
-  'Profile' | 'AskDetail' | 'CreateAsk' | 'Asks' | 'Authentication'
->;
 const Asks = ({ navigation, route }: Props) => {
   const [showFilter, setShowFilter] = useState(false);
   const [asks, setAsks] = useState([]);
@@ -30,7 +25,6 @@ const Asks = ({ navigation, route }: Props) => {
   useEffect(() => {
     fetchPaginatedAks().then(data => {
       setAsks(data);
-      console.log(data);
     });
   }, []);
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
@@ -216,7 +210,7 @@ const Ask = (props: { ask: any; navigation: any; route: any }) => {
             </Text>
           </Pressable>
           <Text className="text-slate-400 font-extralight py-1">
-            , {new Date(props.ask.expirationDate).toLocaleDateString()}
+            , {new Date(props.ask.createdAt).toLocaleDateString()}
           </Text>
         </View>
         <View>

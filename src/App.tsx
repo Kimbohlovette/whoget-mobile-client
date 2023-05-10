@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,7 +9,6 @@ import Signup from './pages/Signup';
 import SignIn from './pages/SignIn';
 import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
-import { useAppDispatch, useAppSelector } from './store/hooks';
 import Styles from './SharedStyles';
 import { Image, View } from 'react-native';
 import UserPreferences from './pages/UserPreferences';
@@ -20,32 +19,15 @@ import {
   HomeStackParamList,
   RootTabParamList,
 } from '../types';
-import { fetchUserById } from './store/slices/userSlice';
-import {
-  fetchAsksByCategoryId,
-  fetchAsksByUserId,
-  fetchPaginatedAks,
-} from './apiService/fetchingFunctions';
+import { useAppSelector } from './store/hooks';
+import UserDetails from './pages/UserDetails';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 const App = () => {
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(fetchUserById('6447d65c609ca79f62958e31'));
-  }, [dispatch]);
-
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
   const loadStatus = useAppSelector(state => state.user.status);
-  useEffect(() => {
-    const response = fetchAsksByCategoryId('64383abb4413b4561f3b9d33');
-    response
-      .then(asks => {
-        console.log(asks);
-      })
-      .catch(error => console.log(error));
-  }, []);
   return loadStatus !== 'loading' ? (
     <NavigationContainer>
       {isAuthenticated ? (
@@ -150,7 +132,7 @@ const HomeScreen = () => {
           options={{ title: 'Ask detail' }}
         />
         <Stack.Screen name="Authentication" component={AuthScreen} />
-        <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="UserDetails" component={UserDetails} />
       </Stack.Group>
     </Stack.Navigator>
   );

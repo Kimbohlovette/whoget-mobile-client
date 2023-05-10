@@ -48,7 +48,9 @@ const AskDetails = ({ navigation }: Props) => {
               <View>
                 <Pressable
                   onPress={() => {
-                    navigation.navigate('Profile');
+                    navigation.navigate('UserDetails', {
+                      userId: '6447d65c609ca79f62958e25',
+                    });
                   }}
                   android_ripple={{ color: 'lightgray' }}>
                   <Text className="text-slate-600 text-sm">Eyong Ebai</Text>

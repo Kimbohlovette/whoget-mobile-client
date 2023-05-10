@@ -1,12 +1,13 @@
 /// <reference types="nativewind/types" />
 import { CompositeNavigationProp } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type HomeStackParamList = {
   Asks: undefined;
   CreateAsk: undefined;
   Authentication?: CompositeNavigationProp<AuthStackParamList>;
-  Profile: undefined;
-  AskDetail: undefined;
+  UserDetails: { userId: string };
+  AskDetail: { askId: string };
 };
 
 export type RootTabParamList = {
@@ -20,3 +21,8 @@ export type AuthStackParamList = {
   Signup: undefined;
   Categories: undefined;
 };
+
+export type Props = NativeStackScreenProps<
+  HomeStackParamList,
+  'UserDetails' | 'AskDetail' | 'CreateAsk' | 'Asks' | 'Authentication'
+>;

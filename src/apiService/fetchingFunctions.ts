@@ -5,6 +5,7 @@ export const fetchOneUserById = async (userId: string) => {
     method: 'GET',
   });
   const jsonData = await response.json();
+  console.log('data in function: ', jsonData.user);
   return jsonData.user;
 };
 
@@ -25,7 +26,6 @@ export const fetchPaginatedAks = async (page?: number, limit?: number) => {
       const { asks } = await response.json();
       return asks;
     } catch (error) {
-      console.log(error);
       return [];
     }
   } else if (page && !limit) {
@@ -34,7 +34,6 @@ export const fetchPaginatedAks = async (page?: number, limit?: number) => {
       const { asks } = await response.json();
       return asks;
     } catch (error) {
-      console.log(error);
       return [];
     }
   } else {
@@ -43,7 +42,6 @@ export const fetchPaginatedAks = async (page?: number, limit?: number) => {
       const { asks } = await response.json();
       return asks;
     } catch (error) {
-      console.log(error);
       return [];
     }
   }
@@ -68,8 +66,6 @@ export const fetchAsksByCategoryId = async (catId: string) => {
   const resData = await response.json();
   if (resData.numOfAsks) {
     const { asks, numOfAsks } = resData;
-    console.log('asks: ', asks);
-    console.log('length: ', numOfAsks);
     return {
       asks,
       numOfAsks,

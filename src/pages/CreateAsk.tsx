@@ -33,7 +33,6 @@ const CreateAsk = () => {
         height: 400,
         cropping: false,
       }).then(image => {
-        console.log(image);
         pushImageToList((state: any) => [
           {
             fileName: image.filename,
@@ -52,7 +51,6 @@ const CreateAsk = () => {
         height: 400,
         cropping: false,
       }).then(image => {
-        console.log(image);
         pushImageToList((state: any) => [
           {
             fileName: image.filename,
