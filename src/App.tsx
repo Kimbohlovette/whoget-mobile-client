@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,7 +9,7 @@ import Signup from './pages/Signup';
 import SignIn from './pages/SignIn';
 import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
-import { useAppSelector } from './store/hooks';
+import { useAppDispatch, useAppSelector } from './store/hooks';
 import Styles from './SharedStyles';
 import { Image, View } from 'react-native';
 import UserPreferences from './pages/UserPreferences';
@@ -20,20 +20,27 @@ import {
   HomeStackParamList,
   RootTabParamList,
 } from '../types';
+import { fetchUserById } from './store/slices/userSlice';
+import { fetchPaginatedAks } from './apiService/fetchingFunctions';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
-
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    dispatch(fetchUserById('6447d65c609ca79f62958e31'));
+  }, [dispatch]);
+
+  const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
+  const loadStatus = useAppSelector(state => state.user.status);
+  useEffect(() => {
+    const response = fetchPaginatedAks();
+    response.then(asks => {
+      console.log(asks);
+    });
   }, []);
-  return !isLoading ? (
+  return loadStatus !== 'loading' ? (
     <NavigationContainer>
       {isAuthenticated ? (
         <Tab.Navigator
