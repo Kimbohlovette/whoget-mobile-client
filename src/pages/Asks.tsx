@@ -8,7 +8,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { textEllipsis } from '../shared/ellipseText';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
@@ -16,6 +16,8 @@ import Styles from '../SharedStyles';
 import { useAppSelector } from '../store/hooks';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackParamList } from '../../types';
+//import { useNavigation } from '@react-navigation/native';
+import { fetchPaginatedAks } from '../apiService/fetchingFunctions';
 
 type Props = NativeStackScreenProps<
   HomeStackParamList,
@@ -23,6 +25,14 @@ type Props = NativeStackScreenProps<
 >;
 const Asks = ({ navigation, route }: Props) => {
   const [showFilter, setShowFilter] = useState(false);
+  const [asks, setAsks] = useState([]);
+
+  useEffect(() => {
+    fetchPaginatedAks().then(data => {
+      setAsks(data);
+      console.log(data);
+    });
+  }, []);
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
   //const navigation = useNavigation();
   const handleShowFilter = () => {
@@ -139,11 +149,11 @@ const Asks = ({ navigation, route }: Props) => {
           <FlatList
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={ListEmptyComponent}
-            data={[1, 2, 3, 5, 5, 5, 5, 1, 2, 3, 5, 5, 5, 5]}
-            renderItem={() => {
+            data={asks}
+            renderItem={({ item }) => {
               return (
                 <View className="overflow-hidden rounded-sm">
-                  <Ask navigation={navigation} route={route} />
+                  <Ask ask={item} navigation={navigation} route={route} />
                 </View>
               );
             }}
@@ -186,12 +196,12 @@ const ListEmptyComponent = () => {
     </View>
   );
 };
-const Ask = ({ navigation }: Props) => {
-  // const navigation = useNavigation();
+const Ask = (props: { ask: any; navigation: any; route: any }) => {
+  //const navigation = useNavigation();
   return (
     <Pressable
       onPress={() => {
-        navigation.navigate('AskDetail');
+        props.navigation.navigate('AskDetail');
       }}
       android_ripple={{ color: 'slate' }}
       className="z-0 py-4 px-2 flex-row gap-4">
@@ -199,25 +209,24 @@ const Ask = ({ navigation }: Props) => {
         <View className="flex-row items-center">
           <Pressable
             onPress={() => {
-              navigation.navigate('Profile');
+              props.navigation.navigate('Profile');
             }}>
             <Text className="text-slate-500 font-extralight">
-              Kimboh Lovette
+              {!props.ask.name ? 'Anonymous 😎' : props.ask.name}
             </Text>
           </Pressable>
-          <Text className="text-slate-400 font-extralight py-1">, Today</Text>
+          <Text className="text-slate-400 font-extralight py-1">
+            , {new Date(props.ask.expirationDate).toLocaleDateString()}
+          </Text>
         </View>
         <View>
           <Text className="text-slate-600 text-sm">
-            {textEllipsis(
-              ' I need a glass transparent flower vessel or a vessel with flower in it. my location is Bamenda',
-              13,
-            )}
+            {textEllipsis(props.ask.message, 13)}
           </Text>
         </View>
       </View>
       <Image
-        source={require('../assets/istockphoto-157399336-1024x1024.jpg')}
+        source={{ uri: props.ask.imageUrl }}
         className="h-16 w-16 rounded-md"
       />
     </Pressable>
