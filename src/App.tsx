@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -21,11 +21,52 @@ import {
 } from '../types';
 import { useAppSelector } from './store/hooks';
 import UserDetails from './pages/UserDetails';
+import {
+  fetchCategories,
+  getLocationsFromAsyncStorage,
+  saveCategoriesToAsyncStorage,
+  saveLocationsToAsyncStorage,
+} from './apiService/fetchingFunctions';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
-
+const places = [
+  { id: '1', title: 'Buea' },
+  { id: '2', title: 'Bamenda' },
+  { id: '3', title: 'Limbe' },
+  { id: '4', title: 'Kumba' },
+  { id: '5', title: 'Tiku' },
+  { id: '6', title: 'Mutengene' },
+  { id: '7', title: 'Muyuka' },
+  { id: '8', title: 'Ekona' },
+  { id: '9', title: 'Njombe' },
+  { id: '10', title: 'Nkong-nsamba' },
+  { id: '11', title: 'Baffussam' },
+  { id: '12', title: 'Ebolowa' },
+  { id: '13', title: 'Yaounde' },
+  { id: '14', title: 'Ngaoundere' },
+  { id: '15', title: 'Maroua' },
+  { id: '16', title: 'Garoua' },
+  { id: '17', title: 'Nkambe' },
+  { id: '18', title: 'Ndu' },
+  { id: '19', title: 'Kumbo' },
+];
 const App = () => {
+  useEffect(() => {
+    fetchCategories(1, 2000)
+      .then(cats => {
+        saveCategoriesToAsyncStorage(cats)
+          .then(() => console.log('local categories updated'))
+          .catch(() => console.log('Error occured while updating categories'));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    saveLocationsToAsyncStorage(places)
+      .then(() => console.log('Places saved to storage'))
+      .catch(() => console.log('error occured while saving places to storage'));
+  }, []);
+
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
   const loadStatus = useAppSelector(state => state.user.status);
   return loadStatus !== 'loading' ? (
@@ -131,8 +172,12 @@ const HomeScreen = () => {
           component={AskDetails}
           options={{ title: 'Ask detail' }}
         />
+        <Stack.Screen
+          name="UserDetails"
+          component={UserDetails}
+          options={{ title: 'User details' }}
+        />
         <Stack.Screen name="Authentication" component={AuthScreen} />
-        <Stack.Screen name="UserDetails" component={UserDetails} />
       </Stack.Group>
     </Stack.Navigator>
   );

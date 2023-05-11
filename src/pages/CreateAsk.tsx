@@ -8,7 +8,7 @@ import {
   FlatList,
   Modal,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Styles from '../SharedStyles';
 import FoIcon from 'react-native-vector-icons/Fontisto';
@@ -19,11 +19,24 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { useNavigation } from '@react-navigation/native';
 import PageHeader from '../components/PageHeader';
 import { toastAndroid } from '../shared/toastAndroid';
+import {
+  getCategoriesFromAsyncStorage,
+  getLocationsFromAsyncStorage,
+} from '../apiService/fetchingFunctions';
 
 const CreateAsk = () => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [showImagePickerModal, setShowImagePickerModal] = useState(false);
+  const [places, setPlaces] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<any>('Buea');
+  const [selectedCategory, setSelectedCateory] = useState<any>(null);
+  const [loadingLocations, setLoadingLocations] = useState<boolean>(false);
+  const [loadingCategories, setLoadingCategories] = useState<boolean>(false);
+  const [message, setMessage] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
   const navigation = useNavigation();
 
   const handleImagePicker = (mode: 'camera' | 'gallery') => {
@@ -84,6 +97,37 @@ const CreateAsk = () => {
     <AddImageBtn />,
   ]);
 
+  useEffect(() => {
+    // Load places from the async storage
+    setLoadingLocations(true);
+    getLocationsFromAsyncStorage()
+      .then(locations => {
+        setPlaces(locations);
+        // console.log('Available places', locations);
+        setLoadingLocations(false);
+      })
+      .catch(() => {
+        console.log('Could not load locations from the storage.');
+      });
+    // Load categories from the async storage
+    setLoadingCategories(true);
+    getCategoriesFromAsyncStorage()
+      .then(cats => {
+        setCategories(
+          cats.map((cat: { id: string; name: string }) => ({
+            id: cat.id,
+            title: cat.name,
+          })),
+        );
+        console.log('Available categories', categories);
+        setLoadingCategories(false);
+      })
+      .catch(() => {
+        console.log('Could not load locations from the storage.');
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -100,11 +144,32 @@ const CreateAsk = () => {
       />
       <View className="gap-y-4">
         <View>
+          <AutocompleteDropdown
+            inputContainerStyle={Styles.InputContainer}
+            textInputProps={{
+              placeholder: 'Select Category',
+              placeholderTextColor: '#475569',
+            }}
+            clearOnFocus={false}
+            closeOnBlur={false}
+            closeOnSubmit={false}
+            initialValue={{ id: '2' }} // or just '2'
+            onSelectItem={item => {
+              item && setSelectedCateory(item);
+            }}
+            dataSet={categories}
+            loading={loadingCategories}
+          />
+        </View>
+        <View>
           <TextInput
             className="border border-slate-300 py-2 px-4 rounded-lg"
             placeholder="Type description here"
             placeholderTextColor={'#475569'}
             multiline={true}
+            onChangeText={text => {
+              setMessage(text);
+            }}
           />
         </View>
         <View>
@@ -113,15 +178,25 @@ const CreateAsk = () => {
             className="border border-slate-300 py-2 px-4 rounded-lg"
             placeholder="Enter contact phone number"
             placeholderTextColor={'#475569'}
+            onChangeText={number => {
+              setPhoneNumber(number);
+            }}
           />
         </View>
         <View>
           <AutocompleteDropdown
+            showClear
+            closeOnBlur={false}
             inputContainerStyle={Styles.InputContainer}
             textInputProps={{
               placeholder: 'Location',
               placeholderTextColor: '#475569',
             }}
+            onSelectItem={item => {
+              item && setSelectedLocation(item);
+            }}
+            dataSet={places}
+            loading={loadingLocations}
           />
         </View>
         <View>
@@ -189,6 +264,18 @@ const CreateAsk = () => {
         </Pressable>
         <Pressable
           onPress={() => {
+            const newAsk = {
+              location: selectedLocation.title,
+              message,
+              phoneNumber,
+              categoryId: selectedCategory.id,
+              categoryName: selectedCategory.title,
+              userId: 'somefakeuser',
+              userName: 'somefakename',
+              status: 'visible',
+              imageUrl: selectedImageList[0],
+            };
+            console.log(newAsk);
             toastAndroid(
               'Ask successfully created. It will now show on the asks list',
               'short',

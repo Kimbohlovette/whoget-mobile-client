@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const BASE_URL = 'https://whoget-app-server.onrender.com/api/v1/';
 
 export const fetchOneUserById = async (userId: string) => {
@@ -70,5 +72,64 @@ export const fetchAsksByCategoryId = async (catId: string) => {
       asks,
       numOfAsks,
     };
+  }
+};
+
+export const fetchCategories = async (page?: number, limit?: number) => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}categories?page=${page}&limit=${limit}`,
+    );
+    const resData = await response.json();
+    return resData.categories;
+  } catch (error) {
+    // handle the error correctly
+    console.log(error);
+  }
+};
+
+// Functions to store and retrieve categories from async storage
+
+export const getCategoriesFromAsyncStorage = async () => {
+  try {
+    const categoryList = await AsyncStorage.getItem('@whoget-categories');
+    if (categoryList !== null) {
+      return JSON.parse(categoryList);
+    }
+  } catch (error) {
+    // handle error
+  }
+};
+
+export const saveCategoriesToAsyncStorage = async (categoryList: any) => {
+  try {
+    await AsyncStorage.setItem(
+      '@whoget-categories',
+      JSON.stringify(categoryList),
+    );
+  } catch (error) {
+    // raise saving error
+  }
+};
+
+export const saveLocationsToAsyncStorage = async (locationList: any) => {
+  try {
+    await AsyncStorage.setItem(
+      '@whoget-locations',
+      JSON.stringify(locationList),
+    );
+  } catch (error) {
+    // raise saving error
+  }
+};
+
+export const getLocationsFromAsyncStorage = async () => {
+  try {
+    const locationList = await AsyncStorage.getItem('@whoget-locations');
+    if (locationList !== null) {
+      return JSON.parse(locationList);
+    }
+  } catch (error) {
+    // handle error
   }
 };

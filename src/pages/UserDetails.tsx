@@ -1,7 +1,7 @@
 import { View, Text, Pressable, Image, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+// import AntDesign from 'react-native-vector-icons/AntDesign';
 import { textEllipsis } from '../shared/ellipseText';
 import { ScrollView } from 'react-native';
 import Styles from '../SharedStyles';
@@ -11,7 +11,7 @@ import {
   fetchOneUserById,
 } from '../apiService/fetchingFunctions';
 
-const UserDetails = ({ navigation, route }: Props) => {
+const UserDetails = ({ route }: Props) => {
   const userId = route.params ? route.params.userId : '';
   const [userInfo, setUserInfo] = useState<any>(null);
   const [userAsks, setUserAsks] = useState<any>([]);
