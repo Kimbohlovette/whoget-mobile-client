@@ -23,7 +23,6 @@ import {
   getCategoriesFromAsyncStorage,
   getLocationsFromAsyncStorage,
 } from '../apiService/fetchingFunctions';
-
 const CreateAsk = () => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
@@ -145,6 +144,7 @@ const CreateAsk = () => {
       <View className="gap-y-4">
         <View>
           <AutocompleteDropdown
+            showClear
             inputContainerStyle={Styles.InputContainer}
             textInputProps={{
               placeholder: 'Select Category',
@@ -273,9 +273,10 @@ const CreateAsk = () => {
               userId: 'somefakeuser',
               userName: 'somefakename',
               status: 'visible',
-              imageUrl: selectedImageList[0],
+              expirationDate: date.toString(),
             };
             console.log(newAsk);
+
             toastAndroid(
               'Ask successfully created. It will now show on the asks list',
               'short',

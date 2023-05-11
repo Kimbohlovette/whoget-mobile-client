@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.18.1",
+    "@react-native-firebase/app": "^17.4.3",
+    "@react-native-firebase/storage": "^17.4.3",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "@reduxjs/toolkit": "^1.8.6",
+    "firebase": "^9.21.0",
     "nativewind": "^2.0.11",
     "react": "18.1.0",
     "react-native": "0.70.4",
@@ -25,7 +28,9 @@
     "react-native-screens": "^3.20.0",
     "react-native-vector-icons": "^9.2.0",
     "react-redux": "^8.0.2",
-    "tailwindcss": "^3.3.2"
+    "tailwindcss": "^3.3.2",
+    "uuid": "^9.0.0",
+    "uuid-base64-ts": "^1.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
