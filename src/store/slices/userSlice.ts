@@ -3,7 +3,7 @@ import { fetchOneUserById } from '../../apiService/fetchingFunctions';
 export interface InitialState {
   isAuthenticated: boolean;
   user: any;
-  status: 'loading' | 'idle' | 'failed';
+  status: 'loading' | 'idle' | 'failed' | 'successful';
 }
 const initialState: InitialState = {
   isAuthenticated: true,
@@ -15,7 +15,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     updateProfile: (state, action: PayloadAction<any>) => {
-      state = action.payload;
+      state.user = action.payload;
     },
   },
   extraReducers: builder => {

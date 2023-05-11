@@ -7,7 +7,7 @@ export const fetchOneUserById = async (userId: string) => {
     method: 'GET',
   });
   const jsonData = await response.json();
-  console.log('data in function: ', jsonData.user);
+  //console.log('data in function: ', jsonData.user);
   return jsonData.user;
 };
 
@@ -132,4 +132,17 @@ export const getLocationsFromAsyncStorage = async () => {
   } catch (error) {
     // handle error
   }
+};
+
+export const createAsk = async (ask: any) => {
+  const response = await fetch(`${BASE_URL}asks`, {
+    method: 'POST',
+    body: JSON.stringify(ask),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const resData = await response.json();
+  console.log('In fetch function', resData);
+  return resData.user;
 };

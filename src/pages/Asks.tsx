@@ -3,6 +3,7 @@ import {
   Image,
   Modal,
   Pressable,
+  RefreshControl,
   StatusBar,
   Text,
   TextInput,
@@ -20,12 +21,22 @@ import { fetchPaginatedAks } from '../apiService/fetchingFunctions';
 
 const Asks = ({ navigation, route }: Props) => {
   const [showFilter, setShowFilter] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
   const [asks, setAsks] = useState([]);
-
+  const user = useAppSelector(state => state.user.user);
   useEffect(() => {
-    fetchPaginatedAks(1, 20).then(data => {
-      setAsks(data);
-    });
+    console.log('User selected in asks component', user);
+    setLoadingData(true);
+    fetchPaginatedAks(1, 100)
+      .then(data => {
+        setAsks(data);
+        setLoadingData(false);
+      })
+      .catch(() => {
+        setLoadingData(false);
+      });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
   //const navigation = useNavigation();
@@ -141,6 +152,8 @@ const Asks = ({ navigation, route }: Props) => {
 
         <View className="w-full">
           <FlatList
+            bounces
+            refreshControl={<RefreshControl refreshing={loadingData} />}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={ListEmptyComponent}
             data={asks}
@@ -199,7 +212,7 @@ const Ask = (props: { ask: any; navigation: any; route: any }) => {
       }}
       android_ripple={{ color: 'slate' }}
       className="z-0 py-4 px-2 flex-row gap-4">
-      <View className="shrink">
+      <View className="flex-1">
         <View className="flex-row items-center">
           <Pressable
             onPress={() => {
@@ -214,7 +227,7 @@ const Ask = (props: { ask: any; navigation: any; route: any }) => {
           </Text>
         </View>
         <View>
-          <Text className="text-slate-600 text-sm">
+          <Text className="text-slate-700 text-sm">
             {textEllipsis(props.ask.message, 13)}
           </Text>
         </View>

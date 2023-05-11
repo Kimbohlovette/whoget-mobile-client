@@ -17,12 +17,15 @@ import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useNavigation } from '@react-navigation/native';
+import storage from '@react-native-firebase/storage';
+
 import PageHeader from '../components/PageHeader';
-import { toastAndroid } from '../shared/toastAndroid';
 import {
+  createAsk,
   getCategoriesFromAsyncStorage,
   getLocationsFromAsyncStorage,
 } from '../apiService/fetchingFunctions';
+
 const CreateAsk = () => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
@@ -263,30 +266,35 @@ const CreateAsk = () => {
           <Text className="text-center text-slate-600">Cancel</Text>
         </Pressable>
         <Pressable
-          onPress={() => {
+          onPress={async () => {
             const newAsk = {
               location: selectedLocation.title,
               message,
-              phoneNumber,
+              contactNumber: phoneNumber,
               categoryId: selectedCategory.id,
               categoryName: selectedCategory.title,
-              userId: 'somefakeuser',
-              userName: 'somefakename',
+              userId: '6447d65c609ca79f62958e2f',
+              userName: 'Silas Magho',
               status: 'visible',
               expirationDate: date.toString(),
             };
-            console.log(newAsk);
-
-            toastAndroid(
-              'Ask successfully created. It will now show on the asks list',
-              'short',
-              'center',
-            );
-            setTimeout(() => {
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              }
-            }, 1000);
+            const imageUrl = selectedImageList.filter(
+              item => item.id !== undefined,
+            )[0];
+            const { metadata } = await storage()
+              .ref(`images/whoget_${Date.now().toString()}.png`)
+              .putFile(imageUrl.path);
+            const url = await storage().ref(metadata.fullPath).getDownloadURL();
+            console.log('');
+            console.log({ ...newAsk, imageUrl: url });
+            createAsk({ ...newAsk, imageUrl: url })
+              .then(data => {
+                console.log('Ask successfully created');
+                console.log(data);
+              })
+              .catch(error => {
+                console.log('Eror occured while creating ask: ', error);
+              });
           }}
           android_ripple={{ color: 'lightgray' }}
           className="w-1/3 py-2 px-5 rounded-lg border border-primary-500 bg-primary-500">

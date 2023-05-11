@@ -19,40 +19,35 @@ import {
   HomeStackParamList,
   RootTabParamList,
 } from '../types';
-import { useAppSelector } from './store/hooks';
+import { useAppDispatch, useAppSelector } from './store/hooks';
 import UserDetails from './pages/UserDetails';
 import {
   fetchCategories,
-  getLocationsFromAsyncStorage,
+  fetchOneUserById,
   saveCategoriesToAsyncStorage,
-  saveLocationsToAsyncStorage,
 } from './apiService/fetchingFunctions';
+import { updateProfile } from './store/slices/userSlice';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
-const places = [
-  { id: '1', title: 'Buea' },
-  { id: '2', title: 'Bamenda' },
-  { id: '3', title: 'Limbe' },
-  { id: '4', title: 'Kumba' },
-  { id: '5', title: 'Tiku' },
-  { id: '6', title: 'Mutengene' },
-  { id: '7', title: 'Muyuka' },
-  { id: '8', title: 'Ekona' },
-  { id: '9', title: 'Njombe' },
-  { id: '10', title: 'Nkong-nsamba' },
-  { id: '11', title: 'Baffussam' },
-  { id: '12', title: 'Ebolowa' },
-  { id: '13', title: 'Yaounde' },
-  { id: '14', title: 'Ngaoundere' },
-  { id: '15', title: 'Maroua' },
-  { id: '16', title: 'Garoua' },
-  { id: '17', title: 'Nkambe' },
-  { id: '18', title: 'Ndu' },
-  { id: '19', title: 'Kumbo' },
-];
 const App = () => {
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
+    //Fetch user information
+    fetchOneUserById('6447d65c609ca79f62958e2f')
+      .then(user => {
+        if (!user) {
+          console.log('User does not exists.');
+        } else {
+          dispatch(updateProfile(user));
+        }
+      })
+      .catch(() => {
+        'Could not update user profile';
+      });
+
+    // Fetch categories and store in the local storage
     fetchCategories(1, 2000)
       .then(cats => {
         saveCategoriesToAsyncStorage(cats)
@@ -62,9 +57,7 @@ const App = () => {
       .catch(error => {
         console.log(error);
       });
-    saveLocationsToAsyncStorage(places)
-      .then(() => console.log('Places saved to storage'))
-      .catch(() => console.log('error occured while saving places to storage'));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);

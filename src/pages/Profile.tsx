@@ -23,6 +23,7 @@ const Profile = () => {
       .catch(() => {
         // handle error here
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     user && (
