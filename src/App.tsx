@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -32,15 +32,22 @@ const Stack = createNativeStackNavigator<HomeStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const App = () => {
   const dispatch = useAppDispatch();
+  const [loadingInformation, setloadingInformation] = useState<
+    'idle' | 'loading' | 'failed' | 'successful'
+  >('idle');
 
   useEffect(() => {
     //Fetch user information
+    setloadingInformation('loading');
     fetchOneUserById('6447d65c609ca79f62958e2f')
       .then(user => {
         if (!user) {
           console.log('User does not exists.');
         } else {
-          dispatch(updateProfile(user));
+          setTimeout(() => {
+            setloadingInformation('idle');
+            dispatch(updateProfile(user));
+          }, 4000);
         }
       })
       .catch(() => {
@@ -61,8 +68,8 @@ const App = () => {
   }, []);
 
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
-  const loadStatus = useAppSelector(state => state.user.status);
-  return loadStatus !== 'loading' ? (
+
+  return loadingInformation !== 'loading' ? (
     <NavigationContainer>
       {isAuthenticated ? (
         <Tab.Navigator
