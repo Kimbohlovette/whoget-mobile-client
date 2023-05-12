@@ -25,6 +25,7 @@ import {
   getCategoriesFromAsyncStorage,
   getLocationsFromAsyncStorage,
 } from '../apiService/fetchingFunctions';
+import { useAppSelector } from '../store/hooks';
 
 const CreateAsk = () => {
   const [date, setDate] = useState(new Date());
@@ -40,7 +41,7 @@ const CreateAsk = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
   const navigation = useNavigation();
-
+  const { user, isAuthenticated } = useAppSelector(state => state.user);
   const handleImagePicker = (mode: 'camera' | 'gallery') => {
     if (mode === 'camera') {
       ImagePicker.openCamera({
@@ -267,14 +268,17 @@ const CreateAsk = () => {
         </Pressable>
         <Pressable
           onPress={async () => {
+            if (!isAuthenticated) {
+              navigation.navigate('Authentication');
+            }
             const newAsk = {
               location: selectedLocation.title,
               message,
-              contactNumber: phoneNumber,
+              contactNumber: phoneNumber || user.contactNumber,
               categoryId: selectedCategory.id,
               categoryName: selectedCategory.title,
-              userId: '6447d65c609ca79f62958e2f',
-              userName: 'Silas Magho',
+              userId: user.id,
+              userName: user.name,
               status: 'visible',
               expirationDate: date.toString(),
             };

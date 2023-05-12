@@ -7,18 +7,18 @@ import { ScrollView } from 'react-native';
 import Styles from '../SharedStyles';
 import { useAppSelector } from '../store/hooks';
 import { fetchAsksByUserId } from '../apiService/fetchingFunctions';
+import { Props } from '../../types';
 
-const Profile = () => {
-  const [editable, setEditable] = useState(false);
+const Profile = ({ navigation }: Props) => {
   const [showEmail, setShowEmail] = useState(false);
   const [userAsks, setUserAsks] = useState([]);
   const user = useAppSelector(state => state.user.user);
-  console.log(user);
+  const [numOfAsks, setNumOfAsks] = useState(0);
   useEffect(() => {
-    console.log('user: from the profile', user);
     fetchAsksByUserId(user.id)
-      .then(asks => {
-        setUserAsks(asks?.asks);
+      .then(data => {
+        setUserAsks(data?.asks);
+        setNumOfAsks(data?.numOfAsks);
       })
       .catch(() => {
         // handle error here
@@ -53,7 +53,7 @@ const Profile = () => {
                   <View className="flex-row items-center justify-start gap-x-4">
                     <View className="justify-center items-center h-7 aspect-square bg-primary-400 rounded-full">
                       <Image
-                        source={require('../assets/eypic.png')}
+                        source={{ uri: user.profileImage }}
                         className="w-full h-full rounded-full"
                       />
                     </View>
@@ -84,45 +84,28 @@ const Profile = () => {
 
           <View className="my-4 w-3/4">
             <View>
-              <Text className="text-center text-slate-400">Phone number</Text>
+              <Text className="text-center text-slate-500">Phone number</Text>
               <TextInput
-                editable={editable}
                 defaultValue={user.contactNumber}
-                className="text-slate-600 text-center font-medium border border-slate-300 py-1 rounded-lg w-full px-8 my-2"
+                className="text-slate-800 text-center font-bold border border-slate-300 py-3 rounded-lg w-full px-8 my-2"
               />
             </View>
 
             <View>
-              <Text className="text-center text-slate-400">Location</Text>
+              <Text className="text-center text-slate-500">Location</Text>
               <TextInput
                 defaultValue="Douala Cameroon"
-                editable={editable}
-                className="text-slate-600 text-center font-medium border border-slate-300 py-1 rounded-lg w-full px-8 my-2"
+                className="text-slate-800 text-center font-bold border border-slate-300 py-3 rounded-lg w-full px-8 my-2"
               />
             </View>
 
             <View className="flex-row justify-center items-center gap-2 my-2">
               <Pressable
-                onPress={() => {
-                  if (!editable) {
-                    setEditable(true);
-                  } else {
-                    // Handle save
-                    setEditable(false);
-                  }
-                }}
                 android_ripple={{ color: 'lightgray' }}
-                className="flex-1 flex-row items-center gap-x-2 justify-center text-slate-600 border border-slate-300 py-1 rounded-lg px-4 my-2 bg-primary-50">
-                {!editable && <Icon name="pencil-sharp" size={16} />}
-                <Text className="text-center text-slate-600">
-                  {editable ? 'Save' : 'Edit profile'}
+                className="flex-1 flex-row items-center gap-x-2 justify-center text-slate-600 border border-primary-300 py-3 rounded-lg px-4 my-2">
+                <Text className="text-center text-primary-500 font-bold">
+                  Edit profile
                 </Text>
-              </Pressable>
-              <Pressable
-                android_ripple={{ color: 'lightgray' }}
-                className="flex-1 flex-row items-center gap-x-2 justify-center text-slate-600 border border-slate-300 py-1 rounded-lg px-4 my-2 bg-primary-50">
-                <Icon name="help-circle-outline" size={16} />
-                <Text className="text-center text-slate-600">Help</Text>
               </Pressable>
             </View>
           </View>
@@ -130,14 +113,14 @@ const Profile = () => {
             <View className="relative py-1 w-1/5">
               <Text className="text-slate-700">My Asks</Text>
               <View className="absolute top-0 right-1 h-4 aspect-square justify-center items-center bg-secondary-500 rounded-full">
-                <Text className="text-[10px] text-white">2</Text>
+                <Text className="text-[10px] text-white">{numOfAsks}</Text>
               </View>
             </View>
             <View className="w-full gap-y-2 divide-y divide-slate-200">
               {userAsks.length !== 0 ? (
-                userAsks.map(ask => (
-                  <View>
-                    <UserAsk ask={ask} />
+                userAsks.map((ask, key) => (
+                  <View key={key}>
+                    <UserAsk ask={ask} navigation={navigation} />
                   </View>
                 ))
               ) : (
@@ -153,9 +136,14 @@ const Profile = () => {
   );
 };
 
-const UserAsk = (props: { ask: any }) => {
+const UserAsk = (props: { ask: any; navigation: any }) => {
   return (
-    <View className="flex-row items-center gap-x-2 justify-between py-2">
+    <Pressable
+      onPress={() => {
+        props.navigation.navigate('AskDetails', { askId: props.ask.id });
+      }}
+      android_ripple={{ color: 'lightgray' }}
+      className="flex-row items-center gap-x-2 justify-between py-2">
       <View className="flex-1 flex-row items-center">
         <View className="h-12 mr-2 aspect-square bg-slate-300 rounded-full">
           <Text> </Text>
@@ -171,7 +159,7 @@ const UserAsk = (props: { ask: any }) => {
           {new Date(props.ask.createdAt).toLocaleDateString()}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

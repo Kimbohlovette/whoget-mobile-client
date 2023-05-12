@@ -2,9 +2,7 @@ import {
   View,
   Text,
   Pressable,
-  FlatList,
   Image,
-  StyleSheet,
   Modal,
   ScrollView,
   ActivityIndicator,
@@ -75,7 +73,7 @@ const AskDetails = ({ navigation, route }: Props) => {
               <View className="flex-row gap-x-2 items-center">
                 <View className="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
                   <Image
-                    source={require('../assets/eypic.png')}
+                    source={{ uri: currentAsk.imageUrl }}
                     className="h-full w-full"
                   />
                 </View>
@@ -128,25 +126,15 @@ const AskDetails = ({ navigation, route }: Props) => {
           }
         />
         <View className="mt-5">
-          <FlatList
-            data={[1]}
-            renderItem={() => {
-              return (
-                <View className="border border-slate-100 h-fit flex-1 mx-1 rounded-md">
-                  <Image
-                    source={require('../assets/istockphoto-157399336-1024x1024.jpg')}
-                    className="h-48 w-full object-cover object-center"
-                  />
-                </View>
-              );
-            }}
-            ItemSeparatorComponent={() => <View className="m-1" />}
-            numColumns={2}
-            contentContainerStyle={styles.listContainerStyles}
-          />
+          <View className="border border-slate-100 h-fit flex-1 mx-1 rounded-md">
+            <Image
+              source={{ uri: currentAsk.imageUrl }}
+              className="h-48 w-full object-cover object-center"
+            />
+          </View>
         </View>
         <View className="mx-1">
-          <Text className="my-2 text-slate-600 py-2 text-base">
+          <Text className="text-slate-600 py-2 text-base">
             {currentAsk.message}
           </Text>
         </View>
@@ -155,7 +143,7 @@ const AskDetails = ({ navigation, route }: Props) => {
             <Text className="text-slate-600 text-xl">
               <SIcon name="location-pin" size={15} />
             </Text>
-            <Text className="text-base text-slate-600">
+            <Text className="text-base text-slate-400">
               {currentAsk.location}
             </Text>
           </View>
@@ -236,11 +224,3 @@ const AskDetails = ({ navigation, route }: Props) => {
 };
 
 export default AskDetails;
-
-const styles = StyleSheet.create({
-  listContainerStyles: {
-    gap: 4,
-    padding: 4,
-    width: '100%',
-  },
-});
