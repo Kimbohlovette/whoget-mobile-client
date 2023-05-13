@@ -6,6 +6,7 @@ import {
   Modal,
   ScrollView,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,7 +17,10 @@ import PageHeader from '../components/PageHeader';
 import { useAppSelector } from '../store/hooks';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackParamList } from '../../types';
-import { fetchOneAskById } from '../apiService/fetchingFunctions';
+import {
+  fetchOneAskById,
+  fetchOneUserById,
+} from '../apiService/fetchingFunctions';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'AskDetails'>;
 const AskDetails = ({ navigation, route }: Props) => {
@@ -24,6 +28,7 @@ const AskDetails = ({ navigation, route }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [currentAsk, setCurrentAsk] = useState<any>(null);
+  const [askOwnerInfo, setAskOwnerInfo] = useState<any>(null);
   const [loadingAskstatus, setLoadingAskStatus] = useState<
     'idle' | 'loading' | 'failed' | 'successful'
   >('loading');
@@ -48,9 +53,13 @@ const AskDetails = ({ navigation, route }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleRespond = () => {
+  const handleRespond = async () => {
     if (isAuthenticated) {
-      setShowModal(true);
+      fetchOneUserById(currentAsk.userId).then(user => {
+        setAskOwnerInfo(user);
+        console.log(user);
+        setShowModal(true);
+      });
     } else {
       navigation.navigate('Authentication');
     }
@@ -168,7 +177,7 @@ const AskDetails = ({ navigation, route }: Props) => {
           animationType="slide"
           transparent={false}
           visible={showModal}
-          onRequestClose={() => {
+          onRequestClose={async () => {
             setShowModal(!showModal);
           }}>
           <View className="bg-slate-600/60 backdrop-blur-lg  items-center justify-center h-full">
@@ -191,6 +200,12 @@ const AskDetails = ({ navigation, route }: Props) => {
               </View>
               <View className=" divide-y divide-slate-200">
                 <Pressable
+                  onPress={() => {
+                    console.log(askOwnerInfo.phoneNumber);
+                    Linking.openURL(
+                      `https://wa.me/${askOwnerInfo.phoneNumber}`,
+                    );
+                  }}
                   android_ripple={{ color: 'lightgray' }}
                   className="border-t border-slate-200 py-4 px-5 flex-row items-center justify-between">
                   <Text className="text-slate-600">Whatsapp</Text>
@@ -199,6 +214,9 @@ const AskDetails = ({ navigation, route }: Props) => {
                   </Text>
                 </Pressable>
                 <Pressable
+                  onPress={() => {
+                    Linking.openURL(`mailto:${askOwnerInfo.email.trim()}`);
+                  }}
                   android_ripple={{ color: 'lightgray' }}
                   className="py-4 px-5 flex-row items-center justify-between">
                   <Text className="text-slate-600">Email</Text>
@@ -207,6 +225,9 @@ const AskDetails = ({ navigation, route }: Props) => {
                   </Text>
                 </Pressable>
                 <Pressable
+                  onPress={() => {
+                    Linking.openURL(`tel:${currentAsk.contactNumber}`);
+                  }}
                   android_ripple={{ color: 'lightgray' }}
                   className="py-4 px-5 flex-row items-center justify-between">
                   <Text className="text-slate-600">Calls</Text>

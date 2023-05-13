@@ -6,7 +6,7 @@ export interface InitialState {
   status: 'loading' | 'idle' | 'failed' | 'successful';
 }
 const initialState: InitialState = {
-  isAuthenticated: true,
+  isAuthenticated: false,
   user: null,
   status: 'idle',
 };
@@ -16,6 +16,9 @@ const userSlice = createSlice({
   reducers: {
     updateProfile: (state, action: PayloadAction<any>) => {
       state.user = action.payload;
+    },
+    updateAuthStatus: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
     },
   },
   extraReducers: builder => {
@@ -33,7 +36,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { updateProfile } = userSlice.actions;
+export const { updateProfile, updateAuthStatus } = userSlice.actions;
 
 export default userSlice.reducer;
 

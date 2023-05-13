@@ -7,13 +7,14 @@ import { ScrollView } from 'react-native';
 import Styles from '../SharedStyles';
 import { useAppSelector } from '../store/hooks';
 import { fetchAsksByUserId } from '../apiService/fetchingFunctions';
-import { Props } from '../../types';
+import { useNavigation } from '@react-navigation/native';
 
-const Profile = ({ navigation }: Props) => {
+const Profile = () => {
   const [showEmail, setShowEmail] = useState(false);
   const [userAsks, setUserAsks] = useState([]);
   const user = useAppSelector(state => state.user.user);
   const [numOfAsks, setNumOfAsks] = useState(0);
+  const navigation = useNavigation<any>();
   useEffect(() => {
     fetchAsksByUserId(user.id)
       .then(data => {

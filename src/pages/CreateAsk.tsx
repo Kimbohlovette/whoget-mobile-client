@@ -16,7 +16,6 @@ import DatePicker from 'react-native-date-picker';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
-import { useNavigation } from '@react-navigation/native';
 import storage from '@react-native-firebase/storage';
 
 import PageHeader from '../components/PageHeader';
@@ -27,8 +26,11 @@ import {
 } from '../apiService/fetchingFunctions';
 import { useAppSelector } from '../store/hooks';
 import { toastAndroid } from '../shared/toastAndroid';
+import { HomeStackParamList } from '../../types';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-const CreateAsk = () => {
+type Props = NativeStackScreenProps<HomeStackParamList, 'CreateAsk'>;
+const CreateAsk = ({ navigation }: Props) => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [showImagePickerModal, setShowImagePickerModal] = useState(false);
@@ -41,7 +43,6 @@ const CreateAsk = () => {
   const [message, setMessage] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const navigation = useNavigation();
   const { user, isAuthenticated } = useAppSelector(state => state.user);
   const handleImagePicker = (mode: 'camera' | 'gallery') => {
     if (mode === 'camera') {
@@ -293,9 +294,11 @@ const CreateAsk = () => {
             console.log('');
             console.log({ ...newAsk, imageUrl: url });
             createAsk({ ...newAsk, imageUrl: url })
-              .then(data => {
+              .then(() => {
                 toastAndroid('Ask successfully created.');
-                console.log(data);
+                setTimeout(() => {
+                  navigation.goBack();
+                }, 1000);
               })
               .catch(error => {
                 console.log('Eror occured while creating ask: ', error);
