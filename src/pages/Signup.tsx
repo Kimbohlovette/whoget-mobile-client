@@ -1,8 +1,15 @@
 import { View, Text, Pressable, Image, ScrollView } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Styles from '../SharedStyles';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Signup = () => {
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '1071190608503-hnua85ljh7c940id1qk2a28eqh68tslk.apps.googleusercontent.com',
+    });
+  }, []);
   return (
     <ScrollView style={Styles.pageContainer} className="w-full">
       <View className="justify-center items-center">

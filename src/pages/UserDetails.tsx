@@ -5,12 +5,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { textEllipsis } from '../shared/ellipseText';
 import { ScrollView } from 'react-native';
 import Styles from '../SharedStyles';
-import { Props } from '../../types';
+import { HomeStackParamList } from '../../types';
 import {
   fetchAsksByUserId,
   fetchOneUserById,
 } from '../apiService/fetchingFunctions';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+type Props = NativeStackScreenProps<HomeStackParamList, 'UserDetails'>;
 const UserDetails = ({ route }: Props) => {
   const userId = route.params ? route.params.userId : '';
   const [userInfo, setUserInfo] = useState<any>(null);

@@ -26,6 +26,7 @@ import {
   getLocationsFromAsyncStorage,
 } from '../apiService/fetchingFunctions';
 import { useAppSelector } from '../store/hooks';
+import { toastAndroid } from '../shared/toastAndroid';
 
 const CreateAsk = () => {
   const [date, setDate] = useState(new Date());
@@ -293,7 +294,7 @@ const CreateAsk = () => {
             console.log({ ...newAsk, imageUrl: url });
             createAsk({ ...newAsk, imageUrl: url })
               .then(data => {
-                console.log('Ask successfully created');
+                toastAndroid('Ask successfully created.');
                 console.log(data);
               })
               .catch(error => {

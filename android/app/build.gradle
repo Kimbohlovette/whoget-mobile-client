@@ -271,6 +271,9 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
+    // facebook-android-sdk dependency for thirdparty authentication
+    implementation 'com.facebook.android:facebook-android-sdk:[8,9)' 
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
     }

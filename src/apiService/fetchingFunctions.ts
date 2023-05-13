@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
 
 const BASE_URL = 'https://whoget-app-server.onrender.com/api/v1/';
 
@@ -143,6 +145,24 @@ export const createAsk = async (ask: any) => {
     },
   });
   const resData = await response.json();
-  console.log('In fetch function', resData);
   return resData.user;
+};
+
+export const signinWithGoogle = async () => {
+  await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+  const { idToken } = await GoogleSignin.signIn();
+  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+  return auth().signInWithCredential(googleCredential);
+};
+
+export const createUser = async (payload: any) => {
+  const response = await fetch(`${BASE_URL}users`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const resData = await response.json();
+  return resData.newUser;
 };

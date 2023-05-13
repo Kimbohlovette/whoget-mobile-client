@@ -47,7 +47,7 @@ const App = () => {
           setTimeout(() => {
             setloadingInformation('idle');
             dispatch(updateProfile(user));
-          }, 4000);
+          }, 1000);
         }
       })
       .catch(() => {
