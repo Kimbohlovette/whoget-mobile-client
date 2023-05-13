@@ -1,8 +1,13 @@
 import { View, Text, Image, Pressable, ScrollView } from 'react-native';
 import React from 'react';
 import Styles from '../SharedStyles';
+import { signinWithGoogle } from '../apiService/fetchingFunctions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAppDispatch } from '../store/hooks';
+import { updateAuthStatus } from '../store/slices/userSlice';
 
 const SignIn = () => {
+  const dispatch = useAppDispatch();
   return (
     <ScrollView style={Styles.pageContainer}>
       <View className="w-full">
@@ -27,6 +32,20 @@ const SignIn = () => {
               <Text>Continue with Facebook</Text>
             </Pressable>
             <Pressable
+              onPress={() => {
+                signinWithGoogle().then(response => {
+                  response.user.getIdToken().then(token => {
+                    AsyncStorage.setItem(
+                      '@authToken',
+                      JSON.stringify({
+                        token,
+                        email: response.user.email,
+                      }),
+                    );
+                    dispatch(updateAuthStatus(true));
+                  });
+                });
+              }}
               android_ripple={{ color: 'light-gray' }}
               className="w-full py-2 px-5 flex-row items-center justify-start border border-slate-300 rounded-md">
               <Image

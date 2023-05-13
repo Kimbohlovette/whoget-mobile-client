@@ -1,5 +1,5 @@
 import { View, Text, Pressable, Image, ScrollView } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Styles from '../SharedStyles';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { createUser, signinWithGoogle } from '../apiService/fetchingFunctions';
@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const Signup = () => {
   const navigation = useNavigation<any>();
+  const [authMessge, setAuthMessage] = useState<string>('');
   const dispatch = useAppDispatch();
   useEffect(() => {
     GoogleSignin.configure({
@@ -32,6 +33,7 @@ const Signup = () => {
         </Text>
         <View className="gap-y-4 justify-center items-center">
           <Pressable
+            disabled
             android_ripple={{ color: 'light-gray' }}
             className="w-full py-2 px-5 flex-row items-center justify-start border border-slate-300 rounded-md">
             <Image
@@ -58,16 +60,28 @@ const Signup = () => {
                   createUser(newUser).then(newuser => {
                     toastAndroid('Great! You are signed in.');
                     dispatch(updateProfile(newuser));
-                    AsyncStorage.setItem(
-                      '@authToken',
-                      JSON.stringify(response.user.getIdToken()),
-                    );
+                    response.user.getIdToken().then(token => {
+                      AsyncStorage.setItem(
+                        '@authToken',
+                        JSON.stringify({
+                          token,
+                          email: response.user.email,
+                        }),
+                      );
+                      dispatch(updateAuthStatus(true));
+                    });
                   });
+                  console.log(response.user.getIdToken());
+                  dispatch(updateAuthStatus(true));
+                  console.log('Google authentication complete.');
+                  navigation.navigate('Categories');
+                } else {
+                  setAuthMessage('account_exists');
+                  setTimeout(() => {
+                    setAuthMessage('');
+                    navigation.navigate('Signin');
+                  }, 2000);
                 }
-                console.log(response.user.getIdToken());
-                dispatch(updateAuthStatus(true));
-                console.log('Google authentication complete.');
-                navigation.navigate('UserPreferences');
               });
             }}
             android_ripple={{ color: 'light-gray' }}
@@ -75,12 +89,23 @@ const Signup = () => {
             <Image source={require('../assets/google.png')} className="mr-4" />
             <Text>Continue with Google</Text>
           </Pressable>
+          {authMessge === 'account_exists' && (
+            <Text className="text-amber-700 text-center">
+              Account already exists. Redirecting to signin...
+            </Text>
+          )}
+          {authMessge === 'signup_successful' && (
+            <Text className="text-amber-700 text-center">
+              Successfully signed up. Redirecting to home page...
+            </Text>
+          )}
         </View>
         <View className="py-8 gap-y-5">
           <View className="flex-row gap-1 items-center justify-center">
             <Text className="text-center text-slate-600">
-              Already have an account?{' '}
+              Already have an account?
             </Text>
+
             <View>
               <Pressable>
                 <Text className="text-orange-400">Sign in</Text>
