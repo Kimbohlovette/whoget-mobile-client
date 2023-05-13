@@ -202,7 +202,9 @@ const AskDetails = ({ navigation, route }: Props) => {
                 </Text>
               </Pressable>
               <View>
-                <Text className="py-8 px-5 text-primary-400">Respond</Text>
+                <Text className="py-8 px-5 text-primary-400 font-bold">
+                  Respond
+                </Text>
               </View>
               <View className=" divide-y divide-slate-200">
                 <Pressable
