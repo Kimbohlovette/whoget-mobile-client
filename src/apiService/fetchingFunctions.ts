@@ -13,6 +13,15 @@ export const fetchOneUserById = async (userId: string) => {
   return jsonData.user;
 };
 
+export const fetchOneUserByEmail = async (email: string) => {
+  const response = await fetch(`${BASE_URL}users/email/${email}`, {
+    method: 'GET',
+  });
+  const jsonData = await response.json();
+  //console.log('data in function: ', jsonData.user);
+  return jsonData.user;
+};
+
 export const fetchOneAskById = async (askId: string) => {
   const response = await fetch(`${BASE_URL}asks/${askId}`, {
     method: 'GET',

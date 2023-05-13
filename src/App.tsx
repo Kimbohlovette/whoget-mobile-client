@@ -23,10 +23,10 @@ import { useAppDispatch, useAppSelector } from './store/hooks';
 import UserDetails from './pages/UserDetails';
 import {
   fetchCategories,
-  fetchOneUserById,
+  fetchOneUserByEmail,
   saveCategoriesToAsyncStorage,
 } from './apiService/fetchingFunctions';
-import { updateAuthStatus, updateProfile } from './store/slices/userSlice';
+import { updateProfile } from './store/slices/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
@@ -42,18 +42,18 @@ const App = () => {
     setloadingInformation('loading');
     AsyncStorage.getItem('@authToken').then(token => {
       if (token) {
-        dispatch(updateAuthStatus(true));
+        console.log('Is authenticated is set now');
+        console.log(JSON.parse(token));
       }
 
-      fetchOneUserById('6447d65c609ca79f62958e2f')
+      fetchOneUserByEmail('kimbohlovette@gmail.com')
         .then(user => {
           if (!user) {
-            console.log('User does not exists.');
+            console.log('_User does not exists.');
+            setloadingInformation('idle');
           } else {
-            setTimeout(() => {
-              setloadingInformation('idle');
-              dispatch(updateProfile(user));
-            }, 1000);
+            dispatch(updateProfile(user));
+            setloadingInformation('idle');
           }
         })
         .catch(() => {
