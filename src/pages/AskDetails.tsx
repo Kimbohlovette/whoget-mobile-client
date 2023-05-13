@@ -80,12 +80,14 @@ const AskDetails = ({ navigation, route }: Props) => {
           component={
             <View className="flex-1 flex-row justify-between items-center">
               <View className="flex-row gap-x-2 items-center">
-                <View className="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
-                  <Image
-                    source={{ uri: currentAsk.imageUrl }}
-                    className="h-full w-full"
-                  />
-                </View>
+                {currentAsk.image !== undefined && (
+                  <View className="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
+                    <Image
+                      source={{ uri: currentAsk.imageUrl }}
+                      className="h-full w-full"
+                    />
+                  </View>
+                )}
                 <View>
                   <Pressable
                     onPress={() => {
@@ -95,10 +97,12 @@ const AskDetails = ({ navigation, route }: Props) => {
                     }}
                     android_ripple={{ color: 'lightgray' }}>
                     <Text className="text-slate-600 text-sm">
-                      {currentAsk.userId}
+                      {currentAsk.userName}
                     </Text>
                   </Pressable>
-                  <Text className="text-xs text-slate-400">Today</Text>
+                  <Text className="text-xs text-slate-400">
+                    {currentAsk.createdAt}
+                  </Text>
                 </View>
               </View>
               <Pressable
