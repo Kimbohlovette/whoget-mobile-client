@@ -2,8 +2,16 @@ import { View, Text, Pressable, Image, ScrollView } from 'react-native';
 import React, { useEffect } from 'react';
 import Styles from '../SharedStyles';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { createUser, signinWithGoogle } from '../apiService/fetchingFunctions';
+import { toastAndroid } from '../shared/toastAndroid';
+import { useAppDispatch } from '../store/hooks';
+import { updateAuthStatus, updateProfile } from '../store/slices/userSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const Signup = () => {
+  const navigation = useNavigation<any>();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
@@ -33,6 +41,35 @@ const Signup = () => {
             <Text>Continue with Facebook</Text>
           </Pressable>
           <Pressable
+            onPress={() => {
+              console.log('authenticating');
+              signinWithGoogle().then(response => {
+                if (response.additionalUserInfo?.isNewUser) {
+                  // get info from the database and create a new user
+                  const newUser = {
+                    name: response.user.displayName,
+                    email: response.user.email,
+                    phoneNumber: response.user.phoneNumber,
+                    profileImage: response.user.photoURL,
+                    location: 'Buea',
+                    role: 'user',
+                    status: 'active',
+                  };
+                  createUser(newUser).then(newuser => {
+                    toastAndroid('Great! You are signed in.');
+                    dispatch(updateProfile(newuser));
+                    AsyncStorage.setItem(
+                      '@authToken',
+                      JSON.stringify(response.user.getIdToken()),
+                    );
+                  });
+                }
+                console.log(response.user.getIdToken());
+                dispatch(updateAuthStatus(true));
+                console.log('Google authentication complete.');
+                navigation.navigate('UserPreferences');
+              });
+            }}
             android_ripple={{ color: 'light-gray' }}
             className="w-full py-2 px-5 flex-row items-center justify-start border border-slate-300 rounded-md">
             <Image source={require('../assets/google.png')} className="mr-4" />
