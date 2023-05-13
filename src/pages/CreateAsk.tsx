@@ -287,22 +287,37 @@ const CreateAsk = ({ navigation }: Props) => {
             const imageUrl = selectedImageList.filter(
               item => item.id !== undefined,
             )[0];
-            const { metadata } = await storage()
-              .ref(`images/whoget_${Date.now().toString()}.png`)
-              .putFile(imageUrl.path);
-            const url = await storage().ref(metadata.fullPath).getDownloadURL();
-            console.log('');
-            console.log({ ...newAsk, imageUrl: url });
-            createAsk({ ...newAsk, imageUrl: url })
-              .then(() => {
-                toastAndroid('Ask successfully created.');
-                setTimeout(() => {
-                  navigation.goBack();
-                }, 1000);
-              })
-              .catch(error => {
-                console.log('Eror occured while creating ask: ', error);
-              });
+            if (!imageUrl) {
+              createAsk({ ...newAsk })
+                .then(() => {
+                  toastAndroid('Ask successfully created.');
+                  setTimeout(() => {
+                    navigation.goBack();
+                  }, 1000);
+                })
+                .catch(error => {
+                  console.log('Eror occured while creating ask: ', error);
+                });
+            } else {
+              const { metadata } = await storage()
+                .ref(`images/whoget_${Date.now().toString()}.png`)
+                .putFile(imageUrl.path);
+              const url = await storage()
+                .ref(metadata.fullPath)
+                .getDownloadURL();
+              console.log('');
+              console.log({ ...newAsk, imageUrl: url });
+              createAsk({ ...newAsk, imageUrl: url })
+                .then(() => {
+                  toastAndroid('Ask successfully created.');
+                  setTimeout(() => {
+                    navigation.goBack();
+                  }, 1000);
+                })
+                .catch(error => {
+                  console.log('Eror occured while creating ask: ', error);
+                });
+            }
           }}
           android_ripple={{ color: 'lightgray' }}
           className="w-1/3 py-2 px-5 rounded-lg border border-primary-500 bg-primary-500">

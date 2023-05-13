@@ -5,9 +5,13 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { textEllipsis } from '../shared/ellipseText';
 import { ScrollView } from 'react-native';
 import Styles from '../SharedStyles';
-import { useAppSelector } from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchAsksByUserId } from '../apiService/fetchingFunctions';
 import { useNavigation } from '@react-navigation/native';
+import { updateAuthStatus } from '../store/slices/userSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { toastAndroid } from '../shared/toastAndroid';
 
 const Profile = () => {
   const [showEmail, setShowEmail] = useState(false);
@@ -15,6 +19,7 @@ const Profile = () => {
   const user = useAppSelector(state => state.user.user);
   const [numOfAsks, setNumOfAsks] = useState(0);
   const navigation = useNavigation<any>();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     fetchAsksByUserId(user.id)
       .then(data => {
@@ -62,12 +67,22 @@ const Profile = () => {
                       <Text className="text-slate-500">{user.email}</Text>
                     </View>
                   </View>
-                  <View className="flex-row  gap-x-4 py-4 mt-5">
+                  <Pressable
+                    onPress={() => {
+                      GoogleSignin.signOut().then(() => {
+                        AsyncStorage.removeItem('@authToken').then(() => {
+                          dispatch(updateAuthStatus(false));
+                          toastAndroid('You are signed out!');
+                          console.log('You are signed out!');
+                        });
+                      });
+                    }}
+                    className="flex-row  gap-x-4 py-4 mt-5">
                     <Text>
                       <AntDesign name="logout" size={25} />
                     </Text>
                     <Text className="">Logout</Text>
-                  </View>
+                  </Pressable>
                 </View>
               </View>
             )}
@@ -118,7 +133,7 @@ const Profile = () => {
               </View>
             </View>
             <View className="w-full gap-y-2 divide-y divide-slate-200">
-              {userAsks.length !== 0 ? (
+              {userAsks && userAsks.length !== 0 ? (
                 userAsks.map((ask, key) => (
                   <View key={key}>
                     <UserAsk ask={ask} navigation={navigation} />

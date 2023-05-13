@@ -135,12 +135,14 @@ const AskDetails = ({ navigation, route }: Props) => {
           }
         />
         <View className="mt-5">
-          <View className="border border-slate-100 h-fit flex-1 mx-1 rounded-md">
-            <Image
-              source={{ uri: currentAsk.imageUrl }}
-              className="h-48 w-full object-cover object-center"
-            />
-          </View>
+          {currentAsk.imageUrl !== undefined && (
+            <View className="border border-slate-100 h-fit flex-1 mx-1 rounded-md">
+              <Image
+                source={{ uri: currentAsk.imageUrl }}
+                className="h-48 w-full object-cover object-center"
+              />
+            </View>
+          )}
         </View>
         <View className="mx-1">
           <Text className="text-slate-600 py-2 text-base">
