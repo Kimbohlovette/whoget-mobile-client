@@ -26,7 +26,8 @@ import {
   fetchOneUserById,
   saveCategoriesToAsyncStorage,
 } from './apiService/fetchingFunctions';
-import { updateProfile } from './store/slices/userSlice';
+import { updateAuthStatus, updateProfile } from './store/slices/userSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -39,31 +40,39 @@ const App = () => {
   useEffect(() => {
     //Fetch user information
     setloadingInformation('loading');
-    fetchOneUserById('6447d65c609ca79f62958e2f')
-      .then(user => {
-        if (!user) {
-          console.log('User does not exists.');
-        } else {
-          setTimeout(() => {
-            setloadingInformation('idle');
-            dispatch(updateProfile(user));
-          }, 1000);
-        }
-      })
-      .catch(() => {
-        'Could not update user profile';
-      });
+    AsyncStorage.getItem('@authToken').then(token => {
+      if (token) {
+        dispatch(updateAuthStatus(true));
+      }
 
-    // Fetch categories and store in the local storage
-    fetchCategories(1, 2000)
-      .then(cats => {
-        saveCategoriesToAsyncStorage(cats)
-          .then(() => console.log('local categories updated'))
-          .catch(() => console.log('Error occured while updating categories'));
-      })
-      .catch(error => {
-        console.log(error);
-      });
+      fetchOneUserById('6447d65c609ca79f62958e2f')
+        .then(user => {
+          if (!user) {
+            console.log('User does not exists.');
+          } else {
+            setTimeout(() => {
+              setloadingInformation('idle');
+              dispatch(updateProfile(user));
+            }, 1000);
+          }
+        })
+        .catch(() => {
+          'Could not update user profile';
+        });
+
+      // Fetch categories and store in the local storage
+      fetchCategories(1, 2000)
+        .then(cats => {
+          saveCategoriesToAsyncStorage(cats)
+            .then(() => console.log('local categories updated'))
+            .catch(() =>
+              console.log('Error occured while updating categories'),
+            );
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -144,8 +153,8 @@ const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const AuthScreen = () => {
   return (
     <AuthStack.Navigator>
-      <AuthStack.Screen name="Signin" component={SignIn} />
       <AuthStack.Screen name="Signup" component={Signup} />
+      <AuthStack.Screen name="Signin" component={SignIn} />
       <AuthStack.Screen name="Categories" component={UserPreferences} />
     </AuthStack.Navigator>
   );
