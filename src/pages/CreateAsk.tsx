@@ -107,7 +107,10 @@ const CreateAsk = ({ navigation }: Props) => {
     setLoadingLocations(true);
     getLocationsFromAsyncStorage()
       .then(locations => {
-        setPlaces(locations);
+        setPlaces(
+          locations.map((value: any, key: any) => ({ title: value, id: key })),
+        );
+        console.log('Available locations', locations);
         // console.log('Available places', locations);
         setLoadingLocations(false);
       })
@@ -150,7 +153,6 @@ const CreateAsk = ({ navigation }: Props) => {
       <View className="gap-y-4">
         <View>
           <AutocompleteDropdown
-            showClear
             inputContainerStyle={Styles.InputContainer}
             textInputProps={{
               placeholder: 'Select Category',
@@ -191,7 +193,6 @@ const CreateAsk = ({ navigation }: Props) => {
         </View>
         <View>
           <AutocompleteDropdown
-            showClear
             closeOnBlur={false}
             inputContainerStyle={Styles.InputContainer}
             textInputProps={{

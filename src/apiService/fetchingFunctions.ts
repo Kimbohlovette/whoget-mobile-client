@@ -138,9 +138,11 @@ export const getLocationsFromAsyncStorage = async () => {
   try {
     const locationList = await AsyncStorage.getItem('@whoget-locations');
     if (locationList !== null) {
+      console.log('Locations from local storage: ', locationList);
       return JSON.parse(locationList);
     }
   } catch (error) {
+    console.log('Nothing to show');
     // handle error
   }
 };
