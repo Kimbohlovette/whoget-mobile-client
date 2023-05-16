@@ -219,14 +219,14 @@ const HomeScreen = () => {
 
 const NavHeader = () => {
   return (
-    <View className="h-20 px-4 bg-primary-500 flex-row items-end justify-between">
+    <View className="max-h-20 pt-5 px-4 bg-primary-500 flex-row items-center justify-between">
       <View>
         <Image
-          className="h-2/3 w-40"
+          className="max-h-16 w-40"
           source={require('./assets/whoget-secondary3.png')}
         />
       </View>
-      <Pressable className="rounded-full pb-2">
+      <Pressable className="rounded-full">
         <Ionicon name="help-circle-outline" color={'#00ffef'} size={30} />
       </Pressable>
     </View>
