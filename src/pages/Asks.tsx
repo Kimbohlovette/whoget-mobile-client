@@ -4,7 +4,6 @@ import {
   Modal,
   Pressable,
   RefreshControl,
-  StatusBar,
   Text,
   TextInput,
   View,
@@ -51,7 +50,6 @@ const Asks = ({ navigation, route }: Props) => {
   return (
     <>
       <View style={Styles.pageContainer} className="min-h-screen w-full">
-        <StatusBar />
         <View className="relative header flex-row items-center gap-2 border-b border-slate-200 py-4">
           <View className="flex-1 flex-row items-center border border-slate-300 rounded-md px-2">
             <Icon name="search" size={20} />

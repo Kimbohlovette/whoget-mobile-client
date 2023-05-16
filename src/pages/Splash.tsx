@@ -1,11 +1,15 @@
 import React from 'react';
-import { Image, View } from 'react-native';
+import { Image, StatusBar, View } from 'react-native';
+import Styles from '../SharedStyles';
 const logo = require('../assets/whoget-primary.png');
 const Splash = () => {
   return (
-    <View className="w-full h-screen justify-center items-center">
-      <Image source={logo} className="h-36 aspect-video" />
-    </View>
+    <>
+      <StatusBar backgroundColor={Styles.bgPrimary.backgroundColor} />
+      <View className="w-full h-screen justify-center items-center">
+        <Image source={logo} className="h-36 aspect-video" />
+      </View>
+    </>
   );
 };
 
