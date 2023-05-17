@@ -52,6 +52,10 @@ const Asks = ({ navigation, route }: Props) => {
     }
   };
 
+  const handleSearch = () => {
+    // fetch
+  };
+
   return (
     <>
       <View style={Styles.pageContainer} className="min-h-screen w-full">
@@ -59,6 +63,7 @@ const Asks = ({ navigation, route }: Props) => {
           <View className="flex-1 flex-row items-center border border-slate-300 rounded-md px-2">
             <Icon name="search" size={20} />
             <TextInput
+              onTextInput={handleSearch}
               keyboardType="web-search"
               onBlur={() => {
                 setShowFilterBtn(true);
@@ -86,11 +91,16 @@ const Asks = ({ navigation, route }: Props) => {
             <View className="w-full relative">
               <View
                 style={Styles.btnShadow}
-                className="z-50 absolute top-0 left-0 w-full py-5 rounded-md bg-primary-50 px-2 overflow-hidden">
+                className="z-50 absolute top-0 left-0 w-full py-5 rounded-md bg-white px-2 overflow-hidden">
                 <ScrollView>
                   <Text className="text-primary-600 text-base font-medium text-center">
                     Search results show here
                   </Text>
+                  <View>
+                    {searchResults.map((item, key) => {
+                      return <View key={key}>{item}</View>;
+                    })}
+                  </View>
                 </ScrollView>
               </View>
             </View>
