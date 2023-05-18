@@ -17,10 +17,7 @@ import Styles from '../SharedStyles';
 import { useAppSelector } from '../store/hooks';
 import { Props } from '../../types';
 //import { useNavigation } from '@react-navigation/native';
-import {
-  fetchPaginatedAks,
-  searchWhoget,
-} from '../apiService/fetchingFunctions';
+import { fetchPaginatedAks } from '../apiService/fetchingFunctions';
 
 const Asks = ({ navigation, route }: Props) => {
   const [showFilter, setShowFilter] = useState(false);
@@ -28,6 +25,7 @@ const Asks = ({ navigation, route }: Props) => {
   const [asks, setAsks] = useState([]);
   const user = useAppSelector(state => state.user.user);
   const [showFilterBtn, setShowFilterBtn] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     console.log('User selected in asks component', user);
     setLoadingData(true);
@@ -52,6 +50,12 @@ const Asks = ({ navigation, route }: Props) => {
     }
   };
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   return (
     <>
       <View style={Styles.pageContainer} className="min-h-screen w-full">
@@ -165,8 +169,11 @@ const Asks = ({ navigation, route }: Props) => {
 
         <View className="w-full">
           <FlatList
+            contentContainerStyle={{ paddingBottom: 300 }}
             bounces
-            refreshControl={<RefreshControl refreshing={loadingData} />}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={ListEmptyComponent}
             data={asks}

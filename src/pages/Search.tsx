@@ -11,8 +11,9 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import { searchWhoget } from '../apiService/fetchingFunctions';
 import { textEllipsis } from '../shared/ellipseText';
 import Styles from '../SharedStyles';
+import { Props } from '../../types';
 
-export default function Search() {
+export default function Search({ navigation }: Props) {
   const [searchLoader, setSearchLoader] = useState<boolean>(false);
   const [showSearchResultPage, setShowSearchResultPage] =
     useState<boolean>(false);
@@ -73,6 +74,7 @@ export default function Search() {
       {!searchLoader && !(searchResults.asks.length === 0) && (
         <ScrollView
           className="py-8"
+          contentContainerStyle={{ paddingBottom: 200 }}
           refreshControl={
             <RefreshControl
               colors={[
@@ -86,6 +88,9 @@ export default function Search() {
           {searchResults.asks.map((ask: any) => {
             return (
               <Pressable
+                onPress={() => {
+                  navigation.replace('AskDetails', { askId: ask.id });
+                }}
                 key={ask.id}
                 android_ripple={{
                   color: Styles.bgPrimaryLight.backgroundColor,
