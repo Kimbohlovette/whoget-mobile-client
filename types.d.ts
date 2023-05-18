@@ -8,6 +8,7 @@ export type HomeStackParamList = {
   Authentication?: CompositeNavigationProp<AuthStackParamList>;
   UserDetails: { userId: string };
   AskDetails: { askId: string };
+  Search: undefined;
 };
 
 export type RootTabParamList = {
@@ -24,5 +25,10 @@ export type AuthStackParamList = {
 
 export type Props = NativeStackScreenProps<
   HomeStackParamList,
-  'UserDetails' | 'AskDetail' | 'CreateAsk' | 'Asks' | 'Authentication'
+  | 'UserDetails'
+  | 'AskDetail'
+  | 'CreateAsk'
+  | 'Asks'
+  | 'Authentication'
+  | 'Search'
 >;

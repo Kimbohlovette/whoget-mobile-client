@@ -177,3 +177,10 @@ export const createUser = async (payload: any) => {
   const resData = await response.json();
   return resData.newUser;
 };
+
+export const searchWhoget = async (q: string) => {
+  const response = await fetch(`${BASE_URL}search?q=${q}`);
+  const results = await response.json();
+  console.log(results);
+  return results;
+};

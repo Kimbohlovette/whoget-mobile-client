@@ -17,7 +17,10 @@ import Styles from '../SharedStyles';
 import { useAppSelector } from '../store/hooks';
 import { Props } from '../../types';
 //import { useNavigation } from '@react-navigation/native';
-import { fetchPaginatedAks } from '../apiService/fetchingFunctions';
+import {
+  fetchPaginatedAks,
+  searchWhoget,
+} from '../apiService/fetchingFunctions';
 
 const Asks = ({ navigation, route }: Props) => {
   const [showFilter, setShowFilter] = useState(false);
@@ -25,9 +28,6 @@ const Asks = ({ navigation, route }: Props) => {
   const [asks, setAsks] = useState([]);
   const user = useAppSelector(state => state.user.user);
   const [showFilterBtn, setShowFilterBtn] = useState<boolean>(true);
-  const [showSearchResultPage, setShowSearchResultPage] =
-    useState<boolean>(false);
-  const [searchResults, setSearchResults] = useState<any[]>([]);
   useEffect(() => {
     console.log('User selected in asks component', user);
     setLoadingData(true);
@@ -52,30 +52,21 @@ const Asks = ({ navigation, route }: Props) => {
     }
   };
 
-  const handleSearch = () => {
-    // fetch
-  };
-
   return (
     <>
       <View style={Styles.pageContainer} className="min-h-screen w-full">
         <View className="relative header flex-row items-center gap-2 border-b border-slate-200 py-4">
           <View className="flex-1 flex-row items-center border border-slate-300 rounded-md px-2">
-            <Icon name="search" size={20} />
             <TextInput
-              onTextInput={handleSearch}
-              keyboardType="web-search"
-              onBlur={() => {
-                setShowFilterBtn(true);
-                setShowSearchResultPage(false);
-              }}
-              onFocus={() => {
-                setShowFilterBtn(false);
-                setShowSearchResultPage(true);
+              onPressIn={() => {
+                navigation.navigate('Search');
               }}
               className="py-1 px-2 flex-1"
               placeholder="Search"
             />
+            <View className="p-1">
+              <Icon name="search" size={20} />
+            </View>
           </View>
           {showFilterBtn && (
             <Pressable onPress={handleShowFilter}>
@@ -83,31 +74,6 @@ const Asks = ({ navigation, route }: Props) => {
             </Pressable>
           )}
         </View>
-
-        {
-          /* Search dropdown page*/
-
-          showSearchResultPage && (
-            <View className="w-full relative">
-              <View
-                style={Styles.btnShadow}
-                className="z-50 absolute top-0 left-0 w-full py-5 rounded-md bg-white px-2 overflow-hidden">
-                <ScrollView>
-                  <Text className="text-primary-600 text-base font-medium text-center">
-                    Search results show here
-                  </Text>
-                  <View>
-                    {searchResults.map((item, key) => {
-                      return <View key={key}>{item}</View>;
-                    })}
-                  </View>
-                </ScrollView>
-              </View>
-            </View>
-          )
-
-          /* Search dropdown page*/
-        }
 
         {/* Filter modal */}
         <Modal visible={showFilter} transparent>

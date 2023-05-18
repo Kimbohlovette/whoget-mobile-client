@@ -29,6 +29,7 @@ import {
 } from './apiService/fetchingFunctions';
 import { updateProfile } from './store/slices/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Search from './pages/Search';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -211,6 +212,7 @@ const HomeScreen = () => {
             options={{ title: 'User details' }}
           />
           <Stack.Screen name="Authentication" component={AuthScreen} />
+          <Stack.Screen name="Search" component={Search} />
         </Stack.Group>
       </Stack.Navigator>
     </>
