@@ -26,9 +26,10 @@ const Asks = ({ navigation, route }: Props) => {
   const user = useAppSelector(state => state.user.user);
   const [showFilterBtn, setShowFilterBtn] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState(false);
-  const getAsks = () => {
+  const [page, setPage] = useState(1);
+  const getAsks = (page?: number, limit?: number) => {
     setRefreshing(true);
-    fetchPaginatedAks(1, 100)
+    fetchPaginatedAks(page, limit)
       .then(data => {
         setAsks(data);
         setRefreshing(false);
@@ -53,7 +54,7 @@ const Asks = ({ navigation, route }: Props) => {
   };
 
   const onRefresh = React.useCallback(() => {
-    getAsks();
+    getAsks(1, 15);
   }, []);
   return (
     <>
@@ -194,6 +195,8 @@ const Asks = ({ navigation, route }: Props) => {
             ItemSeparatorComponent={ListSeparator}
             onEndReached={() => {
               // Implement the pagination fetching here
+              setPage(state => state + 1);
+              getAsks(page);
             }}
           />
         </View>
