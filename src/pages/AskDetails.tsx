@@ -97,7 +97,9 @@ const AskDetails = ({ navigation, route }: Props) => {
                     }}
                     android_ripple={{ color: 'lightgray' }}>
                     <Text className="text-slate-600 text-sm">
-                      {currentAsk.userName}
+                      {currentAsk.userName === '' || !currentAsk.userName
+                        ? '~Unkown'
+                        : currentAsk.userName}
                     </Text>
                   </Pressable>
                   <Text className="text-xs text-slate-400">

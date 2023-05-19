@@ -28,7 +28,6 @@ export default function Search({ navigation }: Props) {
   const handleSearch = () => {
     setRefreshing(true);
     searchWhoget(searchKey).then(data => {
-      console.log(data.asks);
       setSearchResults(data);
       setRefreshing(false);
     });

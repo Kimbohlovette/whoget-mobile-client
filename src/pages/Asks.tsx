@@ -59,7 +59,7 @@ const Asks = ({ navigation, route }: Props) => {
     <>
       <View style={Styles.pageContainer} className="min-h-screen w-full">
         <View className="relative header flex-row items-center gap-2 border-b border-slate-200 py-4">
-          <View className="flex-1 flex-row items-center bg-white border border-slate-200 rounded-lg px-2">
+          <View className="flex-1 flex-row items-center bg-slate-50 rounded-lg px-2">
             <TextInput
               onPressIn={() => {
                 navigation.navigate('Search');
@@ -71,11 +71,12 @@ const Asks = ({ navigation, route }: Props) => {
               <Icon name="search" size={20} />
             </View>
           </View>
-          {showFilterBtn && (
-            <Pressable onPress={handleShowFilter}>
-              <Icon name="md-funnel-outline" size={18} />
-            </Pressable>
-          )}
+
+          <Pressable
+            className="rounded-lg bg-slate-50 w-fit aspect-square p-2"
+            onPress={handleShowFilter}>
+            <Icon name="md-funnel-outline" size={18} />
+          </Pressable>
         </View>
 
         {/* Filter modal */}
@@ -239,13 +240,15 @@ const Ask = (props: { ask: any; navigation: any; route: any }) => {
       android_ripple={{ color: 'slate' }}
       className="z-0 py-4 px-2 flex-row gap-4">
       <View className="flex-1">
-        <View className="flex-row items-center">
+        <View className="w-full flex-row flex-between items-center">
           <Pressable
             onPress={() => {
               props.navigation.navigate('Profile');
             }}>
             <Text className="text-slate-500 font-extralight">
-              {!props.ask.name ? 'Anonymous 😎' : props.ask.name}
+              {!props.ask.userName || props.ask.userName === ''
+                ? '~Unkown'
+                : `~${props.ask.userName}`}
             </Text>
           </Pressable>
           <Text className="text-slate-400 font-extralight py-1">
