@@ -22,16 +22,22 @@ import { fetchPaginatedAks } from '../apiService/fetchingFunctions';
 const Asks = ({ navigation, route }: Props) => {
   const [showFilter, setShowFilter] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
-  const [asks, setAsks] = useState([]);
+  const [asks, setAsks] = useState<any[]>([]);
   const user = useAppSelector(state => state.user.user);
   const [showFilterBtn, setShowFilterBtn] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
+  const PAGE_LIMIT = 10;
+
   const getAsks = (page?: number, limit?: number) => {
     setRefreshing(true);
     fetchPaginatedAks(page, limit)
       .then(data => {
-        setAsks(data);
+        data.forEach((item: any) => {
+          if (asks.every(ask => ask.id !== item.id)) {
+            setAsks((asks: any) => asks.push(item));
+          }
+        });
         setRefreshing(false);
       })
       .catch(() => {
@@ -40,7 +46,7 @@ const Asks = ({ navigation, route }: Props) => {
   };
   useEffect(() => {
     console.log('User selected in asks component', user);
-    getAsks();
+    getAsks(page, PAGE_LIMIT);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
@@ -54,7 +60,8 @@ const Asks = ({ navigation, route }: Props) => {
   };
 
   const onRefresh = React.useCallback(() => {
-    getAsks(1, 15);
+    setAsks([]);
+    getAsks(1, PAGE_LIMIT);
   }, []);
   return (
     <>
@@ -195,8 +202,9 @@ const Asks = ({ navigation, route }: Props) => {
             ItemSeparatorComponent={ListSeparator}
             onEndReached={() => {
               // Implement the pagination fetching here
-              setPage(state => state + 1);
-              getAsks(page);
+              setPage(page => page + 1);
+              console.log(`Page:${page}, Limit: ${PAGE_LIMIT}`);
+              getAsks(page, PAGE_LIMIT);
             }}
           />
         </View>
