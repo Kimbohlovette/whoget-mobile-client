@@ -26,18 +26,20 @@ const Asks = ({ navigation, route }: Props) => {
   const user = useAppSelector(state => state.user.user);
   const [showFilterBtn, setShowFilterBtn] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState(false);
-  useEffect(() => {
-    console.log('User selected in asks component', user);
-    setLoadingData(true);
+  const getAsks = () => {
+    setRefreshing(true);
     fetchPaginatedAks(1, 100)
       .then(data => {
         setAsks(data);
-        setLoadingData(false);
+        setRefreshing(false);
       })
       .catch(() => {
-        setLoadingData(false);
+        setRefreshing(false);
       });
-
+  };
+  useEffect(() => {
+    console.log('User selected in asks component', user);
+    getAsks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
@@ -51,22 +53,19 @@ const Asks = ({ navigation, route }: Props) => {
   };
 
   const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
+    getAsks();
   }, []);
   return (
     <>
       <View style={Styles.pageContainer} className="min-h-screen w-full">
         <View className="relative header flex-row items-center gap-2 border-b border-slate-200 py-4">
-          <View className="flex-1 flex-row items-center border border-slate-300 rounded-md px-2">
+          <View className="flex-1 flex-row items-center bg-white border border-slate-200 rounded-lg px-2">
             <TextInput
               onPressIn={() => {
                 navigation.navigate('Search');
               }}
               className="py-1 px-2 flex-1"
-              placeholder="Search"
+              placeholder="Search asks, users, categories etc."
             />
             <View className="p-1">
               <Icon name="search" size={20} />
@@ -172,7 +171,14 @@ const Asks = ({ navigation, route }: Props) => {
             contentContainerStyle={{ paddingBottom: 300 }}
             bounces
             refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              <RefreshControl
+                refreshing={refreshing}
+                colors={[
+                  Styles.bgPrimary.backgroundColor,
+                  Styles.bgSecondary.backgroundColor,
+                ]}
+                onRefresh={onRefresh}
+              />
             }
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={ListEmptyComponent}

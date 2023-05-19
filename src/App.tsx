@@ -25,6 +25,7 @@ import {
   fetchCategories,
   fetchOneUserByEmail,
   saveCategoriesToAsyncStorage,
+  saveLocationsToAsyncStorage,
   // saveLocationsToAsyncStorage,
 } from './apiService/fetchingFunctions';
 import { updateProfile } from './store/slices/userSlice';
@@ -38,26 +39,26 @@ const App = () => {
   const [loadingInformation, setloadingInformation] = useState<
     'idle' | 'loading' | 'failed' | 'successful'
   >('idle');
-  // const locations = [
-  //   'Buea',
-  //   'Limbe',
-  //   'Bertua',
-  //   'Douala',
-  //   'Bamenda',
-  //   'Tiku',
-  //   'Mutengene',
-  //   'Kumba',
-  //   'Douala',
-  //   'Yaounde',
-  //   'Ngaoundere',
-  //   'Loum',
-  //   'Maroua',
-  //   'Garoua',
-  //   'Bafussam',
-  // ];
+  const locations = [
+    'Buea',
+    'Limbe',
+    'Bertua',
+    'Douala',
+    'Bamenda',
+    'Tiku',
+    'Mutengene',
+    'Kumba',
+    'Douala',
+    'Yaounde',
+    'Ngaoundere',
+    'Loum',
+    'Maroua',
+    'Garoua',
+    'Bafussam',
+  ];
   useEffect(() => {
-    // saveLocationsToAsyncStorage(locations);
-    //Fetch user information
+    saveLocationsToAsyncStorage(locations);
+    //  Fetch user information
     setloadingInformation('loading');
     AsyncStorage.getItem('@authToken').then(token => {
       if (token) {

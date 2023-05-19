@@ -25,41 +25,38 @@ export default function Search({ navigation }: Props) {
     users: [],
   });
 
-  const onRefresh = React.useCallback(() => {
+  const handleSearch = () => {
     setRefreshing(true);
-    setTimeout(() => {
+    searchWhoget(searchKey).then(data => {
+      console.log(data.asks);
+      setSearchResults(data);
       setRefreshing(false);
-    }, 2000);
+    });
+  };
+  const onRefresh = React.useCallback(() => {
+    handleSearch();
   }, []);
 
   return (
     <View className="py-4 bg-white min-h-screen">
       <View className="px-4 py-2">
         <View className="flex-row items-center border rounded-md px-2 border-slate-200 bg-white">
+          <Pressable
+            focusable={false}
+            onPress={() => {}}
+            className="p-1 rounded-full">
+            <Ionicon name="search" size={20} />
+          </Pressable>
           <TextInput
             onSubmitEditing={() => {
-              searchWhoget(searchKey).then(data => {
-                console.log(data.asks);
-                setSearchResults(data);
-              });
+              handleSearch();
             }}
             value={searchKey}
             onChangeText={setSearchKey}
             className="py-1 px-2 flex-1"
-            placeholder="Search"
+            placeholder="Search asks, users, categories etc."
             autoFocus
           />
-          <Pressable
-            focusable={false}
-            onPress={() => {
-              searchWhoget(searchKey).then(data => {
-                console.log(data.asks);
-                setSearchResults(data);
-              });
-            }}
-            className="p-1">
-            <Ionicon name="search" size={20} />
-          </Pressable>
         </View>
       </View>
 
@@ -105,9 +102,6 @@ export default function Search({ navigation }: Props) {
                 <View>
                   <Text className="text-slate-600">
                     {textEllipsis(ask.message, 18)}
-                  </Text>
-                  <Text className="text-slate-400">
-                    {ask.location || 'Buea'}
                   </Text>
                 </View>
               </Pressable>
