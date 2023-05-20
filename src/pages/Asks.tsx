@@ -9,7 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { textEllipsis } from '../shared/ellipseText';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
@@ -18,6 +18,7 @@ import { useAppSelector } from '../store/hooks';
 import { Props } from '../../types';
 //import { useNavigation } from '@react-navigation/native';
 import { fetchPaginatedAks } from '../apiService/fetchingFunctions';
+import { current } from '@reduxjs/toolkit';
 
 const Asks = ({ navigation, route }: Props) => {
   const [showFilter, setShowFilter] = useState(false);
@@ -26,27 +27,17 @@ const Asks = ({ navigation, route }: Props) => {
   const user = useAppSelector(state => state.user.user);
   const [showFilterBtn, setShowFilterBtn] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [page, setPage] = useState(1);
-  const PAGE_LIMIT = 10;
-
-  const getAsks = (page?: number, limit?: number) => {
-    setRefreshing(true);
-    fetchPaginatedAks(page, limit)
-      .then(data => {
-        data.forEach((item: any) => {
-          if (asks.every(ask => ask.id !== item.id)) {
-            setAsks((asks: any) => asks.push(item));
-          }
-        });
-        setRefreshing(false);
-      })
-      .catch(() => {
-        setRefreshing(false);
-      });
-  };
+  const [nextPage, setNextPage] = useState(2);
+  const [endOfListReached, setEndOfListReached] = useState<boolean>(false);
+  const pageLimit = 15;
   useEffect(() => {
-    console.log('User selected in asks component', user);
-    getAsks(page, PAGE_LIMIT);
+    fetchPaginatedAks(1, pageLimit)
+      .then(data => {
+        setAsks(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
@@ -59,10 +50,16 @@ const Asks = ({ navigation, route }: Props) => {
     }
   };
 
-  const onRefresh = React.useCallback(() => {
-    setAsks([]);
-    getAsks(1, PAGE_LIMIT);
-  }, []);
+  const onRefresh = () => {
+    fetchPaginatedAks(1, pageLimit)
+      .then(data => {
+        setAsks(data);
+        setNextPage(2);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
   return (
     <>
       <View style={Styles.pageContainer} className="min-h-screen w-full">
@@ -199,12 +196,31 @@ const Asks = ({ navigation, route }: Props) => {
                 </View>
               );
             }}
+            keyExtractor={item => `${item.id}${Date.now()}`}
             ItemSeparatorComponent={ListSeparator}
+            onEndReachedThreshold={0.4}
             onEndReached={() => {
               // Implement the pagination fetching here
-              setPage(page => page + 1);
-              console.log(`Page:${page}, Limit: ${PAGE_LIMIT}`);
-              getAsks(page, PAGE_LIMIT);
+              if (!refreshing) {
+                setRefreshing(true);
+                // Check if end of list was reached to prevent calls with empty response
+                if (!endOfListReached) {
+                  fetchPaginatedAks(nextPage, pageLimit).then(data => {
+                    if (data.length !== 0) {
+                      setAsks(currentAsk =>
+                        Array.from(new Set([...currentAsk, ...data])),
+                      );
+                      setNextPage(current => current + 1);
+                      console.log('Asks available', asks.length);
+                      console.log('Next page: ', nextPage, '\n\n\n');
+                      setRefreshing(false);
+                    } else {
+                      setEndOfListReached(true); // List is empty
+                      setRefreshing(false);
+                    }
+                  });
+                }
+              }
             }}
           />
         </View>
