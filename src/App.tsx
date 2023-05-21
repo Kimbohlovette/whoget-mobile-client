@@ -31,6 +31,8 @@ import {
 import { updateProfile } from './store/slices/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Search from './pages/Search';
+import { updateLocations } from './store/slices/locationSlice';
+import { updateCategories } from './store/slices/categorySlice';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -48,7 +50,6 @@ const App = () => {
     'Tiku',
     'Mutengene',
     'Kumba',
-    'Douala',
     'Yaounde',
     'Ngaoundere',
     'Loum',
@@ -57,8 +58,16 @@ const App = () => {
     'Bafussam',
   ];
   useEffect(() => {
-    saveLocationsToAsyncStorage(locations);
-    //  Fetch user information
+    dispatch(
+      updateLocations(
+        locations.map(location => {
+          return {
+            id: `${location}${Date.now()}`,
+            title: location,
+          };
+        }),
+      ),
+    );
     setloadingInformation('loading');
     AsyncStorage.getItem('@authToken').then(token => {
       if (token) {
@@ -83,11 +92,16 @@ const App = () => {
       // Fetch categories and store in the local storage
       fetchCategories(1, 2000)
         .then(cats => {
-          saveCategoriesToAsyncStorage(cats)
-            .then(() => console.log('local categories updated'))
-            .catch(() =>
-              console.log('Error occured while updating categories'),
-            );
+          dispatch(
+            updateCategories(
+              cats.map((cat: { name: string; id: string }) => {
+                return {
+                  title: cat.name,
+                  id: cat.id,
+                };
+              }),
+            ),
+          );
         })
         .catch(error => {
           console.log(error);
