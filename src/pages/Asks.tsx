@@ -4,7 +4,6 @@ import {
   Modal,
   Pressable,
   RefreshControl,
-  ScrollView,
   Text,
   TextInput,
   View,
@@ -17,18 +16,26 @@ import Styles from '../SharedStyles';
 import { useAppSelector } from '../store/hooks';
 import { Props } from '../../types';
 //import { useNavigation } from '@react-navigation/native';
-import { fetchPaginatedAks } from '../apiService/fetchingFunctions';
+import {
+  fetchFilteredAsks,
+  fetchPaginatedAks,
+} from '../apiService/fetchingFunctions';
 import { current } from '@reduxjs/toolkit';
 
 const Asks = ({ navigation, route }: Props) => {
-  const [showFilter, setShowFilter] = useState(false);
-  const [loadingData, setLoadingData] = useState(false);
+  const [showFilter, setShowFilter] = useState(false); //state  to show/hide filter modal
   const [asks, setAsks] = useState<any[]>([]);
-  const user = useAppSelector(state => state.user.user);
-  const [showFilterBtn, setShowFilterBtn] = useState<boolean>(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState(false); // state for handling refreshes
   const [nextPage, setNextPage] = useState(2);
   const [endOfListReached, setEndOfListReached] = useState<boolean>(false);
+
+  /** ===== States for filtering asks =======*/
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [selectedExpires, setSelectedExpires] = useState<number>(0);
+  const [filtering, setFiltering] = useState<boolean>(false);
+
+  /** ===================================== */
   const pageLimit = 15;
   useEffect(() => {
     fetchPaginatedAks(1, pageLimit)
@@ -40,7 +47,10 @@ const Asks = ({ navigation, route }: Props) => {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
+  const categories = useAppSelector(state => state.category.categories);
+  const locations = useAppSelector(state => state.location.locations);
   //const navigation = useNavigation();
   const handleShowFilter = () => {
     if (showFilter) {
@@ -58,6 +68,7 @@ const Asks = ({ navigation, route }: Props) => {
       })
       .catch(error => {
         console.log(error);
+        setRefreshing(false);
       });
   };
   return (
@@ -84,7 +95,7 @@ const Asks = ({ navigation, route }: Props) => {
           </Pressable>
         </View>
 
-        {/* Filter modal */}
+        {/* ========================Filter modal ==================== */}
         <Modal visible={showFilter} transparent>
           <Pressable
             onPress={() => {
@@ -101,15 +112,14 @@ const Asks = ({ navigation, route }: Props) => {
                     clearOnFocus
                     inputContainerStyle={Styles.InputContainer}
                     showClear={false}
-                    initialValue={{ id: '0', title: 'Category' }}
-                    dataSet={[
-                      { id: '0', title: 'Category' },
-                      { id: '1', title: 'Mobile Phone' },
-                      { id: '2', title: 'Electronics' },
-                      { id: '3', title: 'Health Care' },
-                      { id: '4', title: 'Agriculture' },
-                    ]}
-                    textInputProps={{ placeholder: 'search categories' }}
+                    dataSet={categories}
+                    textInputProps={{
+                      placeholder: 'Category',
+                      placeholderTextColor: 'gray',
+                    }}
+                    onSelectItem={item => {
+                      item && setSelectedCategory(item.id);
+                    }}
                   />
                 </View>
                 <View>
@@ -118,13 +128,14 @@ const Asks = ({ navigation, route }: Props) => {
                     inputContainerStyle={Styles.InputContainer}
                     showClear={false}
                     initialValue={{ id: '0', title: 'Location' }}
-                    dataSet={[
-                      { id: '0', title: 'Location' },
-                      { id: '1', title: 'Buea' },
-                      { id: '2', title: 'Limbe' },
-                      { id: '3', title: 'Yaounde' },
-                      { id: '4', title: 'Douala' },
-                    ]}
+                    dataSet={locations}
+                    textInputProps={{
+                      placeholder: 'Location',
+                      placeholderTextColor: 'gray',
+                    }}
+                    onSelectItem={item => {
+                      item && setSelectedLocation(item.title as string);
+                    }}
                   />
                 </View>
                 <View>
@@ -132,15 +143,22 @@ const Asks = ({ navigation, route }: Props) => {
                     clearOnFocus
                     inputContainerStyle={Styles.InputContainer}
                     showClear={false}
-                    initialValue={{ id: '0', title: 'Expiration date' }}
                     dataSet={[
-                      { id: '0', title: 'Expiration date' },
-                      { id: '1', title: 'Mobile Phone' },
-                      { id: '2', title: 'Electronics' },
-                      { id: '3', title: 'Health Care' },
-                      { id: '4', title: 'Agriculture' },
+                      { id: '1', title: 'Today' },
+                      { id: '2', title: 'Tomorrow' },
+                      { id: '3', title: '3 Days' },
+                      { id: '4', title: '4 Days' },
+                      { id: '5', title: '5 Days' },
+                      { id: '6', title: '6 Days' },
+                      { id: '7', title: '7 Days' },
                     ]}
-                    textInputProps={{ placeholder: 'search categories' }}
+                    textInputProps={{
+                      placeholder: 'Expiration date',
+                      placeholderTextColor: 'gray',
+                    }}
+                    onSelectItem={item => {
+                      item && setSelectedExpires(Number(item.id));
+                    }}
                   />
                 </View>
               </View>
@@ -157,9 +175,40 @@ const Asks = ({ navigation, route }: Props) => {
                 </Pressable>
                 <Pressable
                   onPress={() => {
+                    const isValidSelection =
+                      selectedCategory !== '' &&
+                      selectedLocation !== '' &&
+                      selectedExpires !== 0;
+                    if (isValidSelection) {
+                      // fetch categories with filters
+                      setRefreshing(true);
+                      setFiltering(true);
+                      fetchFilteredAsks(
+                        selectedCategory,
+                        selectedLocation,
+                        selectedExpires,
+                      )
+                        .then(data => {
+                          setAsks(data);
+                          setFiltering(false);
+                        })
+                        .catch(error => {
+                          console.log(error);
+                          setFiltering(false);
+                        })
+                        .finally(() => {
+                          setFiltering(false);
+                          setRefreshing(false);
+                        });
+                    }
                     setShowFilter(false);
                   }}
-                  className="rounded-md border bg-primary-600 border-primary-500 focus:shadow-sm"
+                  disabled={filtering}
+                  className={
+                    filtering
+                      ? 'rounded-md border bg-primary-300 border-primary-500 focus:shadow-sm'
+                      : 'rounded-md border bg-primary-600 border-primary-500 focus:shadow-sm'
+                  }
                   android_ripple={{ color: 'lightgray' }}>
                   <Text className="text-center text-white font-medium py-2 px-5">
                     Apply filter
@@ -202,21 +251,16 @@ const Asks = ({ navigation, route }: Props) => {
             onEndReached={() => {
               // Implement the pagination fetching here
               if (!refreshing) {
-                setRefreshing(true);
                 // Check if end of list was reached to prevent calls with empty response
                 if (!endOfListReached) {
                   fetchPaginatedAks(nextPage, pageLimit).then(data => {
                     if (data.length !== 0) {
                       setAsks(currentAsk =>
+                        // use a set data structure to filter repeated data
                         Array.from(new Set([...currentAsk, ...data])),
                       );
-                      setNextPage(current => current + 1);
-                      console.log('Asks available', asks.length);
-                      console.log('Next page: ', nextPage, '\n\n\n');
-                      setRefreshing(false);
                     } else {
                       setEndOfListReached(true); // List is empty
-                      setRefreshing(false);
                     }
                   });
                 }

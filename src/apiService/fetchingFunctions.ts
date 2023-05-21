@@ -184,3 +184,16 @@ export const searchWhoget = async (q: string) => {
   console.log(results);
   return results;
 };
+
+export const fetchFilteredAsks = async (
+  category: string,
+  location: string,
+  expires: number,
+) => {
+  const response = await fetch(
+    `${BASE_URL}asks/filter?category=${category}&location=${location}&expires=${expires}`,
+  );
+
+  const resData = await response.json();
+  return resData.asks;
+};
