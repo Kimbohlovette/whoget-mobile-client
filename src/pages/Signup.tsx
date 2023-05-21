@@ -80,7 +80,7 @@ const Signup = () => {
                   setTimeout(() => {
                     setAuthMessage('');
                     navigation.navigate('Signin');
-                  }, 2000);
+                  }, 1000);
                 }
               });
             }}
@@ -107,7 +107,10 @@ const Signup = () => {
             </Text>
 
             <View>
-              <Pressable>
+              <Pressable
+                onPress={() => {
+                  navigation.replace('Signin');
+                }}>
                 <Text className="text-orange-400">Sign in</Text>
               </Pressable>
             </View>

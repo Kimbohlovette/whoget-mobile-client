@@ -31,13 +31,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'CreateAsk'>;
 const CreateAsk = ({ navigation }: Props) => {
-  const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
+  const [selectedExpires, setSelectedExpires] = useState<string>('');
   const [showImagePickerModal, setShowImagePickerModal] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<any>('Buea');
   const [selectedCategory, setSelectedCateory] = useState<any>(null);
   const [message, setMessage] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [isCreating, setIsCreating] = useState<boolean>(false);
 
   /** Get data from redux store */
   const { user, isAuthenticated } = useAppSelector(state => state.user);
@@ -171,17 +171,27 @@ const CreateAsk = ({ navigation }: Props) => {
           />
         </View>
         <View>
-          <Pressable
-            onPress={() => {
-              setOpen(true);
+          <AutocompleteDropdown
+            clearOnFocus
+            inputContainerStyle={Styles.InputContainer}
+            showClear={false}
+            dataSet={[
+              { id: '1', title: 'Today' },
+              { id: '2', title: 'Tomorrow' },
+              { id: '3', title: '3 Days' },
+              { id: '4', title: '4 Days' },
+              { id: '5', title: '5 Days' },
+              { id: '6', title: '6 Days' },
+              { id: '7', title: '7 Days' },
+            ]}
+            textInputProps={{
+              placeholder: 'Expiration date',
+              placeholderTextColor: 'gray',
             }}
-            android_ripple={{ color: 'lightgray' }}
-            className="flex-row justify-between py-3 px-4 border border-slate-300 rounded-lg">
-            <Text>{date.toLocaleDateString()}</Text>
-            <View>
-              <FoIcon name="date" size={16} />
-            </View>
-          </Pressable>
+            onSelectItem={item => {
+              item && setSelectedExpires(item.id as string);
+            }}
+          />
         </View>
         <View>
           <FlatList
@@ -234,6 +244,7 @@ const CreateAsk = ({ navigation }: Props) => {
           <Text className="text-center text-slate-600">Cancel</Text>
         </Pressable>
         <Pressable
+          disabled={isCreating}
           onPress={async () => {
             if (!isAuthenticated) {
               navigation.navigate('Authentication');
@@ -247,7 +258,7 @@ const CreateAsk = ({ navigation }: Props) => {
               userId: user.id,
               userName: user.name,
               status: 'visible',
-              expirationDate: date.toString(),
+              expirationDate: selectedExpires,
             };
             const imageUrl = selectedImageList.filter(
               item => item.id !== undefined,
@@ -272,20 +283,25 @@ const CreateAsk = ({ navigation }: Props) => {
                 .getDownloadURL();
               console.log('');
               console.log({ ...newAsk, imageUrl: url });
+              setIsCreating(true);
               createAsk({ ...newAsk, imageUrl: url })
                 .then(() => {
                   toastAndroid('Ask successfully created.');
-                  setTimeout(() => {
-                    navigation.goBack();
-                  }, 1000);
                 })
                 .catch(error => {
                   console.log('Eror occured while creating ask: ', error);
+                })
+                .finally(() => {
+                  setIsCreating(false);
                 });
             }
           }}
           android_ripple={{ color: 'lightgray' }}
-          className="w-1/3 py-2 px-5 rounded-lg border border-primary-500 bg-primary-500">
+          className={
+            isCreating
+              ? 'w-1/3 py-2 px-5 rounded-lg border border-primary-500 bg-primary-300 animate-pulse'
+              : 'w-1/3 py-2 px-5 rounded-lg border border-primary-500 bg-primary-500'
+          }>
           <Text className="text-white text-center">Place Ask</Text>
         </Pressable>
       </View>
@@ -334,21 +350,6 @@ const CreateAsk = ({ navigation }: Props) => {
           </View>
         </Pressable>
       </Modal>
-
-      {/* Date picker component triggering code */}
-
-      <DatePicker
-        modal
-        open={open}
-        date={date}
-        onConfirm={dte => {
-          setOpen(false);
-          setDate(dte);
-        }}
-        onCancel={() => {
-          setOpen(false);
-        }}
-      />
     </ScrollView>
   );
 };
