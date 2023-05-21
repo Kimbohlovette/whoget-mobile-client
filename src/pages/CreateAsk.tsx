@@ -34,16 +34,16 @@ const CreateAsk = ({ navigation }: Props) => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [showImagePickerModal, setShowImagePickerModal] = useState(false);
-  const [places, setPlaces] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<any>('Buea');
   const [selectedCategory, setSelectedCateory] = useState<any>(null);
-  const [loadingLocations, setLoadingLocations] = useState<boolean>(false);
-  const [loadingCategories, setLoadingCategories] = useState<boolean>(false);
   const [message, setMessage] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
+  /** Get data from redux store */
   const { user, isAuthenticated } = useAppSelector(state => state.user);
+  const places = useAppSelector(state => state.location.locations);
+  const categories = useAppSelector(state => state.category.categories);
+
   const handleImagePicker = (mode: 'camera' | 'gallery') => {
     if (mode === 'camera') {
       ImagePicker.openCamera({
@@ -102,40 +102,6 @@ const CreateAsk = ({ navigation }: Props) => {
     <AddImageBtn />,
   ]);
 
-  useEffect(() => {
-    // Load places from the async storage
-    setLoadingLocations(true);
-    getLocationsFromAsyncStorage()
-      .then(locations => {
-        setPlaces(
-          locations.map((value: any, key: any) => ({ title: value, id: key })),
-        );
-        console.log('Available locations', locations);
-        // console.log('Available places', locations);
-        setLoadingLocations(false);
-      })
-      .catch(() => {
-        console.log('Could not load locations from the storage.');
-      });
-    // Load categories from the async storage
-    setLoadingCategories(true);
-    getCategoriesFromAsyncStorage()
-      .then(cats => {
-        setCategories(
-          cats.map((cat: { id: string; name: string }) => ({
-            id: cat.id,
-            title: cat.name,
-          })),
-        );
-        console.log('Available categories', categories);
-        setLoadingCategories(false);
-      })
-      .catch(() => {
-        console.log('Could not load locations from the storage.');
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -166,7 +132,6 @@ const CreateAsk = ({ navigation }: Props) => {
               item && setSelectedCateory(item);
             }}
             dataSet={categories}
-            loading={loadingCategories}
           />
         </View>
         <View>
@@ -203,7 +168,6 @@ const CreateAsk = ({ navigation }: Props) => {
               item && setSelectedLocation(item);
             }}
             dataSet={places}
-            loading={loadingLocations}
           />
         </View>
         <View>
