@@ -34,7 +34,6 @@ const Asks = ({ navigation, route }: Props) => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [selectedExpires, setSelectedExpires] = useState<number>(0);
   const [filtering, setFiltering] = useState<boolean>(false);
-
   /** ===================================== */
   const pageLimit = 15;
   useEffect(() => {
@@ -76,6 +75,9 @@ const Asks = ({ navigation, route }: Props) => {
       <View style={Styles.pageContainer} className="min-h-screen w-full">
         <View className="relative header flex-row items-center gap-2 border-b border-slate-200 py-4">
           <View className="flex-1 flex-row items-center bg-slate-50 rounded-lg px-2">
+            <View className="p-1">
+              <Icon name="search" size={20} />
+            </View>
             <TextInput
               onPressIn={() => {
                 navigation.navigate('Search');
@@ -83,9 +85,6 @@ const Asks = ({ navigation, route }: Props) => {
               className="py-1 px-2 flex-1"
               placeholder="Search asks, users, categories etc."
             />
-            <View className="p-1">
-              <Icon name="search" size={20} />
-            </View>
           </View>
 
           <Pressable
@@ -255,14 +254,19 @@ const Asks = ({ navigation, route }: Props) => {
                 if (!endOfListReached) {
                   fetchPaginatedAks(nextPage, pageLimit).then(data => {
                     if (data.length !== 0) {
+                      console.log(`Length: ${data.length} \n\n`);
+                      console.log(`Page number: ${nextPage} \n`);
                       setAsks(currentAsk =>
                         // use a set data structure to filter repeated data
                         Array.from(new Set([...currentAsk, ...data])),
                       );
+                      setNextPage(state => state + 1);
                     } else {
+                      console.log('End of list reached');
                       setEndOfListReached(true); // List is empty
                     }
                   });
+                  console.log(`Total data available: ${asks.length}`);
                 }
               }
             }}

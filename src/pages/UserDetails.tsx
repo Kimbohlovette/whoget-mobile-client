@@ -13,7 +13,7 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'UserDetails'>;
-const UserDetails = ({ route }: Props) => {
+const UserDetails = ({ navigation, route }: Props) => {
   const userId = route.params ? route.params.userId : '';
   const [userInfo, setUserInfo] = useState<any>(null);
   const [userAsks, setUserAsks] = useState<any>([]);
@@ -156,12 +156,12 @@ const UserDetails = ({ route }: Props) => {
           <View className="relative py-1 w-1/5">
             <Text className="text-slate-700">My Asks</Text>
             <View className="absolute top-0 right-1 h-4 aspect-square justify-center items-center bg-secondary-500 rounded-full">
-              <Text className="text-[10px] text-white">{numOfAsks}</Text>
+              <Text className="text-[10px] text-white">{numOfAsks || 0}</Text>
             </View>
           </View>
           <View className="w-full gap-y-2 divide-y divide-slate-200">
             <View>
-              {userAsks.length === 0 ? (
+              {userAsks && userAsks.length === 0 ? (
                 <View className="justify-center items-center my-5">
                   {loadingUserAsksStatus === 'loading' && (
                     <ActivityIndicator
@@ -171,8 +171,9 @@ const UserDetails = ({ route }: Props) => {
                   )}
                 </View>
               ) : (
+                userAsks &&
                 userAsks.map((ask: any, key: any) => (
-                  <UserAsk key={key} ask={ask} />
+                  <UserAsk key={key} ask={ask} navigation={navigation} />
                 ))
               )}
             </View>
@@ -183,10 +184,14 @@ const UserDetails = ({ route }: Props) => {
   );
 };
 
-const UserAsk = (props: { ask: any }) => {
+const UserAsk = (props: { ask: any; navigation: any }) => {
   return (
     <View className="flex-row items-center gap-x-2 justify-between py-2">
-      <View className="flex-1 flex-row items-center">
+      <Pressable
+        onPress={() => {
+          props.navigation.navigate('AskDetails', { askId: props.ask.id });
+        }}
+        className="flex-1 flex-row items-center">
         <View className="h-12 mr-2 aspect-square bg-slate-300 rounded-full overflow-hidden">
           <Image
             source={{ uri: props.ask.imageUrl }}
@@ -198,7 +203,7 @@ const UserAsk = (props: { ask: any }) => {
             {textEllipsis(props.ask.message, 10)}
           </Text>
         </View>
-      </View>
+      </Pressable>
       <View>
         <Text className="text-slate-400 text-sm">
           {new Date(props.ask.createdAt).toLocaleDateString()}
