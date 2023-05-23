@@ -11,15 +11,14 @@ import { useNavigation } from '@react-navigation/native';
 import { updateAuthStatus } from '../store/slices/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { toastAndroid } from '../shared/toastAndroid';
 
 const Profile = () => {
   const [showEmail, setShowEmail] = useState(false);
   const [userAsks, setUserAsks] = useState([]);
-  const user = useAppSelector(state => state.user.user);
   const [numOfAsks, setNumOfAsks] = useState(0);
   const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
+  const user = useAppSelector(state => state.user.user);
   useEffect(() => {
     fetchAsksByUserId(user.id)
       .then(data => {
@@ -29,8 +28,10 @@ const Profile = () => {
       .catch(() => {
         // handle error here
       });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     user && (
       <ScrollView contentContainerStyle={Styles.pageContainer}>
@@ -72,8 +73,6 @@ const Profile = () => {
                       GoogleSignin.signOut().then(() => {
                         AsyncStorage.removeItem('@authToken').then(() => {
                           dispatch(updateAuthStatus(false));
-                          toastAndroid('You are signed out!');
-                          console.log('You are signed out!');
                         });
                       });
                     }}
@@ -101,18 +100,16 @@ const Profile = () => {
           <View className="my-4 w-3/4">
             <View>
               <Text className="text-center text-slate-500">Phone number</Text>
-              <TextInput
-                defaultValue={user.contactNumber}
-                className="text-slate-800 text-center font-bold border border-slate-300 py-3 rounded-lg w-full px-8 my-2"
-              />
+              <Text className="text-slate-800 text-center font-bold border border-slate-300 py-3 rounded-lg w-full px-8 my-2">
+                {user.phoneNumber}
+              </Text>
             </View>
 
             <View>
               <Text className="text-center text-slate-500">Location</Text>
-              <TextInput
-                defaultValue="Douala Cameroon"
-                className="text-slate-800 text-center font-bold border border-slate-300 py-3 rounded-lg w-full px-8 my-2"
-              />
+              <Text className="text-slate-800 text-center font-bold border border-slate-300 py-3 rounded-lg w-full px-8 my-2">
+                {user.location}
+              </Text>
             </View>
 
             <View className="flex-row justify-center items-center gap-2 my-2">
@@ -129,7 +126,7 @@ const Profile = () => {
             <View className="relative py-1 w-1/5">
               <Text className="text-slate-700">My Asks</Text>
               <View className="absolute top-0 right-1 h-4 aspect-square justify-center items-center bg-secondary-500 rounded-full">
-                <Text className="text-[10px] text-white">{numOfAsks}</Text>
+                <Text className="text-[10px] text-white">{numOfAsks || 0}</Text>
               </View>
             </View>
             <View className="w-full gap-y-2 divide-y divide-slate-200">

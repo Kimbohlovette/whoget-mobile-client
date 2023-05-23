@@ -47,7 +47,7 @@ const Signup = () => {
               console.log('authenticating');
               signinWithGoogle().then(response => {
                 if (response.additionalUserInfo?.isNewUser) {
-                  // get info from the database and create a new user
+                  // New user, get ready for signup proccess
                   const newUser = {
                     name: response.user.displayName,
                     email: response.user.email,
@@ -57,24 +57,8 @@ const Signup = () => {
                     role: 'user',
                     status: 'active',
                   };
-                  createUser(newUser).then(newuser => {
-                    toastAndroid('Great! You are signed in.');
-                    dispatch(updateProfile(newuser));
-                    response.user.getIdToken().then(token => {
-                      AsyncStorage.setItem(
-                        '@authToken',
-                        JSON.stringify({
-                          token,
-                          email: response.user.email,
-                        }),
-                      );
-                      dispatch(updateAuthStatus(true));
-                    });
-                  });
-                  console.log(response.user.getIdToken());
-                  dispatch(updateAuthStatus(true));
-                  console.log('Google authentication complete.');
-                  navigation.navigate('Categories');
+                  dispatch(updateProfile(newUser));
+                  navigation.navigate('AdditionalSignupInfo');
                 } else {
                   setAuthMessage('account_exists');
                   setTimeout(() => {

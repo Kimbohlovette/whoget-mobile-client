@@ -28,11 +28,12 @@ import {
   saveLocationsToAsyncStorage,
   // saveLocationsToAsyncStorage,
 } from './apiService/fetchingFunctions';
-import { updateProfile } from './store/slices/userSlice';
+import { updateAuthStatus, updateProfile } from './store/slices/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Search from './pages/Search';
 import { updateLocations } from './store/slices/locationSlice';
 import { updateCategories } from './store/slices/categorySlice';
+import AdditionalSignupInfo from './pages/AddtionalSignupInfo';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -74,19 +75,20 @@ const App = () => {
         console.log('Is authenticated is set now');
         console.log(JSON.parse(token));
       }
-
       fetchOneUserByEmail('kimbohlovette@gmail.com')
         .then(user => {
           if (!user) {
             console.log('_User does not exists.');
-            setloadingInformation('idle');
+            dispatch(updateAuthStatus(false));
           } else {
             dispatch(updateProfile(user));
-            setloadingInformation('idle');
           }
         })
         .catch(() => {
           'Could not update user profile';
+        })
+        .finally(() => {
+          setloadingInformation('idle');
         });
 
       // Fetch categories and store in the local storage
@@ -195,6 +197,10 @@ const AuthScreen = () => {
     <AuthStack.Navigator screenOptions={{ headerShown: false }}>
       <AuthStack.Screen name="Signup" component={Signup} />
       <AuthStack.Screen name="Signin" component={SignIn} />
+      <AuthStack.Screen
+        name="AdditionalSignupInfo"
+        component={AdditionalSignupInfo}
+      />
       <AuthStack.Screen name="Categories" component={UserPreferences} />
     </AuthStack.Navigator>
   );

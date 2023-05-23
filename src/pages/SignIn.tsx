@@ -1,10 +1,13 @@
 import { View, Text, Image, Pressable, ScrollView } from 'react-native';
 import React from 'react';
 import Styles from '../SharedStyles';
-import { signinWithGoogle } from '../apiService/fetchingFunctions';
+import {
+  fetchOneUserByEmail,
+  signinWithGoogle,
+} from '../apiService/fetchingFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppDispatch } from '../store/hooks';
-import { updateAuthStatus } from '../store/slices/userSlice';
+import { updateAuthStatus, updateProfile } from '../store/slices/userSlice';
 
 const SignIn = () => {
   const dispatch = useAppDispatch();
