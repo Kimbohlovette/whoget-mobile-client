@@ -71,9 +71,13 @@ const Profile = () => {
                   <Pressable
                     onPress={() => {
                       GoogleSignin.signOut().then(() => {
-                        AsyncStorage.removeItem('@authToken').then(() => {
-                          dispatch(updateAuthStatus(false));
-                        });
+                        AsyncStorage.removeItem('@authToken')
+                          .then(() => {
+                            dispatch(updateAuthStatus(false));
+                          })
+                          .catch(error => {
+                            console.log(error);
+                          });
                       });
                     }}
                     className="flex-row  gap-x-4 py-4 mt-5">

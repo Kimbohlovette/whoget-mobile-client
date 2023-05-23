@@ -21,14 +21,15 @@ import {
   fetchOneAskById,
   fetchOneUserById,
 } from '../apiService/fetchingFunctions';
+import { fetchUserById } from '../store/slices/userSlice';
+import { createAsk } from '../apiService/fetchingFunctions';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'AskDetails'>;
 const AskDetails = ({ navigation, route }: Props) => {
   const askId = route.params ? route.params.askId : '';
-  const [showModal, setShowModal] = useState(false);
+  const [showRespondModal, setShowRespondModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [currentAsk, setCurrentAsk] = useState<any>(null);
-  const [askOwnerInfo, setAskOwnerInfo] = useState<any>(null);
+  const [askDetails, setAskDetails] = useState<any>(null);
   const [loadingAskstatus, setLoadingAskStatus] = useState<
     'idle' | 'loading' | 'failed' | 'successful'
   >('loading');
@@ -36,54 +37,47 @@ const AskDetails = ({ navigation, route }: Props) => {
   const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
 
   useEffect(() => {
-    setLoadingAskStatus('loading');
-    fetchOneAskById(askId)
-      .then(data => {
-        setCurrentAsk(data);
-        setLoadingAskStatus('successful');
-      })
-      .catch(() => {
-        setLoadingAskStatus('failed');
-      })
-      .finally(() => {
-        setTimeout(() => {
+    if (askId) {
+      setLoadingAskStatus('loading');
+      fetchOneAskById(askId)
+        .then(ask => {
+          setAskDetails(ask);
+          console.log(ask);
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .finally(() => {
           setLoadingAskStatus('idle');
-        }, 3000);
-      });
+        });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRespond = async () => {
     if (isAuthenticated) {
-      fetchOneUserById(currentAsk.userId).then(user => {
-        setAskOwnerInfo(user);
-        console.log(user);
-        setShowModal(true);
-      });
+      setShowRespondModal(true);
     } else {
       navigation.navigate('Authentication');
     }
   };
 
   return loadingAskstatus === 'loading' ? (
-    <View>
-      <ActivityIndicator
-        size={'large'}
-        color={Styles.bgPrimaryDark.backgroundColor}
-      />
+    <View className="mt-8">
+      <ActivityIndicator color={Styles.bgSecondary.backgroundColor} />
     </View>
   ) : (
-    currentAsk && (
+    askDetails && (
       <ScrollView className="px-4 relative bg-white min-h-screen py-4">
         <PageHeader
           navigation={navigation}
           component={
             <View className="flex-1 flex-row justify-between items-center">
               <View className="flex-row gap-x-2 items-center">
-                {currentAsk.image !== undefined && (
+                {askDetails.imageUrl !== undefined && (
                   <View className="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
                     <Image
-                      source={{ uri: currentAsk.imageUrl }}
+                      source={{ uri: askDetails.imageUrl }}
                       className="h-full w-full"
                     />
                   </View>
@@ -92,18 +86,18 @@ const AskDetails = ({ navigation, route }: Props) => {
                   <Pressable
                     onPress={() => {
                       navigation.navigate('UserDetails', {
-                        userId: currentAsk.userId,
+                        userId: askDetails.userId,
                       });
                     }}
                     android_ripple={{ color: 'lightgray' }}>
                     <Text className="text-slate-600 text-sm">
-                      {currentAsk.userName === '' || !currentAsk.userName
+                      {askDetails.owner.name === '' || !askDetails.owner.name
                         ? '~Unkown'
-                        : currentAsk.userName}
+                        : askDetails.owner.name}
                     </Text>
                   </Pressable>
                   <Text className="text-xs text-slate-400">
-                    {currentAsk.createdAt}
+                    {askDetails.createdAt}
                   </Text>
                 </View>
               </View>
@@ -141,18 +135,18 @@ const AskDetails = ({ navigation, route }: Props) => {
           }
         />
         <View className="mt-5">
-          {currentAsk.imageUrl !== undefined && (
-            <View className="border border-slate-100 h-fit flex-1 mx-1 rounded-md">
+          {askDetails.imageUrl !== undefined && (
+            <View className="translate-y-2 h-fit flex-1 mx-1 rounded-t-lg overflow-hidden">
               <Image
-                source={{ uri: currentAsk.imageUrl }}
+                source={{ uri: askDetails.imageUrl }}
                 className="h-48 w-full object-cover object-center"
               />
             </View>
           )}
         </View>
-        <View className="mx-1">
+        <View className="mx-1 py-5 rounded-lg bg-slate-50 px-4">
           <Text className="text-slate-600 py-2 text-base">
-            {currentAsk.message}
+            {askDetails.message}
           </Text>
         </View>
         <View>
@@ -161,7 +155,7 @@ const AskDetails = ({ navigation, route }: Props) => {
               <SIcon name="location-pin" size={15} />
             </Text>
             <Text className="text-base text-slate-400">
-              {currentAsk.location}
+              {askDetails.location}
             </Text>
           </View>
           <View className="flex-row gap-2">
@@ -169,33 +163,37 @@ const AskDetails = ({ navigation, route }: Props) => {
               <Icon name="clock-time-eight-outline" size={17} />
             </Text>
             <Text className="text-slate-400">
-              {new Date(currentAsk.expirationDate).toLocaleDateString()}
+              {new Date(askDetails.expirationDate).toLocaleDateString()}
             </Text>
           </View>
           <View className="my-5">
             <Pressable
               onPress={handleRespond}
               android_ripple={{ color: 'gray' }}
-              className="w-1/3 self-end py-2 px-4 rounded-lg bg-primary-500">
-              <Text className="text-center text-white">Respond</Text>
+              className="w-full self-end py-2 px-4 rounded-lg bg-primary-500">
+              <Text className="text-center text-white font-bold">RESPOND</Text>
             </Pressable>
           </View>
         </View>
         <Modal
           animationType="slide"
           transparent={false}
-          visible={showModal}
+          visible={showRespondModal}
           onRequestClose={async () => {
-            setShowModal(!showModal);
+            setShowRespondModal(!showRespondModal);
           }}>
-          <View className="bg-slate-600/60 backdrop-blur-lg  items-center justify-center h-full">
+          <Pressable
+            onPress={() => {
+              setShowRespondModal(false);
+            }}
+            className="bg-slate-600/60 backdrop-blur-lg  items-center justify-center h-full">
             <View
               style={Styles.btnShadow}
               className="relative bg-white w-4/5 rounded-lg rounde-lg overflow-hidden">
               {/* the close button */}
               <Pressable
                 onPress={() => {
-                  setShowModal(false);
+                  setShowRespondModal(false);
                 }}
                 android_ripple={{ color: 'gray' }}
                 className="absolute right-5 top-2 z-50">
@@ -209,23 +207,33 @@ const AskDetails = ({ navigation, route }: Props) => {
                 </Text>
               </View>
               <View className=" divide-y divide-slate-200">
+                {(askDetails.contactNumber || askDetails.owner.phoneNumber) && (
+                  <Pressable
+                    onPress={() => {
+                      const phoneNumber: string = askDetails.contactNumber
+                        ? askDetails.contactNumber
+                        : askDetails.owner.phoneNumber;
+
+                      Linking.openURL(
+                        `https://wa.me/${
+                          phoneNumber.startsWith('+237') ||
+                          phoneNumber.startsWith('237')
+                            ? phoneNumber
+                            : '+237' + phoneNumber
+                        }`,
+                      );
+                    }}
+                    android_ripple={{ color: 'lightgray' }}
+                    className="border-t border-slate-200 py-4 px-5 flex-row items-center justify-between">
+                    <Text className="text-slate-600">Whatsapp</Text>
+                    <Text className="text-slate-600">
+                      <Icon name="whatsapp" size={24} />
+                    </Text>
+                  </Pressable>
+                )}
                 <Pressable
                   onPress={() => {
-                    console.log(askOwnerInfo.phoneNumber);
-                    Linking.openURL(
-                      `https://wa.me/${askOwnerInfo.phoneNumber}`,
-                    );
-                  }}
-                  android_ripple={{ color: 'lightgray' }}
-                  className="border-t border-slate-200 py-4 px-5 flex-row items-center justify-between">
-                  <Text className="text-slate-600">Whatsapp</Text>
-                  <Text className="text-slate-600">
-                    <Icon name="whatsapp" size={24} />
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => {
-                    Linking.openURL(`mailto:${askOwnerInfo.email.trim()}`);
+                    Linking.openURL(`mailto:${askDetails.owner.email}`);
                   }}
                   android_ripple={{ color: 'lightgray' }}
                   className="py-4 px-5 flex-row items-center justify-between">
@@ -234,20 +242,22 @@ const AskDetails = ({ navigation, route }: Props) => {
                     <SIcon name="envelope" size={18} />
                   </Text>
                 </Pressable>
-                <Pressable
-                  onPress={() => {
-                    Linking.openURL(`tel:${currentAsk.contactNumber}`);
-                  }}
-                  android_ripple={{ color: 'lightgray' }}
-                  className="py-4 px-5 flex-row items-center justify-between">
-                  <Text className="text-slate-600">Calls</Text>
-                  <Text className="text-slate-600">
-                    <Ionicon name="call-outline" size={18} />
-                  </Text>
-                </Pressable>
+                {(askDetails.contactNumber || askDetails.owner.phoneNumber) && (
+                  <Pressable
+                    onPress={() => {
+                      Linking.openURL(`tel:${askDetails.owner.phoneNumber}`);
+                    }}
+                    android_ripple={{ color: 'lightgray' }}
+                    className="py-4 px-5 flex-row items-center justify-between">
+                    <Text className="text-slate-600">Call</Text>
+                    <Text className="text-slate-600">
+                      <Ionicon name="call-outline" size={18} />
+                    </Text>
+                  </Pressable>
+                )}
               </View>
             </View>
-          </View>
+          </Pressable>
         </Modal>
       </ScrollView>
     )

@@ -7,12 +7,12 @@ import {
   Image,
   FlatList,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Styles from '../SharedStyles';
 import FoIcon from 'react-native-vector-icons/Fontisto';
-import DatePicker from 'react-native-date-picker';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -104,6 +104,7 @@ const CreateAsk = ({ navigation }: Props) => {
 
   return (
     <ScrollView
+      className="bg-white pb-16"
       showsVerticalScrollIndicator={false}
       contentContainerStyle={Styles.pageContainer}>
       <PageHeader
@@ -118,28 +119,12 @@ const CreateAsk = ({ navigation }: Props) => {
       />
       <View className="gap-y-4">
         <View>
-          <AutocompleteDropdown
-            inputContainerStyle={Styles.InputContainer}
-            textInputProps={{
-              placeholder: 'Select Category',
-              placeholderTextColor: '#475569',
-            }}
-            clearOnFocus={false}
-            closeOnBlur={false}
-            closeOnSubmit={false}
-            initialValue={{ id: '2' }} // or just '2'
-            onSelectItem={item => {
-              item && setSelectedCateory(item);
-            }}
-            dataSet={categories}
-          />
-        </View>
-        <View>
           <TextInput
             className="border border-slate-300 py-2 px-4 rounded-lg"
             placeholder="Type description here"
             placeholderTextColor={'#475569'}
             multiline={true}
+            numberOfLines={3}
             onChangeText={text => {
               setMessage(text);
             }}
@@ -149,48 +134,66 @@ const CreateAsk = ({ navigation }: Props) => {
           <TextInput
             defaultValue="+237 "
             className="border border-slate-300 py-2 px-4 rounded-lg"
-            placeholder="Enter contact phone number"
+            placeholder="Enter Whatsapp number"
             placeholderTextColor={'#475569'}
             onChangeText={number => {
               setPhoneNumber(number);
             }}
           />
         </View>
-        <View>
-          <AutocompleteDropdown
-            closeOnBlur={false}
-            inputContainerStyle={Styles.InputContainer}
-            textInputProps={{
-              placeholder: 'Location',
-              placeholderTextColor: '#475569',
-            }}
-            onSelectItem={item => {
-              item && setSelectedLocation(item);
-            }}
-            dataSet={places}
-          />
+        <View className="flex-row gap-x-1">
+          <View className="flex-1">
+            <AutocompleteDropdown
+              inputContainerStyle={Styles.InputContainer}
+              textInputProps={{
+                placeholder: 'Location',
+                placeholderTextColor: '#475569',
+              }}
+              onSelectItem={item => {
+                item && setSelectedLocation(item);
+              }}
+              dataSet={places}
+            />
+          </View>
+          <View className="flex-1">
+            <AutocompleteDropdown
+              clearOnFocus
+              inputContainerStyle={Styles.InputContainer}
+              dataSet={[
+                { id: '1', title: 'Today' },
+                { id: '2', title: 'Tomorrow' },
+                { id: '3', title: '3 Days' },
+                { id: '4', title: '4 Days' },
+                { id: '5', title: '5 Days' },
+                { id: '6', title: '6 Days' },
+                { id: '7', title: '7 Days' },
+              ]}
+              textInputProps={{
+                placeholder: 'Expiration date',
+                placeholderTextColor: 'gray',
+              }}
+              onSelectItem={item => {
+                item && setSelectedExpires(item.id as string);
+              }}
+            />
+          </View>
         </View>
         <View>
           <AutocompleteDropdown
-            clearOnFocus
             inputContainerStyle={Styles.InputContainer}
-            showClear={false}
-            dataSet={[
-              { id: '1', title: 'Today' },
-              { id: '2', title: 'Tomorrow' },
-              { id: '3', title: '3 Days' },
-              { id: '4', title: '4 Days' },
-              { id: '5', title: '5 Days' },
-              { id: '6', title: '6 Days' },
-              { id: '7', title: '7 Days' },
-            ]}
             textInputProps={{
-              placeholder: 'Expiration date',
-              placeholderTextColor: 'gray',
+              placeholder: 'Select Category',
+              placeholderTextColor: '#475569',
             }}
+            showClear={false}
+            clearOnFocus={false}
+            closeOnBlur
+            closeOnSubmit={false}
+            initialValue={{ id: '2' }} // or just '2'
             onSelectItem={item => {
-              item && setSelectedExpires(item.id as string);
+              item && setSelectedCateory(item);
             }}
+            dataSet={categories}
           />
         </View>
         <View>
@@ -264,27 +267,8 @@ const CreateAsk = ({ navigation }: Props) => {
               item => item.id !== undefined,
             )[0];
             if (!imageUrl) {
-              createAsk({ ...newAsk })
-                .then(() => {
-                  toastAndroid('Ask successfully created.');
-                  setTimeout(() => {
-                    navigation.goBack();
-                  }, 1000);
-                })
-                .catch(error => {
-                  console.log('Eror occured while creating ask: ', error);
-                });
-            } else {
-              const { metadata } = await storage()
-                .ref(`images/whoget_${Date.now().toString()}.png`)
-                .putFile(imageUrl.path);
-              const url = await storage()
-                .ref(metadata.fullPath)
-                .getDownloadURL();
-              console.log('');
-              console.log({ ...newAsk, imageUrl: url });
               setIsCreating(true);
-              createAsk({ ...newAsk, imageUrl: url })
+              createAsk({ ...newAsk })
                 .then(() => {
                   toastAndroid('Ask successfully created.');
                 })
@@ -294,15 +278,39 @@ const CreateAsk = ({ navigation }: Props) => {
                 .finally(() => {
                   setIsCreating(false);
                 });
+            } else {
+              setIsCreating(true);
+              try {
+                const { metadata } = await storage()
+                  .ref(`images/whoget_${Date.now().toString()}.png`)
+                  .putFile(imageUrl.path);
+                const url = await storage()
+                  .ref(metadata.fullPath)
+                  .getDownloadURL();
+                console.log('');
+                console.log({ ...newAsk, imageUrl: url });
+                createAsk({ ...newAsk, imageUrl: url })
+                  .then(() => {
+                    toastAndroid('Ask successfully created.');
+                  })
+                  .catch(error => {
+                    console.log('Eror occured while creating ask: ', error);
+                  })
+                  .finally(() => {
+                    setIsCreating(false);
+                    navigation.goBack();
+                  });
+              } catch (error) {
+                console.log(error);
+              }
             }
           }}
           android_ripple={{ color: 'lightgray' }}
-          className={
-            isCreating
-              ? 'w-1/3 py-2 px-5 rounded-lg border border-primary-500 bg-primary-300 animate-pulse'
-              : 'w-1/3 py-2 px-5 rounded-lg border border-primary-500 bg-primary-500'
-          }>
-          <Text className="text-white text-center">Place Ask</Text>
+          className="w-1/3 py-2 px-5 rounded-lg border border-primary-500 bg-primary-500">
+          <View className="flex-row gap-x-1">
+            <Text className="text-white text-center">Place Ask</Text>
+            {isCreating && <ActivityIndicator color={'white'} />}
+          </View>
         </Pressable>
       </View>
 
