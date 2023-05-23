@@ -21,6 +21,7 @@ export type AuthStackParamList = {
   Signin: undefined;
   Signup: undefined;
   Categories: undefined;
+  AdditionalSignupInfo: undefined;
 };
 
 export type Props = NativeStackScreenProps<
