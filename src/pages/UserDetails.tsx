@@ -185,7 +185,7 @@ const UserAsk = (props: { ask: any; navigation: any }) => {
           props.navigation.navigate('AskDetails', { askId: props.ask.id });
         }}
         className="flex-1 flex-row items-center">
-        <View className="h-12 mr-2 aspect-square bg-slate-300 rounded-full overflow-hidden">
+        <View className="h-12 mr-2 aspect-square bg-slate-300 rounded-lg overflow-hidden">
           <Image
             source={{ uri: props.ask.imageUrl }}
             className="w-full h-full"
@@ -199,7 +199,7 @@ const UserAsk = (props: { ask: any; navigation: any }) => {
       </Pressable>
       <View>
         <Text className="text-slate-400 text-sm">
-          {new Date(props.ask.createdAt).toLocaleDateString()}
+          {new Date(props.ask.createdAt).toDateString().slice(0, 10)}
         </Text>
       </View>
     </View>

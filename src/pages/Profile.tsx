@@ -74,20 +74,26 @@ const Profile = () => {
 
           <View className="my-4 w-4/5">
             <View>
-              <Text className="text-center text-slate-600">Phone number</Text>
+              <Text className="text-center text-slate-600 text-base">
+                Phone number
+              </Text>
               <Text className="text-slate-500 text-center border border-slate-300 py-3 rounded-lg w-full px-4 my-2">
                 {user.phoneNumber}
               </Text>
             </View>
 
             <View>
-              <Text className="text-center text-slate-600">Email</Text>
+              <Text className="text-center text-slate-600 text-base">
+                Email
+              </Text>
               <Text className="text-slate-500 text-center border border-slate-300 py-3 rounded-lg w-full px-4 my-2">
                 {user.email}
               </Text>
             </View>
             <View>
-              <Text className="text-center text-slate-600">Location</Text>
+              <Text className="text-center text-slate-600 text-base">
+                Location
+              </Text>
               <Text className="text-slate-500 text-center border border-slate-300 py-3 rounded-lg w-full px-4 my-2">
                 {user.location}
               </Text>
@@ -129,8 +135,11 @@ const UserAsk = (props: { ask: any; navigation: any }) => {
       android_ripple={{ color: 'lightgray' }}
       className="flex-row items-center gap-x-2 justify-between py-2">
       <View className="flex-1 flex-row items-center">
-        <View className="h-12 mr-2 aspect-square bg-slate-300 rounded-full">
-          <Text> </Text>
+        <View className="h-12 mr-2 aspect-square bg-slate-300 rounded-lg overflow-hidden">
+          <Image
+            source={{ uri: props.ask.imageUrl }}
+            className="w-full h-full"
+          />
         </View>
         <View className="flex-1">
           <Text className="text-slate-600">

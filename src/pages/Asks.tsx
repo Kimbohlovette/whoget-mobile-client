@@ -15,12 +15,12 @@ import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Styles from '../SharedStyles';
 import { useAppSelector } from '../store/hooks';
 import { Props } from '../../types';
-//import { useNavigation } from '@react-navigation/native';
+import pusherConfig from '../../pusher.config';
 import {
   fetchFilteredAsks,
   fetchPaginatedAks,
 } from '../apiService/fetchingFunctions';
-import { current } from '@reduxjs/toolkit';
+import { connectToChannel } from '../pusher/pusherChannel';
 
 const Asks = ({ navigation, route }: Props) => {
   const [showFilter, setShowFilter] = useState(false); //state  to show/hide filter modal
@@ -285,8 +285,12 @@ const Asks = ({ navigation, route }: Props) => {
           style={Styles.btnShadow}
           className="py-4 px-5 rounded-full flex-row justify-center items-center gap-x-2 bg-primary-500 shadow-md"
           android_ripple={{ color: '#070716' }}>
-          <Icon name="md-add" size={20} color={'white'} />
-          <Text className="text-center text-primary-50">New ask</Text>
+          <Text className="text-center text-primary-50 font-bold">
+            <Icon name="md-add" size={20} color={'white'} />
+          </Text>
+          <Text className="text-center text-primary-50 text-base font-bold">
+            New Ask
+          </Text>
         </Pressable>
       </View>
     </>
@@ -318,7 +322,9 @@ const Ask = (props: { ask: any; navigation: any; route: any }) => {
         <View className="w-full flex-row flex-between items-center">
           <Pressable
             onPress={() => {
-              props.navigation.navigate('Profile');
+              props.navigation.navigate('UserDetails', {
+                userId: props.ask.userId,
+              });
             }}>
             <Text className="text-slate-500 font-extralight">
               {!props.ask.userName || props.ask.userName === ''
