@@ -72,27 +72,24 @@ const App = () => {
     setloadingInformation('loading');
     AsyncStorage.getItem('@authToken').then(authInfo => {
       if (authInfo) {
-        console.log('Is authenticated is set now');
-
         const { email, token } = JSON.parse(authInfo);
-        console.log(token);
         fetchOneUserByEmail(email)
           .then(user => {
             if (!user) {
-              console.log('_User does not exists.');
               dispatch(updateAuthStatus(false));
             } else {
               dispatch(updateProfile(user));
               dispatch(updateAuthStatus(true));
-              console.log(user);
             }
           })
           .catch(() => {
-            'Could not update user profile';
+            console.log('Could not update user profile');
           })
           .finally(() => {
             setloadingInformation('idle');
           });
+      } else {
+        setloadingInformation('idle');
       }
 
       // Fetch categories and store in the local storage
