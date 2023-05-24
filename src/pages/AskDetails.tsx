@@ -23,6 +23,12 @@ import {
 } from '../apiService/fetchingFunctions';
 import { fetchUserById } from '../store/slices/userSlice';
 import { createAsk } from '../apiService/fetchingFunctions';
+import {
+  Menu,
+  MenuTrigger,
+  MenuOptions,
+  MenuOption,
+} from 'react-native-popup-menu';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'AskDetails'>;
 const AskDetails = ({ navigation, route }: Props) => {
@@ -101,36 +107,30 @@ const AskDetails = ({ navigation, route }: Props) => {
                   </Text>
                 </View>
               </View>
-              <Pressable
-                onPress={() => {
-                  setShowMenu(state => !state);
-                }}
-                android_ripple={{ color: 'lightgray', borderless: true }}
-                className="px-1 py-2 rounded-full">
-                <Icon name="dots-vertical" size={20} />
-              </Pressable>
-              {showMenu && (
-                <View
-                  className="absolute right-0 top-0 z-50 w-3/4 bg-white rounded-sm divide-y divide-slate-200 px-4"
-                  style={Styles.btnShadow}>
-                  <Pressable
-                    android_ripple={{ color: 'lightgray' }}
-                    className="flex-row items-center justify-between py-4 px-5">
-                    <Text>Share</Text>
-                    <Text>
-                      <Icon name="share-outline" />
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    android_ripple={{ color: 'lightgray' }}
-                    className="flex-row items-center justify-between py-4 px-5">
-                    <Text>Report</Text>
-                    <Text>
-                      <Ionicon name="warning-outline" />
-                    </Text>
-                  </Pressable>
-                </View>
-              )}
+
+              <View>
+                <Menu>
+                  <MenuTrigger
+                    children={<Icon name="dots-vertical" size={20} />}
+                  />
+                  <MenuOptions>
+                    <MenuOption
+                      children={
+                        <View className="flex-row justify-between px-4 py-2">
+                          <Text>Share</Text>
+                          <Icon name="share" />
+                        </View>
+                      }
+                    />
+                    <MenuOption>
+                      <View className="flex-row justify-between px-4 py-2">
+                        <Text>Report</Text>
+                        <Ionicon name="warning" />
+                      </View>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
+              </View>
             </View>
           }
         />
