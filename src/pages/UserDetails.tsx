@@ -1,6 +1,7 @@
 import { View, Text, Pressable, Image, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import MdIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 // import AntDesign from 'react-native-vector-icons/AntDesign';
 import { textEllipsis } from '../shared/ellipseText';
 import { ScrollView } from 'react-native';
@@ -11,6 +12,12 @@ import {
   fetchOneUserById,
 } from '../apiService/fetchingFunctions';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {
+  Menu,
+  MenuTrigger,
+  MenuOptions,
+  MenuOption,
+} from 'react-native-popup-menu';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'UserDetails'>;
 const UserDetails = ({ navigation, route }: Props) => {
@@ -69,43 +76,29 @@ const UserDetails = ({ navigation, route }: Props) => {
     </View>
   ) : (
     <ScrollView contentContainerStyle={Styles.pageContainer}>
-      <View className="items-center">
-        <View className="relative justify-center items-center">
-          <Pressable className="flex-row gap-1 my-4">
-            <Text className="font-semibold text-slate-800">
-              {userInfo.name}
-            </Text>
-
-            <Icon name="md-chevron-up-sharp" color={'slate'} size={18} />
-
-            {/* <Icon name="md-chevron-down-sharp" color={'slate'} size={18} /> */}
-          </Pressable>
-          {/* <View
-            style={Styles.btnShadow}
-            className="absolute top-12 z-50 w-4/5 items-start justify-center py-4 px-8 bg-white rounded-sm">
-            <Text className="text-slate-600 font-semibold mb-4">
-              My account
-            </Text>
-            <View className="divide-y divide-slate-200 w-full">
-              <View className="flex-row items-center justify-start gap-x-4">
-                <View className="justify-center items-center h-7 aspect-square bg-primary-400 rounded-full">
-                  <Image
-                    source={require('../assets/eypic.png')}
-                    className="w-full h-full rounded-full"
-                  />
-                </View>
-                <View className="flex-1">
-                  <Text className="text-slate-500">myemail.com</Text>
-                </View>
-              </View>
-              <View className="flex-row  gap-x-4 py-4 mt-5">
-                <Text>
-                  <AntDesign name="logout" size={25} />
-                </Text>
-                <Text className="">Logout</Text>
-              </View>
-            </View>
-          </View> */}
+      <View className="items-center py-5">
+        <View className="w-full">
+          <View className="items-end">
+            <Menu>
+              <MenuTrigger
+                children={<MdIcon name="dots-vertical" size={20} />}
+              />
+              <MenuOptions>
+                <MenuOption
+                  children={
+                    <View className="flex-row justify-between px-4 py-2">
+                      <Text>Mute</Text>
+                    </View>
+                  }
+                />
+                <MenuOption>
+                  <View className="flex-row justify-between px-4 py-2">
+                    <Text>Peport</Text>
+                  </View>
+                </MenuOption>
+              </MenuOptions>
+            </Menu>
+          </View>
         </View>
 
         <View className="relative bg-primary-600 h-20 aspect-square rounded-full justify-center items-center">
