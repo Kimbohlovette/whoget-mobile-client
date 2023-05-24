@@ -333,7 +333,7 @@ const Ask = (props: { ask: any; navigation: any; route: any }) => {
             </Text>
           </Pressable>
           <Text className="text-slate-400 font-extralight py-1">
-            , {new Date(props.ask.createdAt).toLocaleDateString()}
+            , {new Date(props.ask.createdAt).toDateString().slice(0, 10)}
           </Text>
         </View>
         <View>
