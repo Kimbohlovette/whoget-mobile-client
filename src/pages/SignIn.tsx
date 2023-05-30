@@ -20,14 +20,14 @@ const SignIn = () => {
             className="h-28 aspect-video"
           />
         </View>
-        <View className="w-5/6 mx-auto bg-white p-5">
-          <Text className="my-8 text-lg text-center text-slate-700 font-semibold">
-            Sign in to your account
+        <View className="bg-white p-5">
+          <Text className="my-8 text-xl text-center text-slate-700 font-semibold">
+            SIGN IN
           </Text>
-          <View className="gap-y-4 justify-center items-center">
+          <View className="gap-y-8 justify-center items-center">
             <Pressable
               android_ripple={{ color: 'light-gray' }}
-              className="w-full py-2 px-5 flex-row items-center justify-start border border-slate-300 rounded-md">
+              className="w-full py-3 px-5 flex-row items-center justify-start border border-slate-300 rounded-xl">
               <Image
                 source={require('../assets/facebook.png')}
                 className="mr-4"
@@ -50,7 +50,7 @@ const SignIn = () => {
                 });
               }}
               android_ripple={{ color: 'light-gray' }}
-              className="w-full py-2 px-5 flex-row items-center justify-start border border-slate-300 rounded-md">
+              className="w-full py-3 px-5 flex-row items-center justify-start border border-slate-300 rounded-xl">
               <Image
                 source={require('../assets/google.png')}
                 className="mr-4"
@@ -60,21 +60,21 @@ const SignIn = () => {
           </View>
           <View className="py-8 gap-y-5">
             <View className="flex-row gap-1 items-center justify-center">
-              <Text className="text-center text-slate-600">
+              <Text className="text-center text-slate-600 text-base">
                 Don't have an account?
               </Text>
               <View>
                 <Pressable>
-                  <Text className="text-orange-400">Sign up</Text>
+                  <Text className="text-orange-400 text-base">Sign up</Text>
                 </Pressable>
               </View>
             </View>
             <View>
-              <Text className="text-center text-xs">
+              <Text className="text-center text-sm">
                 By clicking signup, you agree to our
               </Text>
               <Pressable>
-                <Text className="text-xs text-center py-1 text-blue-400">
+                <Text className="text-sm text-center py-1 text-blue-400">
                   Terms of service and privacy policy.
                 </Text>
               </Pressable>

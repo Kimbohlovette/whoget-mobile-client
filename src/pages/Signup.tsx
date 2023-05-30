@@ -29,7 +29,7 @@ const Signup = () => {
       </View>
       <View className="bg-white p-5">
         <Text className="my-8 text-xl text-center text-slate-700 font-semibold">
-          Signup to join WhoGet
+          SIGN UP
         </Text>
         <View className="gap-y-8 justify-center items-center">
           <Pressable
