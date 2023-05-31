@@ -60,11 +60,17 @@ const Signup = () => {
                   dispatch(updateProfile(newUser));
                   navigation.navigate('AdditionalSignupInfo');
                 } else {
-                  setAuthMessage('account_exists');
-                  setTimeout(() => {
-                    setAuthMessage('');
-                    navigation.navigate('Signin');
-                  }, 1000);
+                  response.user.getIdToken().then(token => {
+                    AsyncStorage.setItem(
+                      '@authToken',
+                      JSON.stringify({
+                        token,
+                        email: response.user.email,
+                      }),
+                    );
+                    dispatch(updateProfile({ email: response.user.email }));
+                    dispatch(updateAuthStatus(true));
+                  });
                 }
               });
             }}

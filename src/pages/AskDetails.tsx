@@ -48,7 +48,6 @@ const AskDetails = ({ navigation, route }: Props) => {
       fetchOneAskById(askId)
         .then(ask => {
           setAskDetails(ask);
-          console.log(ask);
         })
         .catch(error => {
           console.log(error);

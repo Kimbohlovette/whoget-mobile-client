@@ -6,7 +6,10 @@ import { textEllipsis } from '../shared/ellipseText';
 import { ScrollView } from 'react-native';
 import Styles from '../SharedStyles';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchAsksByUserId } from '../apiService/fetchingFunctions';
+import {
+  fetchAsksByUserId,
+  fetchOneUserByEmail,
+} from '../apiService/fetchingFunctions';
 import { useNavigation } from '@react-navigation/native';
 import {
   Menu,
@@ -14,6 +17,9 @@ import {
   MenuOptions,
   MenuOption,
 } from 'react-native-popup-menu';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { updateAuthStatus, updateProfile } from '../store/slices/userSlice';
 
 const Profile = () => {
   const [userAsks, setUserAsks] = useState([]);
@@ -21,11 +27,44 @@ const Profile = () => {
   const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.user.user);
+
   useEffect(() => {
-    fetchAsksByUserId(user.id)
+    GoogleSignin.configure({
+      webClientId:
+        '1071190608503-hnua85ljh7c940id1qk2a28eqh68tslk.apps.googleusercontent.com',
+    });
+  }, []);
+
+  useEffect(() => {
+    fetchOneUserByEmail(user.email)
       .then(data => {
+        const {
+          id,
+          phoneNumber,
+          email,
+          createdAt,
+          profileImage,
+          location,
+          name,
+          role,
+          status,
+        } = data;
+        dispatch(
+          updateProfile({
+            id,
+            phoneNumber,
+            email,
+            createdAt,
+            profileImage,
+            location,
+            name,
+            role,
+            status,
+          }),
+        );
         setUserAsks(data?.asks);
-        setNumOfAsks(data?.numOfAsks);
+        console.log(data);
+        setNumOfAsks(data.asks.length);
       })
       .catch(() => {
         // handle error here
@@ -54,7 +93,17 @@ const Profile = () => {
                   />
                   <MenuOption>
                     <View className="flex-row justify-between px-4 py-2">
-                      <Text>Logout</Text>
+                      <Pressable
+                        onPress={async () => {
+                          if (await GoogleSignin.isSignedIn()) {
+                            GoogleSignin.signOut().then(() => {
+                              AsyncStorage.removeItem('@authToken');
+                              dispatch(updateAuthStatus(false));
+                            });
+                          }
+                        }}>
+                        <Text>Logout</Text>
+                      </Pressable>
                     </View>
                   </MenuOption>
                 </MenuOptions>
