@@ -73,7 +73,6 @@ const AdditionalSignupInfo = () => {
         <View className="py-4 flex-row justify-end">
           <Pressable
             onPress={() => {
-              console.log(userInfo);
               const completeUser = {
                 ...userInfo,
                 name: name,

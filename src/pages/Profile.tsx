@@ -63,7 +63,6 @@ const Profile = () => {
           }),
         );
         setUserAsks(data?.asks);
-        console.log(data);
         setNumOfAsks(data.asks.length);
       })
       .catch(() => {

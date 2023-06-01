@@ -25,7 +25,6 @@ const userSlice = createSlice({
     builder
       .addCase(fetchUserById.fulfilled, state => {
         state.status = 'idle';
-        console.log('After updating the state in thunk: ', state.user);
       })
       .addCase(fetchUserById.pending, state => {
         state.status = 'loading';

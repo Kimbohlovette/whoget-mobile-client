@@ -189,7 +189,7 @@ const Asks = ({ navigation, route }: Props) => {
                       setRefreshing(true);
                       setFiltering(true);
                       fetchFilteredAsks(
-                        selectedCategory.title,
+                        selectedCategory.id,
                         selectedLocation.title,
                         Number(selectedExpires.id),
                       )
@@ -202,6 +202,9 @@ const Asks = ({ navigation, route }: Props) => {
                           setFiltering(false);
                         })
                         .finally(() => {
+                          setSelectedCategory(null);
+                          setSelectedLocation(null);
+                          setSelectedExpires(null);
                           setFiltering(false);
                           setRefreshing(false);
                         });
@@ -276,8 +279,6 @@ const Asks = ({ navigation, route }: Props) => {
                 if (!endOfListReached) {
                   fetchPaginatedAks(nextPage, pageLimit).then(data => {
                     if (data.length !== 0) {
-                      console.log(`Length: ${data.length} \n\n`);
-                      console.log(`Page number: ${nextPage} \n`);
                       setAsks(currentAsk =>
                         // use a set data structure to filter repeated data
                         Array.from(new Set([...currentAsk, ...data])),
@@ -288,7 +289,6 @@ const Asks = ({ navigation, route }: Props) => {
                       setEndOfListReached(true); // List is empty
                     }
                   });
-                  console.log(`Total data available: ${asks.length}`);
                 }
               }
             }}
@@ -324,9 +324,12 @@ const ListSeparator = () => {
 };
 const ListEmptyComponent = () => {
   return (
-    <View>
-      <Text className="text-center text-slate-600 text-lg font-medium">
+    <View className="my-5">
+      <Text className="text-center text-slate-600 text-sm font-medium">
         No asks to show.
+      </Text>
+      <Text className="text-center text-slate-600 text-sm font-medium">
+        Pull down to refresh page
       </Text>
     </View>
   );

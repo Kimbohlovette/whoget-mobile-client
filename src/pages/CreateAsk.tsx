@@ -26,6 +26,12 @@ import { Dropdown } from 'react-native-element-dropdown';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'CreateAsk'>;
 const CreateAsk = ({ navigation }: Props) => {
+  /** Get data from redux store */
+  const { user, isAuthenticated } = useAppSelector(state => state.user);
+  const places = useAppSelector(state => state.location.locations);
+  const categories = useAppSelector(state => state.category.categories);
+  // end
+
   const [selectedExpires, setSelectedExpires] = useState<{
     id: string;
     title: string;
@@ -40,13 +46,12 @@ const CreateAsk = ({ navigation }: Props) => {
     title: string;
   } | null>(null);
   const [message, setMessage] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber);
   const [isCreating, setIsCreating] = useState<boolean>(false);
 
-  /** Get data from redux store */
-  const { user, isAuthenticated } = useAppSelector(state => state.user);
-  const places = useAppSelector(state => state.location.locations);
-  const categories = useAppSelector(state => state.category.categories);
+  // Input validation states
+  const [invalidInputs, setInvalidInputs] = useState<boolean>(false);
+  // end
 
   const handleImagePicker = (mode: 'camera' | 'gallery') => {
     if (mode === 'camera') {
@@ -123,7 +128,14 @@ const CreateAsk = ({ navigation }: Props) => {
       />
       <View className="gap-y-4">
         <View>
-          <Text className="text-primary-500 py-2">Description</Text>
+          <View className="flex-row gap-x-2 items-center">
+            <Text className="text-primary-500 text-base py-2">
+              Description*
+            </Text>
+            {message === '' && invalidInputs && (
+              <Text className="text-red-500">This field is equired</Text>
+            )}
+          </View>
           <TextInput
             className="border border-slate-300 py-2 px-4 rounded-lg text-slate-600 text-base leading-loose"
             placeholder="Describe your need here"
@@ -135,13 +147,18 @@ const CreateAsk = ({ navigation }: Props) => {
           />
         </View>
         <View>
-          <Text className="text-primary-500 py-2">
-            Preferred contact number
-          </Text>
+          <View className="flex-row gap-x-2 items-center">
+            <Text className="text-primary-500 text-base py-2">
+              Preferred contact number*
+            </Text>
+            {phoneNumber === '' && invalidInputs && (
+              <Text className="text-red-500">This field is equired</Text>
+            )}
+          </View>
           <TextInput
-            defaultValue="+(237) "
-            className="border border-slate-300 py-2 px-4 rounded-lg text-slate-600 text-base"
-            placeholder="Enter Whatsapp number"
+            defaultValue={'+237 ' + user.phoneNumber}
+            className="border border-slate-300 py-2 px-4 rounded-lg text-primary-600 text-base"
+            placeholder="+237"
             placeholderTextColor={'#475569'}
             onChangeText={number => {
               setPhoneNumber(number);
@@ -149,11 +166,18 @@ const CreateAsk = ({ navigation }: Props) => {
           />
         </View>
         <View>
-          <Text className="text-primary-500 py-2">Location</Text>
+          <View className="flex-row gap-x-2 items-center">
+            <Text className="text-primary-500 text-base py-2">Location*</Text>
+            {!selectedLocation && invalidInputs && (
+              <Text className="text-red-500">This field is equired</Text>
+            )}
+          </View>
           <Dropdown
             style={Styles.InputContainer}
+            itemTextStyle={Styles.inputText}
+            selectedTextStyle={Styles.inputText}
             value={selectedLocation}
-            placeholder="Select Location"
+            placeholder="Select location"
             containerStyle={{
               width: '100%',
               borderRadius: 5,
@@ -169,11 +193,20 @@ const CreateAsk = ({ navigation }: Props) => {
           />
         </View>
         <View>
-          <Text className="text-primary-500 py-2">Expiration date</Text>
+          <View className="flex-row gap-x-2 items-center">
+            <Text className="text-primary-500 text-base py-2">
+              Expiration date*
+            </Text>
+            {!selectedExpires && invalidInputs && (
+              <Text className="text-red-500">This field is equired</Text>
+            )}
+          </View>
           <Dropdown
             style={Styles.InputContainer}
+            itemTextStyle={Styles.inputText}
+            selectedTextStyle={Styles.inputText}
             value={selectedExpires}
-            placeholder="Select Expiration Date"
+            placeholder="Select expiration date"
             containerStyle={{
               width: '100%',
               borderRadius: 5,
@@ -196,11 +229,20 @@ const CreateAsk = ({ navigation }: Props) => {
           />
         </View>
         <View>
-          <Text className="text-primary-500 py-2">Ask category</Text>
+          <View className="flex-row gap-x-2 items-center">
+            <Text className="text-primary-500 text-base py-2">
+              Ask category*
+            </Text>
+            {!selectedCategory && invalidInputs && (
+              <Text className="text-red-500">This field is equired</Text>
+            )}
+          </View>
           <Dropdown
             style={Styles.InputContainer}
+            itemTextStyle={Styles.inputText}
+            selectedTextStyle={Styles.inputText}
             value={selectedLocation}
-            placeholder="Select Category"
+            placeholder="Select category"
             containerStyle={{
               width: '100%',
               borderRadius: 5,
@@ -270,56 +312,69 @@ const CreateAsk = ({ navigation }: Props) => {
             if (!isAuthenticated) {
               navigation.navigate('Authentication');
             }
-            const newAsk = {
-              location: selectedLocation?.title || '',
-              message,
-              contactNumber: phoneNumber || user.contactNumber,
-              categoryId: selectedCategory?.id,
-              categoryName: selectedCategory?.title,
-              userId: user.id,
-              userName: user.name,
-              status: 'visible',
-              expirationDate: selectedExpires,
-            };
-            const imageUrl = selectedImageList.filter(
-              item => item.id !== undefined,
-            )[0];
-            if (!imageUrl) {
-              setIsCreating(true);
-              createAsk({ ...newAsk })
-                .then(() => {
-                  toastAndroid('Ask successfully created.');
-                })
-                .catch(error => {
-                  console.log('Eror occured while creating ask: ', error);
-                })
-                .finally(() => {
-                  setIsCreating(false);
-                });
-            } else {
-              setIsCreating(true);
-              try {
-                const { metadata } = await storage()
-                  .ref(`images/whoget_${Date.now().toString()}.png`)
-                  .putFile(imageUrl.path);
-                const url = await storage()
-                  .ref(metadata.fullPath)
-                  .getDownloadURL();
-                console.log('');
-                console.log({ ...newAsk, imageUrl: url });
-                createAsk({ ...newAsk, imageUrl: url })
+            const isInvalid =
+              !message ||
+              message === '' ||
+              !phoneNumber ||
+              phoneNumber === '' ||
+              !selectedCategory ||
+              !selectedLocation ||
+              !selectedExpires;
+            setInvalidInputs(isInvalid);
+            if (!isInvalid) {
+              const newAsk = {
+                location: selectedLocation?.title,
+                message,
+                contactNumber: phoneNumber,
+                categoryId: selectedCategory?.id,
+                categoryName: selectedCategory?.title,
+                userId: user.id,
+                userName: user.name,
+                status: 'visible',
+                expirationDate: Number(selectedExpires?.id),
+              };
+
+              const imageUrl = selectedImageList.filter(
+                item => item.id !== undefined,
+              )[0];
+
+              if (!imageUrl) {
+                setIsCreating(true);
+                // Create ask without image
+                createAsk({ ...newAsk })
                   .then(() => {
                     toastAndroid('Ask successfully created.');
                   })
                   .catch(error => {
-                    console.log('Eror occured while creating ask: ', error);
+                    console.log('Eror occured while creating ask: ');
                   })
                   .finally(() => {
                     setIsCreating(false);
-                    navigation.goBack();
                   });
-              } catch (error) {
-                console.log(error);
+              } else {
+                setIsCreating(true);
+                try {
+                  const { metadata } = await storage()
+                    .ref(`images/whoget_${Date.now().toString()}.png`)
+                    .putFile(imageUrl.path);
+                  const url = await storage()
+                    .ref(metadata.fullPath)
+                    .getDownloadURL();
+                  createAsk({ ...newAsk, imageUrl: url })
+                    .then(() => {
+                      toastAndroid('Ask successfully created.');
+                    })
+                    .catch(error => {
+                      console.log('Eror occured while creating ask: ', error);
+                    })
+                    .finally(() => {
+                      setIsCreating(false);
+                      navigation.goBack();
+                    });
+                } catch (error) {
+                  console.log(error);
+                  setIsCreating(false);
+                }
               }
             }
           }}

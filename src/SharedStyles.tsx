@@ -9,6 +9,9 @@ const Styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 5,
   },
+  inputText: {
+    color: '#23226e',
+  },
   appBackgroundColor: {
     backgroundColor: '#F8F8F8',
   },
