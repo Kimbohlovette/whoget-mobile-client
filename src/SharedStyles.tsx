@@ -6,6 +6,8 @@ const Styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'lightgray',
     borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 5,
   },
   appBackgroundColor: {
     backgroundColor: '#F8F8F8',

@@ -11,16 +11,14 @@ import {
 import React, { useEffect, useMemo, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { textEllipsis } from '../shared/ellipseText';
-import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Styles from '../SharedStyles';
 import { useAppSelector } from '../store/hooks';
 import { Props } from '../../types';
-import pusherConfig from '../../pusher.config';
 import {
   fetchFilteredAsks,
   fetchPaginatedAks,
 } from '../apiService/fetchingFunctions';
-import { connectToChannel } from '../pusher/pusherChannel';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const Asks = ({ navigation, route }: Props) => {
   const [showFilter, setShowFilter] = useState(false); //state  to show/hide filter modal
@@ -30,9 +28,18 @@ const Asks = ({ navigation, route }: Props) => {
   const [endOfListReached, setEndOfListReached] = useState<boolean>(false);
 
   /** ===== States for filtering asks =======*/
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [selectedLocation, setSelectedLocation] = useState<string>('');
-  const [selectedExpires, setSelectedExpires] = useState<number>(0);
+  const [selectedCategory, setSelectedCategory] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
+  const [selectedExpires, setSelectedExpires] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
   const [filtering, setFiltering] = useState<boolean>(false);
   /** ===================================== */
   const pageLimit = 15;
@@ -100,92 +107,88 @@ const Asks = ({ navigation, route }: Props) => {
             onPress={() => {
               setShowFilter(false);
             }}
-            className="w-full h-full items-center bg-primary-800/60 relative z-20">
-            <View className="w-full px-4 py-8 rounded-md bg-white relative z-50">
+            className="w-full h-full items-center bg-primary-800/60 relative z-20 justify-center px-2">
+            <View className="relative w-full px-4 py-8 rounded-lg bg-white z-50">
               <Text className="text-center py-2 text-lg text-slate-600">
                 Filter Asks
               </Text>
               <View className="gap-y-4">
                 <View>
-                  <AutocompleteDropdown
-                    clearOnFocus
-                    inputContainerStyle={Styles.InputContainer}
-                    showClear={false}
-                    dataSet={categories}
-                    textInputProps={{
-                      placeholder: 'Category',
-                      placeholderTextColor: 'gray',
+                  <Text className="text-primary-500 py-2">Ask category</Text>
+                  <Dropdown
+                    style={Styles.InputContainer}
+                    value={selectedCategory}
+                    placeholder="Select category"
+                    containerStyle={{
+                      width: '100%',
+                      borderRadius: 5,
                     }}
-                    onSelectItem={item => {
-                      item && setSelectedCategory(item.id);
+                    labelField="title"
+                    valueField="id"
+                    onChange={value => {
+                      setSelectedCategory(value);
                     }}
+                    data={categories}
                   />
                 </View>
                 <View>
-                  <AutocompleteDropdown
-                    clearOnFocus
-                    inputContainerStyle={Styles.InputContainer}
-                    showClear={false}
-                    initialValue={{ id: '0', title: 'Location' }}
-                    dataSet={locations}
-                    textInputProps={{
-                      placeholder: 'Location',
-                      placeholderTextColor: 'gray',
+                  <Text className="text-primary-500 py-2">Location</Text>
+                  <Dropdown
+                    style={Styles.InputContainer}
+                    value={selectedLocation}
+                    placeholder="Select location"
+                    containerStyle={{
+                      width: '100%',
+                      borderRadius: 5,
                     }}
-                    onSelectItem={item => {
-                      item && setSelectedLocation(item.title as string);
+                    labelField="title"
+                    valueField="id"
+                    onChange={value => {
+                      setSelectedCategory(value);
                     }}
+                    data={locations}
                   />
                 </View>
                 <View>
-                  <AutocompleteDropdown
-                    clearOnFocus
-                    inputContainerStyle={Styles.InputContainer}
-                    showClear={false}
-                    dataSet={[
+                  <Text className="text-primary-500 py-2">Date to expire</Text>
+                  <Dropdown
+                    style={Styles.InputContainer}
+                    value={selectedExpires}
+                    placeholder="Expiration date"
+                    containerStyle={{
+                      width: '100%',
+                      borderRadius: 5,
+                    }}
+                    labelField="title"
+                    valueField="id"
+                    onChange={value => {
+                      setSelectedExpires(value);
+                    }}
+                    data={[
                       { id: '1', title: 'Today' },
                       { id: '2', title: 'Tomorrow' },
-                      { id: '3', title: '3 Days' },
-                      { id: '4', title: '4 Days' },
-                      { id: '5', title: '5 Days' },
-                      { id: '6', title: '6 Days' },
-                      { id: '7', title: '7 Days' },
+                      { id: '3', title: '3 days' },
+                      { id: '4', title: '4 days' },
+                      { id: '5', title: '5 days' },
+                      { id: '6', title: '6 days' },
+                      { id: '7', title: '7 days' },
                     ]}
-                    textInputProps={{
-                      placeholder: 'Expiration date',
-                      placeholderTextColor: 'gray',
-                    }}
-                    onSelectItem={item => {
-                      item && setSelectedExpires(Number(item.id));
-                    }}
                   />
                 </View>
               </View>
               <View className="shrink flex-row justify-between mt-8">
                 <Pressable
                   onPress={() => {
-                    setShowFilter(false);
-                  }}
-                  className="rounded-md border border-primary-500 focus:shadow-sm"
-                  android_ripple={{ color: 'lightgray' }}>
-                  <Text className="text-center text-primary-600 font-medium py-2 px-5">
-                    Cancel
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => {
                     const isValidSelection =
-                      selectedCategory !== '' &&
-                      selectedLocation !== '' &&
-                      selectedExpires !== 0;
+                      selectedCategory && selectedLocation && selectedExpires;
                     if (isValidSelection) {
                       // fetch categories with filters
                       setRefreshing(true);
                       setFiltering(true);
                       fetchFilteredAsks(
-                        selectedCategory,
-                        selectedLocation,
-                        selectedExpires,
+                        selectedCategory.id,
+                        selectedLocation.title,
+                        Number(selectedExpires.id),
                       )
                         .then(data => {
                           setAsks(data);
@@ -214,6 +217,22 @@ const Asks = ({ navigation, route }: Props) => {
                   </Text>
                 </Pressable>
               </View>
+
+              {/* The cancel button */}
+
+              <View className="absolute top-2 right-5 overflow-hidden rounded-3xl justify-center items-center">
+                <Pressable
+                  onPress={() => {
+                    setShowFilter(false);
+                  }}
+                  className="focus:shadow-sm"
+                  android_ripple={{ color: 'lightgray' }}>
+                  <Text className="text-xl px-1">
+                    <Icon name="close-outline" size={20} />
+                  </Text>
+                </Pressable>
+              </View>
+              {/* End of cancel button */}
             </View>
           </Pressable>
         </Modal>

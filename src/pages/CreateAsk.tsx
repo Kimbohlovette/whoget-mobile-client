@@ -146,7 +146,7 @@ const CreateAsk = ({ navigation }: Props) => {
         </View>
         <View>
           <Dropdown
-            className="py-2 px-4 border border-slate-300 rounded-lg"
+            style={Styles.InputContainer}
             value={selectedLocation}
             placeholder="Select Location"
             containerStyle={{
@@ -165,7 +165,7 @@ const CreateAsk = ({ navigation }: Props) => {
         </View>
         <View>
           <Dropdown
-            className="py-2 px-4 border border-slate-300 rounded-lg"
+            style={Styles.InputContainer}
             value={selectedExpires}
             placeholder="Select Expiration Date"
             containerStyle={{
@@ -191,7 +191,7 @@ const CreateAsk = ({ navigation }: Props) => {
         </View>
         <View>
           <Dropdown
-            className="py-2 px-4 border border-slate-300 rounded-lg"
+            style={Styles.InputContainer}
             value={selectedLocation}
             placeholder="Select Category"
             containerStyle={{
@@ -264,11 +264,11 @@ const CreateAsk = ({ navigation }: Props) => {
               navigation.navigate('Authentication');
             }
             const newAsk = {
-              location: selectedLocation.title,
+              location: selectedLocation?.title || '',
               message,
               contactNumber: phoneNumber || user.contactNumber,
-              categoryId: selectedCategory.id,
-              categoryName: selectedCategory.title,
+              categoryId: selectedCategory?.id,
+              categoryName: selectedCategory?.title,
               userId: user.id,
               userName: user.name,
               status: 'visible',
