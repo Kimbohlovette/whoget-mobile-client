@@ -123,9 +123,10 @@ const CreateAsk = ({ navigation }: Props) => {
       />
       <View className="gap-y-4">
         <View>
+          <Text className="text-primary-500 py-2">Description</Text>
           <TextInput
             className="border border-slate-300 py-2 px-4 rounded-lg text-slate-600 text-base leading-loose"
-            placeholder="Type description here"
+            placeholder="Describe your need here"
             placeholderTextColor={'#475569'}
             multiline={true}
             onChangeText={text => {
@@ -134,6 +135,9 @@ const CreateAsk = ({ navigation }: Props) => {
           />
         </View>
         <View>
+          <Text className="text-primary-500 py-2">
+            Preferred contact number
+          </Text>
           <TextInput
             defaultValue="+(237) "
             className="border border-slate-300 py-2 px-4 rounded-lg text-slate-600 text-base"
@@ -145,6 +149,7 @@ const CreateAsk = ({ navigation }: Props) => {
           />
         </View>
         <View>
+          <Text className="text-primary-500 py-2">Location</Text>
           <Dropdown
             style={Styles.InputContainer}
             value={selectedLocation}
@@ -164,6 +169,7 @@ const CreateAsk = ({ navigation }: Props) => {
           />
         </View>
         <View>
+          <Text className="text-primary-500 py-2">Expiration date</Text>
           <Dropdown
             style={Styles.InputContainer}
             value={selectedExpires}
@@ -190,6 +196,7 @@ const CreateAsk = ({ navigation }: Props) => {
           />
         </View>
         <View>
+          <Text className="text-primary-500 py-2">Ask category</Text>
           <Dropdown
             style={Styles.InputContainer}
             value={selectedLocation}

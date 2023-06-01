@@ -144,7 +144,7 @@ const Asks = ({ navigation, route }: Props) => {
                     labelField="title"
                     valueField="id"
                     onChange={value => {
-                      setSelectedCategory(value);
+                      setSelectedLocation(value);
                     }}
                     data={locations}
                   />
@@ -176,17 +176,20 @@ const Asks = ({ navigation, route }: Props) => {
                   />
                 </View>
               </View>
-              <View className="shrink flex-row justify-between mt-8">
+              <View className="shrink flex-row justify-end mt-8">
                 <Pressable
                   onPress={() => {
                     const isValidSelection =
-                      selectedCategory && selectedLocation && selectedExpires;
+                      !!selectedCategory &&
+                      !!selectedLocation &&
+                      !!selectedExpires;
+
                     if (isValidSelection) {
                       // fetch categories with filters
                       setRefreshing(true);
                       setFiltering(true);
                       fetchFilteredAsks(
-                        selectedCategory.id,
+                        selectedCategory.title,
                         selectedLocation.title,
                         Number(selectedExpires.id),
                       )
@@ -208,8 +211,8 @@ const Asks = ({ navigation, route }: Props) => {
                   disabled={filtering}
                   className={
                     filtering
-                      ? 'rounded-md border bg-primary-300 border-primary-500 focus:shadow-sm'
-                      : 'rounded-md border bg-primary-600 border-primary-500 focus:shadow-sm'
+                      ? 'rounded-lg border bg-primary-300 border-primary-500 focus:shadow-sm'
+                      : 'rounded-lg border bg-primary-600 border-primary-500 focus:shadow-sm'
                   }
                   android_ripple={{ color: 'lightgray' }}>
                   <Text className="text-center text-white font-medium py-2 px-5">
