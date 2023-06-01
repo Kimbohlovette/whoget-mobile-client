@@ -1,5 +1,5 @@
 import { View, Text, Image, Pressable, ScrollView } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Styles from '../SharedStyles';
 import {
   fetchOneUserByEmail,
@@ -8,8 +8,15 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppDispatch } from '../store/hooks';
 import { updateAuthStatus, updateProfile } from '../store/slices/userSlice';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const SignIn = () => {
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '1071190608503-hnua85ljh7c940id1qk2a28eqh68tslk.apps.googleusercontent.com',
+    });
+  }, []);
   const dispatch = useAppDispatch();
   return (
     <ScrollView style={Styles.pageContainer}>
@@ -36,18 +43,7 @@ const SignIn = () => {
             </Pressable>
             <Pressable
               onPress={() => {
-                signinWithGoogle().then(response => {
-                  response.user.getIdToken().then(token => {
-                    AsyncStorage.setItem(
-                      '@authToken',
-                      JSON.stringify({
-                        token,
-                        email: response.user.email,
-                      }),
-                    );
-                    dispatch(updateAuthStatus(true));
-                  });
-                });
+                signinWithGoogle().then(response => {});
               }}
               android_ripple={{ color: 'light-gray' }}
               className="w-full py-3 px-5 flex-row items-center justify-start border border-slate-300 rounded-xl">

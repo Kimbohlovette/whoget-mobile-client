@@ -24,6 +24,7 @@
     "react": "18.1.0",
     "react-native": "0.70.4",
     "react-native-autocomplete-dropdown": "^2.1.1",
+    "react-native-element-dropdown": "^2.9.0",
     "react-native-fbsdk-next": "^11.2.1",
     "react-native-image-crop-picker": "^0.39.0",
     "react-native-popup-menu": "^0.16.1",

@@ -9,32 +9,36 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
+import React, { useState } from 'react';
 import Styles from '../SharedStyles';
-import FoIcon from 'react-native-vector-icons/Fontisto';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
 
 import PageHeader from '../components/PageHeader';
-import {
-  createAsk,
-  getCategoriesFromAsyncStorage,
-  getLocationsFromAsyncStorage,
-} from '../apiService/fetchingFunctions';
+import { createAsk } from '../apiService/fetchingFunctions';
 import { useAppSelector } from '../store/hooks';
 import { toastAndroid } from '../shared/toastAndroid';
 import { HomeStackParamList } from '../../types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Dropdown } from 'react-native-element-dropdown';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'CreateAsk'>;
 const CreateAsk = ({ navigation }: Props) => {
-  const [selectedExpires, setSelectedExpires] = useState<string>('');
+  const [selectedExpires, setSelectedExpires] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
   const [showImagePickerModal, setShowImagePickerModal] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<any>('Buea');
-  const [selectedCategory, setSelectedCateory] = useState<any>(null);
+  const [selectedLocation, setSelectedLocation] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
+  const [selectedCategory, setSelectedCateory] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
   const [message, setMessage] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isCreating, setIsCreating] = useState<boolean>(false);
@@ -120,11 +124,10 @@ const CreateAsk = ({ navigation }: Props) => {
       <View className="gap-y-4">
         <View>
           <TextInput
-            className="border border-slate-300 py-2 px-4 rounded-lg"
+            className="border border-slate-300 py-2 px-4 rounded-lg text-slate-600 text-base leading-loose"
             placeholder="Type description here"
             placeholderTextColor={'#475569'}
             multiline={true}
-            numberOfLines={3}
             onChangeText={text => {
               setMessage(text);
             }}
@@ -132,8 +135,8 @@ const CreateAsk = ({ navigation }: Props) => {
         </View>
         <View>
           <TextInput
-            defaultValue="+237 "
-            className="border border-slate-300 py-2 px-4 rounded-lg"
+            defaultValue="+(237) "
+            className="border border-slate-300 py-2 px-4 rounded-lg text-slate-600 text-base"
             placeholder="Enter Whatsapp number"
             placeholderTextColor={'#475569'}
             onChangeText={number => {
@@ -141,59 +144,67 @@ const CreateAsk = ({ navigation }: Props) => {
             }}
           />
         </View>
-        <View className="flex-row gap-x-1">
-          <View className="flex-1">
-            <AutocompleteDropdown
-              inputContainerStyle={Styles.InputContainer}
-              textInputProps={{
-                placeholder: 'Location',
-                placeholderTextColor: '#475569',
-              }}
-              onSelectItem={item => {
-                item && setSelectedLocation(item);
-              }}
-              dataSet={places}
-            />
-          </View>
-          <View className="flex-1">
-            <AutocompleteDropdown
-              clearOnFocus
-              inputContainerStyle={Styles.InputContainer}
-              dataSet={[
-                { id: '1', title: 'Today' },
-                { id: '2', title: 'Tomorrow' },
-                { id: '3', title: '3 Days' },
-                { id: '4', title: '4 Days' },
-                { id: '5', title: '5 Days' },
-                { id: '6', title: '6 Days' },
-                { id: '7', title: '7 Days' },
-              ]}
-              textInputProps={{
-                placeholder: 'Expiration date',
-                placeholderTextColor: 'gray',
-              }}
-              onSelectItem={item => {
-                item && setSelectedExpires(item.id as string);
-              }}
-            />
-          </View>
+        <View>
+          <Dropdown
+            className="py-2 px-4 border border-slate-300 rounded-lg"
+            value={selectedLocation}
+            placeholder="Select Location"
+            containerStyle={{
+              width: '100%',
+              borderRadius: 5,
+            }}
+            labelField="title"
+            valueField="id"
+            onChange={val => {
+              setSelectedLocation(val);
+            }}
+            mode="modal"
+            data={places}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
         <View>
-          <AutocompleteDropdown
-            inputContainerStyle={Styles.InputContainer}
-            textInputProps={{
-              placeholder: 'Select Category',
-              placeholderTextColor: '#475569',
+          <Dropdown
+            className="py-2 px-4 border border-slate-300 rounded-lg"
+            value={selectedExpires}
+            placeholder="Select Expiration Date"
+            containerStyle={{
+              width: '100%',
+              borderRadius: 5,
             }}
-            showClear={false}
-            clearOnFocus={false}
-            closeOnBlur
-            closeOnSubmit={false}
-            initialValue={{ id: '2' }} // or just '2'
-            onSelectItem={item => {
-              item && setSelectedCateory(item);
+            labelField="title"
+            valueField="id"
+            onChange={value => {
+              setSelectedExpires(value);
             }}
-            dataSet={categories}
+            mode="modal"
+            data={[
+              { id: '1', title: 'Today' },
+              { id: '2', title: 'Tomorrow' },
+              { id: '3', title: '3 Days' },
+              { id: '4', title: '4 Days' },
+              { id: '5', title: '5 Days' },
+              { id: '6', title: '6 Days' },
+              { id: '7', title: '7 Days' },
+            ]}
+          />
+        </View>
+        <View>
+          <Dropdown
+            className="py-2 px-4 border border-slate-300 rounded-lg"
+            value={selectedLocation}
+            placeholder="Select Category"
+            containerStyle={{
+              width: '100%',
+              borderRadius: 5,
+            }}
+            labelField="title"
+            valueField="id"
+            onChange={value => {
+              value && setSelectedCateory(value);
+            }}
+            mode="modal"
+            data={categories}
           />
         </View>
         <View>
