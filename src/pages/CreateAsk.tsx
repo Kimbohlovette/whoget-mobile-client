@@ -9,7 +9,7 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Styles from '../SharedStyles';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
@@ -17,7 +17,11 @@ import ImagePicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
 
 import PageHeader from '../components/PageHeader';
-import { createAsk } from '../apiService/fetchingFunctions';
+import {
+  createAsk,
+  fetchOneAskById,
+  updateAsk,
+} from '../apiService/fetchingFunctions';
 import { useAppSelector } from '../store/hooks';
 import { toastAndroid } from '../shared/toastAndroid';
 import { HomeStackParamList } from '../../types';
@@ -25,7 +29,60 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Dropdown } from 'react-native-element-dropdown';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'CreateAsk'>;
-const CreateAsk = ({ navigation }: Props) => {
+const CreateAsk = ({ navigation, route }: Props) => {
+  // Get route params
+  const [editAskId, setEditAskId] = useState<string>('');
+  useEffect(() => {
+    fetchOneAskById(route.params.askId as string)
+      .then(ask => {
+        setEditAskId(ask.id);
+        //console.log(ask);
+        setSelectedCateory(
+          categories.filter(
+            (cat: { id: string; title: string }) => cat.id === ask.categoryId,
+          )[0],
+        );
+
+        setSelectedLocation(
+          places.filter(
+            (place: { id: string; title: string }) =>
+              place.title === ask.location,
+          )[0],
+        );
+
+        setPhoneNumber(ask.contactNumber);
+        setMessage(ask.message);
+        setSelectedExpires(state => {
+          const days =
+            new Date(ask.expirationDate).getDate() - new Date().getDate();
+          switch (days) {
+            case 1:
+              return { id: '1', title: 'Today' };
+            case 2:
+              return { id: '2', title: 'Tomorrow' };
+            case 3:
+              return { id: '3', title: '3 days' };
+            case 4:
+              return { id: '4', title: '4 days' };
+            case 5:
+              return { id: '5', title: '5 days' };
+            case 6:
+              return { id: '6', title: '6 days' };
+            case 7:
+              return { id: '7', title: '7 days' };
+            default:
+              return { id: '1', title: 'Today' };
+          }
+        });
+        if (ask.imageUrl) {
+          pushImageToList([{ path: ask.imageUrl }, ...selectedImageList]);
+        }
+      })
+      .catch(error => {
+        console.log('Error occured while fetch ask for editting: \n', error);
+      });
+  }, []);
+
   /** Get data from redux store */
   const { user, isAuthenticated } = useAppSelector(state => state.user);
   const places = useAppSelector(state => state.location.locations);
@@ -45,8 +102,10 @@ const CreateAsk = ({ navigation }: Props) => {
     id: string;
     title: string;
   } | null>(null);
-  const [message, setMessage] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber);
+  const [message, setMessage] = useState<string | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState<string | null>(
+    user.phoneNumber,
+  );
   const [isCreating, setIsCreating] = useState<boolean>(false);
 
   // Input validation states
@@ -138,6 +197,7 @@ const CreateAsk = ({ navigation }: Props) => {
           </View>
           <TextInput
             className="border border-slate-300 py-2 px-4 rounded-lg text-slate-600 text-base leading-loose"
+            value={message || ''}
             placeholder="Describe your need here"
             placeholderTextColor={'#475569'}
             multiline={true}
@@ -241,7 +301,7 @@ const CreateAsk = ({ navigation }: Props) => {
             style={Styles.InputContainer}
             itemTextStyle={Styles.inputText}
             selectedTextStyle={Styles.inputText}
-            value={selectedLocation}
+            value={selectedCategory}
             placeholder="Select category"
             containerStyle={{
               width: '100%',
@@ -269,7 +329,9 @@ const CreateAsk = ({ navigation }: Props) => {
                     <Pressable
                       onPress={() => {
                         pushImageToList(images => {
-                          return images.filter(image => image.id !== item.id);
+                          return images.filter(
+                            image => image.path && image.id !== item.id,
+                          );
                         });
                       }}
                       android_ripple={{
@@ -341,47 +403,89 @@ const CreateAsk = ({ navigation }: Props) => {
               if (!imageUrl) {
                 setIsCreating(true);
                 // Create ask without image
-                createAsk({ ...newAsk })
-                  .then(() => {
-                    toastAndroid('Ask successfully created.');
-                  })
-                  .catch(error => {
-                    console.log('Eror occured while creating ask: ');
-                  })
-                  .finally(() => {
-                    setIsCreating(false);
-                  });
-              } else {
-                setIsCreating(true);
-                try {
-                  const { metadata } = await storage()
-                    .ref(`images/whoget_${Date.now().toString()}.png`)
-                    .putFile(imageUrl.path);
-                  const url = await storage()
-                    .ref(metadata.fullPath)
-                    .getDownloadURL();
-                  createAsk({ ...newAsk, imageUrl: url })
+                if (route.params.mode === 'create') {
+                  createAsk({ ...newAsk })
                     .then(() => {
                       toastAndroid('Ask successfully created.');
                     })
                     .catch(error => {
-                      console.log('Eror occured while creating ask: ', error);
+                      console.log('Eror occured while creating ask: ');
                     })
                     .finally(() => {
                       setIsCreating(false);
-                      navigation.goBack();
                     });
-                } catch (error) {
-                  console.log(error);
-                  setIsCreating(false);
+                } else {
+                  updateAsk(editAskId)
+                    .then(() => {
+                      toastAndroid('Ask successfully created.');
+                    })
+                    .catch(error => {
+                      console.log('Eror occured while creating ask: ');
+                    })
+                    .finally(() => {
+                      setIsCreating(false);
+                    });
+                }
+              } else {
+                setIsCreating(true);
+                if (route.params.mode === 'create') {
+                  try {
+                    const { metadata } = await storage()
+                      .ref(`images/whoget_${Date.now().toString()}.png`)
+                      .putFile(imageUrl.path);
+                    const url = await storage()
+                      .ref(metadata.fullPath)
+                      .getDownloadURL();
+                    createAsk({ ...newAsk, imageUrl: url })
+                      .then(() => {
+                        toastAndroid('Ask successfully created.');
+                      })
+                      .catch(error => {
+                        console.log('Eror occured while creating ask: ', error);
+                      })
+                      .finally(() => {
+                        setIsCreating(false);
+                        navigation.goBack();
+                      });
+                  } catch (error) {
+                    console.log(error);
+                    setIsCreating(false);
+                  }
+                } else {
+                  try {
+                    const { metadata } = await storage()
+                      .ref(`images/whoget_${Date.now().toString()}.png`)
+                      .putFile(imageUrl.path);
+                    const url = await storage()
+                      .ref(metadata.fullPath)
+                      .getDownloadURL();
+                    updateAsk(editAskId)
+                      .then(() => {
+                        toastAndroid('Ask successfully updated.');
+                      })
+                      .catch(error => {
+                        console.log('Eror occured while updating ask: ', error);
+                      })
+                      .finally(() => {
+                        setIsCreating(false);
+                        navigation.goBack();
+                      });
+                  } catch (error) {
+                    console.log(error);
+                    setIsCreating(false);
+                  }
                 }
               }
             }
           }}
           android_ripple={{ color: 'lightgray' }}
           className="w-1/3 py-2 px-5 rounded-lg border border-primary-500 bg-primary-500">
-          <View className="flex-row gap-x-1">
-            <Text className="text-white text-center">Place Ask</Text>
+          <View className="flex-row gap-x-1 justify-center">
+            {route.params.mode === 'create' ? (
+              <Text className="text-white text-center">Place ask</Text>
+            ) : (
+              <Text className="text-white text-center">Update</Text>
+            )}
             {isCreating && <ActivityIndicator color={'white'} />}
           </View>
         </Pressable>

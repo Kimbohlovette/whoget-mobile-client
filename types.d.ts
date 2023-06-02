@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type HomeStackParamList = {
   Asks: undefined;
-  CreateAsk: undefined;
+  CreateAsk: { mode: 'create' | 'edit'; askId?: string };
   Authentication?: CompositeNavigationProp<AuthStackParamList>;
   UserDetails: { userId: string };
   AskDetails: { askId: string };

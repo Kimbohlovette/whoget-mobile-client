@@ -196,3 +196,27 @@ export const fetchFilteredAsks = async (
   const resData = await response.json();
   return resData.asks;
 };
+
+export const deleteAsk = async (id: string) => {
+  try {
+    const response = await fetch(`${BASE_URL}asks/${id}`, {
+      method: 'DELETE',
+    });
+    const result = await response.json();
+    return result.deletedId;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const updateAsk = async (id: string) => {
+  try {
+    const response = await fetch(`${BASE_URL}asks/${id}`, {
+      method: 'PATCH',
+    });
+    const result = await response.json();
+    return result.updated;
+  } catch (error) {
+    return null;
+  }
+};

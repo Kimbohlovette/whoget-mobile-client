@@ -299,7 +299,7 @@ const Asks = ({ navigation, route }: Props) => {
         <Pressable
           onPress={() => {
             if (isAuthenticated) {
-              navigation.navigate('CreateAsk');
+              navigation.navigate('CreateAsk', { mode: 'create' });
             } else {
               navigation.navigate('Authentication');
             }

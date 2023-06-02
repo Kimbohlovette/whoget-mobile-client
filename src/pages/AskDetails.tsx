@@ -18,6 +18,7 @@ import { useAppSelector } from '../store/hooks';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackParamList } from '../../types';
 import {
+  deleteAsk,
   fetchOneAskById,
   fetchOneUserById,
 } from '../apiService/fetchingFunctions';
@@ -40,7 +41,7 @@ const AskDetails = ({ navigation, route }: Props) => {
     'idle' | 'loading' | 'failed' | 'successful'
   >('loading');
   //const navigation = useNavigation<ProfileScreenNavigationProp>();
-  const isAuthenticated = useAppSelector(state => state.user.isAuthenticated);
+  const { isAuthenticated, user } = useAppSelector(state => state.user);
 
   useEffect(() => {
     if (askId) {
@@ -108,27 +109,69 @@ const AskDetails = ({ navigation, route }: Props) => {
               </View>
 
               <View>
-                <Menu>
-                  <MenuTrigger
-                    children={<Icon name="dots-vertical" size={20} />}
-                  />
-                  <MenuOptions>
-                    <MenuOption
-                      children={
-                        <View className="flex-row justify-between px-4 py-2">
-                          <Text>Share</Text>
-                          <Icon name="share" />
-                        </View>
-                      }
+                {isAuthenticated && user.id === askDetails.userId ? (
+                  <Menu>
+                    <MenuTrigger
+                      children={<Icon name="dots-vertical" size={20} />}
                     />
-                    <MenuOption>
-                      <View className="flex-row justify-between px-4 py-2">
-                        <Text>Report</Text>
-                        <Ionicon name="warning" />
-                      </View>
-                    </MenuOption>
-                  </MenuOptions>
-                </Menu>
+                    <MenuOptions>
+                      <MenuOption
+                        children={
+                          <Pressable
+                            onPress={() => {
+                              navigation.navigate('CreateAsk', {
+                                mode: 'edit',
+                                askId: askDetails.id,
+                              });
+                            }}
+                            className="flex-row justify-between px-4 py-2">
+                            <Text>Edit ask</Text>
+                            <Icon name="share" />
+                          </Pressable>
+                        }
+                      />
+                      <MenuOption>
+                        <Pressable
+                          onPress={() => {
+                            deleteAsk(askDetails.id).then(id => {
+                              if (!id) {
+                                console.log('Error deleting ask');
+                              } else {
+                                console.log('Successfully deleted');
+                                //send a message to delete ask
+                              }
+                            });
+                          }}
+                          className="flex-row justify-between px-4 py-2">
+                          <Text>Delete ask</Text>
+                          <Ionicon name="warning" />
+                        </Pressable>
+                      </MenuOption>
+                    </MenuOptions>
+                  </Menu>
+                ) : (
+                  <Menu>
+                    <MenuTrigger
+                      children={<Icon name="dots-vertical" size={20} />}
+                    />
+                    <MenuOptions>
+                      <MenuOption
+                        children={
+                          <Pressable className="flex-row justify-between px-4 py-2">
+                            <Text>Share</Text>
+                            <Icon name="share" />
+                          </Pressable>
+                        }
+                      />
+                      <MenuOption>
+                        <Pressable className="flex-row justify-between px-4 py-2">
+                          <Text>Report</Text>
+                          <Ionicon name="warning" />
+                        </Pressable>
+                      </MenuOption>
+                    </MenuOptions>
+                  </Menu>
+                )}
               </View>
             </View>
           }
