@@ -35,6 +35,7 @@ const CreateAsk = ({ navigation, route }: Props) => {
   useEffect(() => {
     fetchOneAskById(route.params.askId as string)
       .then(ask => {
+        console.log(ask);
         setEditAskId(ask.id);
         //console.log(ask);
         setSelectedCateory(
@@ -50,7 +51,7 @@ const CreateAsk = ({ navigation, route }: Props) => {
           )[0],
         );
 
-        setPhoneNumber(ask.contactNumber);
+        setPhoneNumber(ask.contactNumber || ask.owner.phoneNumber);
         setMessage(ask.message);
         setSelectedExpires(state => {
           const days =
@@ -211,12 +212,15 @@ const CreateAsk = ({ navigation, route }: Props) => {
             <Text className="text-primary-500 text-base py-2">
               Preferred contact number*
             </Text>
-            {phoneNumber === '' && invalidInputs && (
-              <Text className="text-red-500">This field is equired</Text>
-            )}
+            {(phoneNumber === undefined ||
+              !phoneNumber ||
+              phoneNumber === '') &&
+              invalidInputs && (
+                <Text className="text-red-500">This field is equired</Text>
+              )}
           </View>
           <TextInput
-            defaultValue={'+237 ' + user.phoneNumber}
+            value={phoneNumber || ''}
             className="border border-slate-300 py-2 px-4 rounded-lg text-primary-600 text-base"
             placeholder="+237"
             placeholderTextColor={'#475569'}
@@ -379,6 +383,7 @@ const CreateAsk = ({ navigation, route }: Props) => {
               message === '' ||
               !phoneNumber ||
               phoneNumber === '' ||
+              phoneNumber == undefined ||
               !selectedCategory ||
               !selectedLocation ||
               !selectedExpires;
@@ -399,7 +404,6 @@ const CreateAsk = ({ navigation, route }: Props) => {
               const imageUrl = selectedImageList.filter(
                 item => item.id !== undefined,
               )[0];
-
               if (!imageUrl) {
                 setIsCreating(true);
                 // Create ask without image
@@ -415,7 +419,7 @@ const CreateAsk = ({ navigation, route }: Props) => {
                       setIsCreating(false);
                     });
                 } else {
-                  updateAsk(editAskId)
+                  updateAsk(editAskId, newAsk)
                     .then(() => {
                       toastAndroid('Ask successfully created.');
                     })
@@ -459,7 +463,7 @@ const CreateAsk = ({ navigation, route }: Props) => {
                     const url = await storage()
                       .ref(metadata.fullPath)
                       .getDownloadURL();
-                    updateAsk(editAskId)
+                    updateAsk(editAskId, { ...newAsk, imageUrl: url })
                       .then(() => {
                         toastAndroid('Ask successfully updated.');
                       })

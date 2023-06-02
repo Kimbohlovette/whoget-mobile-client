@@ -205,18 +205,26 @@ export const deleteAsk = async (id: string) => {
     const result = await response.json();
     return result.deletedId;
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
 
-export const updateAsk = async (id: string) => {
+export const updateAsk = async (id: string, payload: any) => {
+  console.log('\n\n Payload: ', payload);
+  console.log('Editting the ask with ID: ', id);
   try {
     const response = await fetch(`${BASE_URL}asks/${id}`, {
-      method: 'PATCH',
+      method: 'PUT',
+      body: payload,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
     const result = await response.json();
     return result.updated;
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
