@@ -138,6 +138,7 @@ const AskDetails = ({ navigation, route }: Props) => {
                                 console.log('Error deleting ask');
                               } else {
                                 console.log('Successfully deleted');
+                                navigation.navigate('Asks');
                                 //send a message to delete ask
                               }
                             });
