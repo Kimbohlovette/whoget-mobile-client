@@ -1,4 +1,4 @@
-import { View, Text, Pressable, TextInput, Image } from 'react-native';
+import { View, Text, Pressable, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MdIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -6,10 +6,7 @@ import { textEllipsis } from '../shared/ellipseText';
 import { ScrollView } from 'react-native';
 import Styles from '../SharedStyles';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import {
-  fetchAsksByUserId,
-  fetchOneUserByEmail,
-} from '../apiService/fetchingFunctions';
+import { fetchOneUserByEmail } from '../apiService/fetchingFunctions';
 import { useNavigation } from '@react-navigation/native';
 import {
   Menu,

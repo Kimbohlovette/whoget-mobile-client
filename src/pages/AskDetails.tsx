@@ -12,18 +12,13 @@ import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SIcon from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import AntIcon from 'react-native-vector-icons/AntDesign';
 import Styles from '../SharedStyles';
 import PageHeader from '../components/PageHeader';
 import { useAppSelector } from '../store/hooks';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackParamList } from '../../types';
-import {
-  deleteAsk,
-  fetchOneAskById,
-  fetchOneUserById,
-} from '../apiService/fetchingFunctions';
-import { fetchUserById } from '../store/slices/userSlice';
-import { createAsk } from '../apiService/fetchingFunctions';
+import { deleteAsk, fetchOneAskById } from '../apiService/fetchingFunctions';
 import {
   Menu,
   MenuTrigger,
@@ -124,9 +119,9 @@ const AskDetails = ({ navigation, route }: Props) => {
                                 askId: askDetails.id,
                               });
                             }}
-                            className="flex-row justify-between px-4 py-2">
+                            className="flex-row gap-x-4 items-center px-4 py-2">
+                            <AntIcon name="edit" />
                             <Text>Edit ask</Text>
-                            <Icon name="share" />
                           </Pressable>
                         }
                       />
@@ -143,9 +138,9 @@ const AskDetails = ({ navigation, route }: Props) => {
                               }
                             });
                           }}
-                          className="flex-row justify-between px-4 py-2">
+                          className="flex-row gap-x-4 items-center px-4 py-2">
+                          <AntIcon name="delete" />
                           <Text>Delete ask</Text>
-                          <Ionicon name="warning" />
                         </Pressable>
                       </MenuOption>
                     </MenuOptions>
@@ -158,16 +153,16 @@ const AskDetails = ({ navigation, route }: Props) => {
                     <MenuOptions>
                       <MenuOption
                         children={
-                          <Pressable className="flex-row justify-between px-4 py-2">
-                            <Text>Share</Text>
+                          <Pressable className="flex-row gap-x-4 items-center px-4 py-2">
                             <Icon name="share" />
+                            <Text>Share</Text>
                           </Pressable>
                         }
                       />
                       <MenuOption>
-                        <Pressable className="flex-row justify-between px-4 py-2">
-                          <Text>Report</Text>
+                        <Pressable className="flex-row gap-x-4 items-center px-4 py-2">
                           <Ionicon name="warning" />
+                          <Text>Report</Text>
                         </Pressable>
                       </MenuOption>
                     </MenuOptions>
@@ -206,7 +201,7 @@ const AskDetails = ({ navigation, route }: Props) => {
               <Icon name="clock-time-eight-outline" size={17} />
             </Text>
             <Text className="text-slate-400">
-              {new Date(askDetails.expirationDate).toLocaleDateString()}
+              {new Date(askDetails.expirationDate).toDateString()}
             </Text>
           </View>
           <View className="my-5">
