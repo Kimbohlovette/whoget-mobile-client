@@ -182,7 +182,12 @@ const AskDetails = ({ navigation, route }: Props) => {
             </View>
           )}
         </View>
-        <View className="mx-1 py-5 rounded-lg bg-slate-50 px-4">
+        <View
+          className={`mx-1 py-5 ${
+            askDetails.imageUrl === undefined
+              ? 'rounded-lg'
+              : 'rounded-x-lg rounded-b-lg'
+          } bg-slate-50 px-4`}>
           <Text className="text-slate-600 py-2 text-base">
             {askDetails.message}
           </Text>
