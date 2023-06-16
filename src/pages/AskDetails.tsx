@@ -69,7 +69,7 @@ const AskDetails = ({ navigation, route }: Props) => {
     </View>
   ) : (
     askDetails && (
-      <ScrollView className="px-4 relative bg-white min-h-screen py-4">
+      <ScrollView className="px-4 relative bg-white min-h-screen py-4 pb-16">
         <PageHeader
           navigation={navigation}
           component={
@@ -174,7 +174,7 @@ const AskDetails = ({ navigation, route }: Props) => {
         />
         <View className="mt-5">
           {askDetails.imageUrl !== undefined && (
-            <View className="translate-y-2 h-fit flex-1 mx-1 rounded-t-lg overflow-hidden">
+            <View className="h-fit flex-1 mx-1 rounded-t-lg overflow-hidden">
               <Image
                 source={{ uri: askDetails.imageUrl }}
                 className="h-48 w-full object-cover object-center"

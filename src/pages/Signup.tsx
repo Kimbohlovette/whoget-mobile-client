@@ -2,8 +2,7 @@ import { View, Text, Pressable, Image, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Styles from '../SharedStyles';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { createUser, signinWithGoogle } from '../apiService/fetchingFunctions';
-import { toastAndroid } from '../shared/toastAndroid';
+import { signinWithGoogle } from '../apiService/fetchingFunctions';
 import { useAppDispatch } from '../store/hooks';
 import { updateAuthStatus, updateProfile } from '../store/slices/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -49,6 +48,7 @@ const Signup = () => {
                 if (response.additionalUserInfo?.isNewUser) {
                   // New user, get ready for signup proccess
                   const newUser = {
+                    uid: response.user.uid,
                     name: response.user.displayName,
                     email: response.user.email,
                     phoneNumber: response.user.phoneNumber,

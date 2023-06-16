@@ -167,15 +167,22 @@ export const signinWithGoogle = async () => {
 };
 
 export const createUser = async (payload: any) => {
-  const response = await fetch(`${BASE_URL}users`, {
-    method: 'POST',
-    body: JSON.stringify(payload),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  const resData = await response.json();
-  return resData.newUser;
+console.log(payload)
+
+  try {
+    const response = await fetch(`${BASE_URL}users`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const resData = await response.json();
+    console.log(resData);
+    return resData.newUser;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const searchWhoget = async (q: string) => {

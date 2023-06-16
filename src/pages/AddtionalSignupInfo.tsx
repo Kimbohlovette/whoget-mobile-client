@@ -75,13 +75,14 @@ const AdditionalSignupInfo = () => {
             onPress={() => {
               const completeUser = {
                 ...userInfo,
-                name: name,
+                name: name === '' ? userInfo.name : name,
                 phoneNumber,
                 location: city,
               };
               setIsSaving(true);
               createUser(completeUser)
                 .then(newUser => {
+                  console.log(newUser);
                   dispatch(updateProfile(completeUser));
                   dispatch(updateAuthStatus(true));
                 })

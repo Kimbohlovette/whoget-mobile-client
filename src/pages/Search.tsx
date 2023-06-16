@@ -71,15 +71,15 @@ export default function Search({ navigation }: Props) {
       </View>
 
       <View>
-        <View className="px-4 py-5 flex-row items-center gap-x-4 border-b border-slate-200">
+        <View className="px-4 py-5 flex-row items-center gap-x-2 border-b border-slate-200">
           <Pressable
             onPress={() => {
               handleResultsToShow('asks');
             }}
             className={
               resultToShow === 'asks'
-                ? 'rounded-lg px-4 py-1 border border-secondary-300 bg-white'
-                : 'rounded-lg px-4 py-1 border border-transparent bg-slate-50'
+                ? 'rounded-sm px-4 py-1 border-b border-secondary-300 bg-white'
+                : 'rounded-sm px-4 py-1 border-b border-transparent bg-slate-50'
             }>
             <Text className="text-slate-600 text-center">
               Asks({searchResults.asks.length})
@@ -91,8 +91,8 @@ export default function Search({ navigation }: Props) {
             }}
             className={
               resultToShow === 'users'
-                ? 'rounded-lg px-4 py-1 border border-secondary-300 bg-white'
-                : 'rounded-lg px-4 py-1 border border-transparent bg-slate-50'
+                ? 'rounded-sm px-4 py-1 border-b border-secondary-300 bg-white'
+                : 'rounded-sm px-4 py-1 border-b border-transparent bg-slate-50'
             }>
             <Text className="text-slate-600 text-center">
               Users({searchResults.users.length})
@@ -104,8 +104,8 @@ export default function Search({ navigation }: Props) {
             }}
             className={
               resultToShow === 'categories'
-                ? 'rounded-lg px-4 py-1 border border-secondary-300 bg-white'
-                : 'rounded-lg px-4 py-1 border border-transparent bg-slate-50'
+                ? 'rounded-sm px-4 py-1 border-b border-secondary-300 bg-white'
+                : 'rounded-sm px-4 py-1 border-b border-transparent bg-slate-50'
             }>
             <Text className="text-slate-600 text-center">
               Categories({searchResults.categories.length})
