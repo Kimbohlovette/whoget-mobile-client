@@ -69,7 +69,7 @@ const AskDetails = ({ navigation, route }: Props) => {
     </View>
   ) : (
     askDetails && (
-      <ScrollView className="px-4 relative bg-white min-h-screen py-4 pb-16">
+      <ScrollView className="px-4 relative bg-white min-h-screen py-4 pb-32">
         <PageHeader
           navigation={navigation}
           component={
@@ -154,14 +154,12 @@ const AskDetails = ({ navigation, route }: Props) => {
                       <MenuOption
                         children={
                           <Pressable className="flex-row gap-x-4 items-center px-4 py-2">
-                            <Icon name="share" />
                             <Text>Share</Text>
                           </Pressable>
                         }
                       />
                       <MenuOption>
                         <Pressable className="flex-row gap-x-4 items-center px-4 py-2">
-                          <Ionicon name="warning" />
                           <Text>Report</Text>
                         </Pressable>
                       </MenuOption>
@@ -213,7 +211,7 @@ const AskDetails = ({ navigation, route }: Props) => {
             <Pressable
               onPress={handleRespond}
               android_ripple={{ color: 'gray' }}
-              className="w-full self-end py-2 px-4 rounded-lg bg-primary-500">
+              className="w-full self-end py-4 rounded-lg bg-primary-500">
               <Text className="text-center text-white font-bold">RESPOND</Text>
             </Pressable>
           </View>

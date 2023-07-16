@@ -71,15 +71,15 @@ export default function Search({ navigation }: Props) {
       </View>
 
       <View>
-        <View className="px-4 py-5 flex-row items-center gap-x-2 border-b border-slate-200">
+        <View className="px-4 py-5 flex-row items-center justify-between gap-x-2">
           <Pressable
             onPress={() => {
               handleResultsToShow('asks');
             }}
             className={
               resultToShow === 'asks'
-                ? 'rounded-sm px-4 py-1 border-b border-secondary-300 bg-white'
-                : 'rounded-sm px-4 py-1 border-b border-transparent bg-slate-50'
+                ? 'rounded-sm px-4 py-1 border-b-2 border-slate-400'
+                : 'rounded-sm px-4 py-1 border-b-2 border-transparent'
             }>
             <Text className="text-slate-600 text-center">
               Asks({searchResults.asks.length})
@@ -91,8 +91,8 @@ export default function Search({ navigation }: Props) {
             }}
             className={
               resultToShow === 'users'
-                ? 'rounded-sm px-4 py-1 border-b border-secondary-300 bg-white'
-                : 'rounded-sm px-4 py-1 border-b border-transparent bg-slate-50'
+                ? 'rounded-sm px-4 py-1 border-b-2 border-slate-400'
+                : 'rounded-sm px-4 py-1 border-b-2 border-transparent'
             }>
             <Text className="text-slate-600 text-center">
               Users({searchResults.users.length})
@@ -104,8 +104,8 @@ export default function Search({ navigation }: Props) {
             }}
             className={
               resultToShow === 'categories'
-                ? 'rounded-sm px-4 py-1 border-b border-secondary-300 bg-white'
-                : 'rounded-sm px-4 py-1 border-b border-transparent bg-slate-50'
+                ? 'rounded-sm px-4 py-1 border-b-2 border-state-400'
+                : 'rounded-sm px-4 py-1 border-b-2 border-transparent'
             }>
             <Text className="text-slate-600 text-center">
               Categories({searchResults.categories.length})
@@ -115,7 +115,7 @@ export default function Search({ navigation }: Props) {
       </View>
 
       {searchResults.asks.length === 0 && !searchLoader && (
-        <Text className="px-4 text-slate-600 my-2">
+        <Text className="px-4 text-slate-600 my-2 text-center">
           Search results show here
         </Text>
       )}
@@ -150,10 +150,10 @@ export default function Search({ navigation }: Props) {
                   }}
                   className="px-4 py-2 bg-white">
                   <View className="flex-row justify-between py-1">
-                    <Text className="text-primary-200">
-                      {`~${ask.userName || 'unknown'}`}
+                    <Text className="text-primary-300 uppercase">
+                      {`${ask.userName || '~unknown'}`}
                     </Text>
-                    <Text> {new Date(ask.createdAt).toLocaleDateString()}</Text>
+                    <Text> {new Date(ask.createdAt).toDateString()}</Text>
                   </View>
                   <View>
                     <Text className="text-slate-600">

@@ -128,6 +128,7 @@ const Asks = ({ navigation, route }: Props) => {
                     onChange={value => {
                       setSelectedCategory(value);
                     }}
+                    mode="modal"
                     data={categories}
                   />
                 </View>
@@ -143,6 +144,7 @@ const Asks = ({ navigation, route }: Props) => {
                     }}
                     labelField="title"
                     valueField="id"
+                    mode="modal"
                     onChange={value => {
                       setSelectedLocation(value);
                     }}
@@ -164,6 +166,7 @@ const Asks = ({ navigation, route }: Props) => {
                     onChange={value => {
                       setSelectedExpires(value);
                     }}
+                    mode="modal"
                     data={[
                       { id: '1', title: 'Today' },
                       { id: '2', title: 'Tomorrow' },
@@ -270,7 +273,6 @@ const Asks = ({ navigation, route }: Props) => {
               );
             }}
             keyExtractor={item => `${item.id}${Date.now()}`}
-            ItemSeparatorComponent={ListSeparator}
             onEndReachedThreshold={0.4}
             onEndReached={() => {
               // Implement the pagination fetching here
@@ -319,9 +321,6 @@ const Asks = ({ navigation, route }: Props) => {
   );
 };
 
-const ListSeparator = () => {
-  return <View className="border-t mx-1 border-slate-200" />;
-};
 const ListEmptyComponent = () => {
   return (
     <View className="my-5">
@@ -343,6 +342,10 @@ const Ask = (props: { ask: any; navigation: any; route: any }) => {
       }}
       android_ripple={{ color: 'slate' }}
       className="z-0 py-4 px-2 flex-row gap-4">
+      <Image
+        source={{ uri: props.ask.imageUrl }}
+        className="h-16 w-16 rounded-md"
+      />
       <View className="flex-1">
         <View className="w-full flex-row flex-between items-center">
           <Pressable
@@ -351,10 +354,10 @@ const Ask = (props: { ask: any; navigation: any; route: any }) => {
                 userId: props.ask.userId,
               });
             }}>
-            <Text className="text-slate-500 font-extralight">
+            <Text className="text-slate-700 font-light uppercase">
               {!props.ask.userName || props.ask.userName === ''
                 ? '~Unkown'
-                : `~${props.ask.userName}`}
+                : `${props.ask.userName}`}
             </Text>
           </Pressable>
           <Text className="text-slate-400 font-extralight py-1">
@@ -367,10 +370,6 @@ const Ask = (props: { ask: any; navigation: any; route: any }) => {
           </Text>
         </View>
       </View>
-      <Image
-        source={{ uri: props.ask.imageUrl }}
-        className="h-16 w-16 rounded-md"
-      />
     </Pressable>
   );
 };
