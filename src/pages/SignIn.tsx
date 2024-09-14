@@ -1,14 +1,8 @@
-import { View, Text, Image, Pressable, ScrollView } from 'react-native';
-import React, { useEffect } from 'react';
-import Styles from '../SharedStyles';
-import {
-  fetchOneUserByEmail,
-  signinWithGoogle,
-} from '../apiService/fetchingFunctions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAppDispatch } from '../store/hooks';
-import { updateAuthStatus, updateProfile } from '../store/slices/userSlice';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import React, { useEffect } from 'react';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
+import Styles from '../SharedStyles';
+import { signinWithGoogle } from '../apiService/fetchingFunctions';
 
 const SignIn = () => {
   useEffect(() => {
@@ -17,7 +11,6 @@ const SignIn = () => {
         '1071190608503-hnua85ljh7c940id1qk2a28eqh68tslk.apps.googleusercontent.com',
     });
   }, []);
-  const dispatch = useAppDispatch();
   return (
     <ScrollView style={Styles.pageContainer}>
       <View className="w-full">

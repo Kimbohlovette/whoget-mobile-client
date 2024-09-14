@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const Signup = () => {
   const navigation = useNavigation<any>();
-  const [authMessge, setAuthMessage] = useState<string>('');
+  const [authMessge, setAuthMessage] = useState('');
   const dispatch = useAppDispatch();
   useEffect(() => {
     GoogleSignin.configure({
