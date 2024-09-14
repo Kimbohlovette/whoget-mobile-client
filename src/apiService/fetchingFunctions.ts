@@ -167,7 +167,7 @@ export const signinWithGoogle = async () => {
 };
 
 export const createUser = async (payload: any) => {
-console.log(payload)
+  console.log(payload);
 
   try {
     const response = await fetch(`${BASE_URL}users`, {

@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -8,17 +9,16 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React, { useEffect, useMemo, useState } from 'react';
+import { Dropdown } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { textEllipsis } from '../shared/ellipseText';
-import Styles from '../SharedStyles';
-import { useAppSelector } from '../store/hooks';
 import { Props } from '../../types';
 import {
   fetchFilteredAsks,
   fetchPaginatedAks,
 } from '../apiService/fetchingFunctions';
-import { Dropdown } from 'react-native-element-dropdown';
+import { textEllipsis } from '../shared/ellipseText';
+import Styles from '../SharedStyles';
+import { useAppSelector } from '../store/hooks';
 
 const Asks = ({ navigation, route }: Props) => {
   const [showFilter, setShowFilter] = useState(false); //state  to show/hide filter modal

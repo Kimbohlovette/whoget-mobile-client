@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  Pressable,
   ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Styles from '../SharedStyles';
 import { createUser } from '../apiService/fetchingFunctions';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { updateAuthStatus, updateProfile } from '../store/slices/userSlice';
-import { useNavigation } from '@react-navigation/native';
 const AdditionalSignupInfo = () => {
   const userInfo = useAppSelector(state => state.user.user);
   const [name, setName] = useState<string>('');

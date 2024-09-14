@@ -15,10 +15,8 @@ import Styles from '../SharedStyles';
 import { Props } from '../../types';
 
 export default function Search({ navigation }: Props) {
-  const [searchLoader, setSearchLoader] = useState<boolean>(false);
-  const [showSearchResultPage, setShowSearchResultPage] =
-    useState<boolean>(false);
-  const [searchKey, setSearchKey] = useState<string>('');
+  const [searchLoader, setSearchLoader] = useState(false);
+  const [searchKey, setSearchKey] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [resultToShow, setResultToShow] = useState<
     'asks' | 'users' | 'categories'

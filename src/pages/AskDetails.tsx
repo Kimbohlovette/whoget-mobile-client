@@ -30,7 +30,6 @@ type Props = NativeStackScreenProps<HomeStackParamList, 'AskDetails'>;
 const AskDetails = ({ navigation, route }: Props) => {
   const askId = route.params ? route.params.askId : '';
   const [showRespondModal, setShowRespondModal] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
   const [askDetails, setAskDetails] = useState<any>(null);
   const [loadingAskstatus, setLoadingAskStatus] = useState<
     'idle' | 'loading' | 'failed' | 'successful'
